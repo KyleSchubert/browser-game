@@ -1,0 +1,728 @@
+:root {
+    --inventory-color: rgb(255, 152, 0);
+    --inventory-holder-color: rgb(49, 49, 49);
+    --gui-standard-color: rgba(45, 45, 52, 0.83);
+}
+
+body {
+    display: flex;
+    flex: auto;
+    justify-content: flex-start;
+    flex-flow: row;
+    align-items: flex-start;
+}
+
+.mainArea {
+    padding: 16px;
+}
+
+.subArea {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+#guiHolder {
+    position: absolute;
+    z-index: 99999999;
+    width: 640px;
+    height: 800px;
+    left: calc(50% - 320px);
+    top: calc(50% - 400px);
+    pointer-events: none;
+}
+
+#guiHolder div {
+    pointer-events: all;
+}
+
+#shopHolder {
+    height: 100%;
+    width: 100%;
+    visibility: hidden;
+}
+
+#avatarArea {
+    display: flex;
+    align-items: center;
+    height: 96px;
+}
+
+#lootArea {
+    margin-top: 8px;
+    width: 314px;
+    height: 200px;
+    background-image: url(/files/terrain.png);
+}
+
+#lootBlocker {
+    display: inline-block;
+    margin-top: 98px;
+    border-top: 0px;
+    margin-bottom: 0px;
+    width: 100%;
+}
+
+@keyframes dropAnimation {
+    1% {
+    transform: translateY(-2.54px) rotate(14.4deg);
+    }
+    2% {
+        transform: translateY(-5.11px) rotate(28.8deg);
+    }
+    3% {
+        transform: translateY(-7.72px) rotate(43.2deg);
+    }
+    4% {
+        transform: translateY(-10.35px) rotate(57.6deg);
+    }
+    5% {
+        transform: translateY(-13.01px) rotate(72.0deg);
+    }
+    6% {
+        transform: translateY(-15.68px) rotate(86.4deg);
+    }
+    7% {
+        transform: translateY(-18.38px) rotate(100.8deg);
+    }
+    8% {
+        transform: translateY(-21.09px) rotate(115.2deg);
+    }
+    9% {
+        transform: translateY(-23.8px) rotate(129.6deg);
+    }
+    10% {
+        transform: translateY(-26.53px) rotate(144.0deg);
+    }
+    11% {
+        transform: translateY(-29.26px) rotate(158.4deg);
+    }
+    12% {
+        transform: translateY(-31.98px) rotate(172.8deg);
+    }
+    13% {
+        transform: translateY(-34.7px) rotate(187.2deg);
+    }
+    14% {
+        transform: translateY(-37.42px) rotate(201.6deg);
+    }
+    15% {
+        transform: translateY(-40.12px) rotate(216.0deg);
+    }
+    16% {
+        transform: translateY(-42.81px) rotate(230.4deg);
+    }
+    17% {
+        transform: translateY(-45.48px) rotate(244.8deg);
+    }
+    18% {
+        transform: translateY(-48.13px) rotate(259.2deg);
+    }
+    19% {
+        transform: translateY(-50.75px) rotate(273.6deg);
+    }
+    20% {
+        transform: translateY(-53.34px) rotate(288.0deg);
+    }
+    21% {
+        transform: translateY(-55.9px) rotate(302.4deg);
+    }
+    22% {
+        transform: translateY(-58.43px) rotate(316.8deg);
+    }
+    23% {
+        transform: translateY(-60.91px) rotate(331.2deg);
+    }
+    24% {
+        transform: translateY(-63.36px) rotate(345.6deg);
+    }
+    25% {
+        transform: translateY(-65.75px) rotate(360.0deg);
+    }
+    26% {
+        transform: translateY(-68.09px) rotate(374.4deg);
+    }
+    27% {
+        transform: translateY(-70.38px) rotate(388.8deg);
+    }
+    28% {
+        transform: translateY(-72.62px) rotate(403.2deg);
+    }
+    29% {
+        transform: translateY(-74.79px) rotate(417.6deg);
+    }
+    30% {
+        transform: translateY(-76.9px) rotate(432.0deg);
+    }
+    31% {
+        transform: translateY(-78.93px) rotate(446.4deg);
+    }
+    32% {
+        transform: translateY(-80.9px) rotate(460.8deg);
+    }
+    33% {
+        transform: translateY(-82.79px) rotate(475.2deg);
+    }
+    34% {
+        transform: translateY(-84.61px) rotate(489.6deg);
+    }
+    35% {
+        transform: translateY(-86.34px) rotate(504.0deg);
+    }
+    36% {
+        transform: translateY(-87.98px) rotate(518.4deg);
+    }
+    37% {
+        transform: translateY(-89.54px) rotate(532.8deg);
+    }
+    38% {
+        transform: translateY(-91.0px) rotate(547.2deg);
+    }
+    39% {
+        transform: translateY(-92.37px) rotate(561.6deg);
+    }
+    40% {
+        transform: translateY(-93.63px) rotate(576.0deg);
+    }
+    41% {
+        transform: translateY(-94.79px) rotate(590.4deg);
+    }
+    42% {
+        transform: translateY(-95.85px) rotate(604.8deg);
+    }
+    43% {
+        transform: translateY(-96.79px) rotate(619.2deg);
+    }
+    44% {
+        transform: translateY(-97.62px) rotate(633.6deg);
+    }
+    45% {
+        transform: translateY(-98.33px) rotate(648.0deg);
+    }
+    46% {
+        transform: translateY(-98.92px) rotate(662.4deg);
+    }
+    47% {
+        transform: translateY(-99.39px) rotate(676.8deg);
+    }
+    48% {
+        transform: translateY(-99.73px) rotate(691.2deg);
+    }
+    49% {
+        transform: translateY(-99.93px) rotate(705.6deg);
+    }
+    50% {
+        transform: translateY(-100.0px) rotate(720.0deg);
+    }
+    51% {
+        transform: translateY(-99.93px) rotate(734.4deg);
+    }
+    52% {
+        transform: translateY(-99.73px) rotate(748.8deg);
+    }
+    53% {
+        transform: translateY(-99.39px) rotate(763.2deg);
+    }
+    54% {
+        transform: translateY(-98.92px) rotate(777.6deg);
+    }
+    55% {
+        transform: translateY(-98.33px) rotate(792.0deg);
+    }
+    56% {
+        transform: translateY(-97.62px) rotate(806.4deg);
+    }
+    57% {
+        transform: translateY(-96.79px) rotate(820.8deg);
+    }
+    58% {
+        transform: translateY(-95.85px) rotate(835.2deg);
+    }
+    59% {
+        transform: translateY(-94.79px) rotate(849.6deg);
+    }
+    60% {
+        transform: translateY(-93.63px) rotate(864.0deg);
+    }
+    61% {
+        transform: translateY(-92.37px) rotate(878.4deg);
+    }
+    62% {
+        transform: translateY(-91.0px) rotate(892.8deg);
+    }
+    63% {
+        transform: translateY(-89.54px) rotate(907.2deg);
+    }
+    64% {
+        transform: translateY(-87.98px) rotate(921.6deg);
+    }
+    65% {
+        transform: translateY(-86.34px) rotate(936.0deg);
+    }
+    66% {
+        transform: translateY(-84.61px) rotate(950.4deg);
+    }
+    67% {
+        transform: translateY(-82.79px) rotate(964.8deg);
+    }
+    68% {
+        transform: translateY(-80.9px) rotate(979.2deg);
+    }
+    69% {
+        transform: translateY(-78.93px) rotate(993.6deg);
+    }
+    70% {
+        transform: translateY(-76.9px) rotate(1008.0deg);
+    }
+    71% {
+        transform: translateY(-74.79px) rotate(1022.4deg);
+    }
+    72% {
+        transform: translateY(-72.62px) rotate(1036.8deg);
+    }
+    73% {
+        transform: translateY(-70.38px) rotate(1051.2deg);
+    }
+    74% {
+        transform: translateY(-68.09px) rotate(1065.6deg);
+    }
+    75% {
+        transform: translateY(-65.75px) rotate(1080.0deg);
+    }
+    76% {
+        transform: translateY(-63.36px) rotate(1094.4deg);
+    }
+    77% {
+        transform: translateY(-60.91px) rotate(1108.8deg);
+    }
+    78% {
+        transform: translateY(-58.43px) rotate(1123.2deg);
+    }
+    79% {
+        transform: translateY(-55.9px) rotate(1137.6deg);
+    }
+    80% {
+        transform: translateY(-53.34px) rotate(1152.0deg);
+    }
+    81% {
+        transform: translateY(-50.75px) rotate(1166.4deg);
+    }
+    82% {
+        transform: translateY(-48.13px) rotate(1180.8deg);
+    }
+    83% {
+        transform: translateY(-45.48px) rotate(1195.2deg);
+    }
+    84% {
+        transform: translateY(-42.81px) rotate(1209.6deg);
+    }
+    85% {
+        transform: translateY(-40.12px) rotate(1224.0deg);
+    }
+    86% {
+        transform: translateY(-37.42px) rotate(1238.4deg);
+    }
+    87% {
+        transform: translateY(-34.7px) rotate(1252.8deg);
+    }
+    88% {
+        transform: translateY(-31.98px) rotate(1267.2deg);
+    }
+    89% {
+        transform: translateY(-29.26px) rotate(1281.6deg);
+    }
+    90% {
+        transform: translateY(-26.53px) rotate(1296.0deg);
+    }
+    91% {
+        transform: translateY(-23.8px) rotate(1310.4deg);
+    }
+    92% {
+        transform: translateY(-21.09px) rotate(1324.8deg);
+    }
+    93% {
+        transform: translateY(-18.38px) rotate(1339.2deg);
+    }
+    94% {
+        transform: translateY(-15.68px) rotate(1353.6deg);
+    }
+    95% {
+        transform: translateY(-13.01px) rotate(1368.0deg);
+    }
+    96% {
+        transform: translateY(-10.35px) rotate(1382.4deg);
+    }
+    97% {
+        transform: translateY(-7.72px) rotate(1396.8deg);
+    }
+    98% {
+        transform: translateY(-5.11px) rotate(1411.2deg);
+    }
+    99% {
+        transform: translateY(-2.54px) rotate(1425.6deg);
+    }
+    100% {
+        transform: translateY(0px) rotate(1440deg);
+    }
+}
+
+@keyframes hovering {
+    0% {
+        transform: translateY(0px);
+        animation-timing-function: ease-in-out;
+    }
+    50% {
+        transform: translateY(-6px);
+        animation-timing-function: ease-in-out;
+    }
+    100% {
+        transform: translateY(0px);
+        animation-timing-function: ease-in;
+    }
+}
+
+@keyframes pickUp {
+    0% {
+        transform: translateY(0px);
+        animation-timing-function: ease-in-out;
+    }
+    50% {
+        transform: translateY(-42px);
+        animation-timing-function: ease-in-out;
+    }
+    100% {
+        transform: translateY(20px);
+        animation-timing-function: ease-in;
+    }
+}
+
+@keyframes pickUpFade {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.pickupAnimation {
+    user-select: none;
+    pointer-events: none;
+    animation-name: pickUpFade;
+    animation-timing-function: linear;
+    animation-duration: 1020ms;
+    opacity: 0;
+}
+
+.pickupAnimationHelper {
+    pointer-events: none;
+    display: inline-block;
+    animation-name: pickUp;
+    animation-timing-function: linear;
+    animation-duration: 1020ms;
+}
+
+.itemAnimationHelper {
+    pointer-events: all;
+    display: inline-block;
+    animation: 1224ms dropAnimation;
+}
+
+.droppedItem {
+    user-select: none;
+    pointer-events: all;
+    animation-name: hovering;
+    animation-timing-function: linear;
+    animation-duration: 1732ms;
+    animation-iteration-count: infinite;
+    opacity: 1;
+}
+
+.dropAligner {
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: absolute;
+    height: 50px;
+}
+
+#shopButtonArea {
+    top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-width: 120px;
+    min-height: 126px;
+}
+
+.guiOpeningButton {
+    border: 1px solid black;
+    border-radius: 6px;
+    background-color: #969696;
+    background: linear-gradient(#969696, #2b2b2b);
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.guiOpeningButton img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+#shopButtonArea img {
+    width: 88px;
+    height: 93px;
+}
+
+.draggableBar {
+    background: linear-gradient(to top, rgba(0,0,0, 0.83), var(--gui-standard-color));
+    width: calc(100% - 6px);
+    height: 3%;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-color: rgba(0,0,0,0);
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    background-origin: border-box;
+}
+
+.guiInnerContentArea {
+    position: relative;
+    background-color: var(--gui-standard-color);
+    width: calc(100% - 48px);
+    height: calc(97% - 48px);
+    padding: 24px;
+}
+
+.shopMerchantImage {
+    transform: scaleX(-1);
+    left: 8px;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.shopItemArea {
+    position: absolute;
+    top: 140px;
+    width: 40%;
+    height: 72%;
+    background-color: beige;
+}
+
+#doubloonsInShop {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}
+
+.doubloonsHolder {
+    background: linear-gradient(to top, rgb(137, 110, 255), rgb(181, 165, 255));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-width: 1px;
+    border-radius: 6px;
+    border-color: black;
+    border-style: solid;
+    padding: 1px 8px 1px 2px;
+    width: 120px;
+}
+
+.doubloonsHolder img {
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.doubloonsHolder span {
+    right: 10px;
+}
+
+.closeButton {
+    position: absolute;
+    right: 24px;
+    top: 60px;
+    background: linear-gradient(to top, rgb(135, 153, 255), rgb(187, 228, 255));
+    border-width: 1px;
+    border-radius: 6px;
+    border-color: black;
+    border-style: solid;
+    padding: 2px 8px 2px 8px;
+}
+
+.sellArea {
+    position: absolute;
+    right: 24px;
+    top: 140px;
+    width: 40%;
+    height: 72%;
+    background-color: beige;
+}
+
+#inventoryArea {
+    position: absolute;
+    top: -10px;
+    right: 100px;
+    display: flex;
+    flex-shrink: 0;
+    width: 280px;
+}
+
+#moreInventoryButtonsArea {
+    background-color: var(--inventory-holder-color);
+    height: 44px;
+    display: flex;
+    flex-direction: row;
+}
+
+.subTab {
+    color: #FFF;
+    line-height: 44px;
+    vertical-align: middle;
+    text-align: center;
+    flex: 1;
+    font-weight: bold;
+}
+
+.subTabFocused {
+    background-color: rgb(28,28,28);
+    border: 1px solid rgb(40,40,40);
+    line-height: 42px;
+}
+
+.deprecatedSubTab {
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
+    cursor: pointer;
+    fill: var(--inventory-holder-color);
+}
+
+.inventoryButtonHolder {
+    width: 61px;
+}
+
+#inventoryDividerLine {
+    border: 3.5px solid var(--inventory-holder-color);
+    background-color: var(--inventory-holder-color);
+    height: 0px;
+    margin: 0px 0px 9px 0px;
+}
+
+#slotsSpot {
+    margin: 7px;
+    background-color: #FFFFFF;
+}
+
+.slot {
+    position: relative;
+    background-image: url("/files/slotSTOLEN.png");
+    width: 45px;
+    height: 45px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.itemCount {
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+}
+
+.numberText {
+    font-size: 16px;
+    color: white;
+    text-shadow: -1px 1px 0 #000,
+				  1px 1px 0 #000,
+				 1px -1px 0 #000,
+				-1px -1px 0 #000;
+}
+
+@keyframes openTheInventory {
+    from {top: -10px;}
+    to {top: 400px;}
+}
+
+.inventory-opening {
+    animation: 400ms ease-out openTheInventory;
+}
+
+.inventory-open {
+    top: 400px !important;
+}
+
+@keyframes closeTheInventory {
+    from {top: 400px;}
+    to {top: -10px;}
+}
+
+.inventory-closing {
+    animation: 400ms ease-out closeTheInventory;
+}
+
+#inventoryHolder {
+    position: absolute;
+    z-index: 1;
+    top: -390px;
+    width: 100%;
+    height: 400px;
+    background-color: var(--inventory-holder-color);
+    border-radius: 6px;
+    box-shadow: -10px 0 15px -15px inset, 16px 0 13px -20px inset;
+}
+
+#mainInventory {
+    position: relative;
+    margin: 8px;
+    background-color: var(--inventory-color);
+}
+
+#inventoryButtonArea {
+    border-top: solid var(--inventory-holder-color);
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    width: 100%;
+}
+
+.inventoryButtonGlowHolder {
+    width: 146px;
+    height: 40px;
+    filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.32));
+}
+
+.tab {
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
+    cursor: pointer;
+    fill: var(--inventory-holder-color);
+}
+
+.tab-text {
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
+
+.holder {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 280px;
+    z-index: -1;
+}
+
+.tab-outline-helper {
+    z-index: -1;
+    padding-bottom: 4px;
+    width: 106px;
+    height: 40px;
+    background: linear-gradient(to bottom, #A4A4A4 90%, #BBBBBB 92%, #CCCCCC 93%, #FFFFFF 95%);
+}
+
+.clickable {
+    cursor: pointer;
+}

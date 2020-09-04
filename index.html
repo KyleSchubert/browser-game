@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Testing stuff out</title>
+        <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+        <link href="style.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+        <link rel="stylesheet" href="/jquery-ui.css">
+        <script src="jquery-3.5.1.min.js"></script>
+    </head>
+    <body>
+        <div id="guiHolder">
+            <div id="shopHolder">
+                <div class="draggableBar"></div>
+                <div class="guiInnerContentArea">
+                    <img class="shopMerchantImage" src="/files/use-as-shop-guy.png">
+                    <div class="shopItemArea"></div>
+                    <div class="doubloonsHolder" id="doubloonsInShop">
+                        <img src="/files/doubloon.png">
+                        <span class="numberText amountOfDoubloons">0</span>
+                    </div>
+                    <div class="clickable closeButton">Exit Shop</div>
+                    <div class="sellArea"></div>
+                </div>
+            </div>
+        </div>
+        <audio id="pickupSound">
+            <source src="/files/pickup.wav" type="audio/wav">
+        </audio>
+        <div class="mainArea">
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="hat">
+                    <label class="mdl-textfield__label" for="hat">Hat ID...</label>
+                </div>
+            </form>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="boots">
+                    <label class="mdl-textfield__label" for="boots">Boots ID...</label>
+                </div>
+            </form>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="cape">
+                    <label class="mdl-textfield__label" for="cape">Cape ID...</label>
+                </div>
+            </form>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="gloves">
+                    <label class="mdl-textfield__label" for="gloves">Gloves ID...</label>
+                </div>
+            </form>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="top">
+                    <label class="mdl-textfield__label" for="top">Top ID...</label>
+                </div>
+            </form>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="bottom">
+                    <label class="mdl-textfield__label" for="bottom">Bottom ID...</label>
+                </div>
+            </form>
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="weapon">
+                    <label class="mdl-textfield__label" for="weapon">Weapon ID...</label>
+                </div>
+            </form>
+        </div>
+        <div class="mainArea">
+            <div class="subArea" id="avatarArea">
+                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=loadAvatar();>
+                    Load Avatar
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=loadBase();>
+                    Reset
+                </button>
+                <img id="avatar" src='https://maplestory.io/api/character/{"itemId":2000,"version":"213"},{"itemId":12000,"version":"213"},{"itemId":1005200,"version":"213"},{"itemId":1072745,"version":"213"},{"itemId":1102484,"version":"213"},{"itemId":1082544,"version":"213"},{"itemId":1042395,"version":"213"},{"itemId":1062258,"version":"213"},{"itemId":1242146,"version":"213"}/stand1/animated?flipX=true'>
+            </div>
+            <div class="subArea" id="itemArea">
+                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=dropLoot();>
+                    Drop Loot
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised" id="testSound" value="0">
+                    Test sound
+                </button>
+                <form action="#">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="dropCount">
+                        <label class="mdl-textfield__label" for="dropCount"># of items to drop...</label>
+                    </div>
+                </form>
+                <div id="lootArea">
+                    <hr id="lootBlocker">
+                    <div id="lootSurface"></div>
+                </div>
+                <div class="subArea">
+                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=clearItems();>
+                    Clear Items
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="guiOpeningButton clickable" id="shopButtonArea" value="80001">
+            <img src="/files/use-as-shop-guy.png">
+        </div>
+        <div id="inventoryArea">
+            <div id="inventoryHolder">
+                <div id="mainInventory">
+                    <div id="moreInventoryButtonsArea">
+                        <div class="subTab clickable">EQUIP</div>
+                        <div class="subTab clickable">USE</div>
+                        <div class="subTab clickable">ETC</div>
+                        <!-- OLD DESIGN
+                        <svg class="inventoryButtonHolder">
+                            <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
+                            <text class="clickable tab-text" x="10" y="24" fill="#FFF">Equip</text>
+                        </svg>
+                        <svg class="inventoryButtonHolder">
+                            <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
+                            <text class="clickable tab-text" x="17" y="24" fill="#FFF">Use</text>
+                        </svg>
+                        <svg class="inventoryButtonHolder">
+                            <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
+                            <text class="clickable tab-text" x="17" y="24" fill="#FFF">Etc</text>
+                        </svg>
+                        -->
+                    </div>
+                    <hr id="inventoryDividerLine"/>
+                    <table id="slotsSpot">
+                        <!--This gets filled up by some script in inventory.js-->
+                    </table>
+                </div>
+            </div>
+            <div id="inventoryButtonArea">
+                <svg class="inventoryButtonGlowHolder">
+                    <polygon class="clickable tab openInventoryButton" points="16 38, 19 40, 127 40, 130 38, 146 0, 0 0"/>
+                    <text class="clickable tab-text openInventoryButton" x="32" y="25" fill="#FFF">Inventory</text>
+                </svg>
+                <div class="holder">
+                    <div class="tab-outline-helper"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Game Logic -->
+        <script src="js/avatar.js"></script>
+        <script src="js/drops.js"></script>
+        <script src="js/guis.js"></script>
+        <script src="js/inventory.js"></script>
+        <script src="js/looting.js"></script>
+        <script src="js/shop.js"></script>
+        <!-- MDL thing -->
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <!-- the etc scripts -->
+        <script src="js/etcScripts.js"></script>
+        <script src="jquery-ui.js"></script>
+    </body>
+</html>
