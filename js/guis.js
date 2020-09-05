@@ -1,7 +1,6 @@
 $('.guiOpeningButton').click(function() {
     guiType = guiGetType(this);
-    guiToggleVisibility(guiType)
-    guiLoadData(guiType)
+    guiToggleVisibility(guiType, this.getAttribute('value'))
 });
 
 guiIDs = ['#shopHolder'];
@@ -21,15 +20,12 @@ guiTypes = {
     80001: 'shop'
 }
 
-shopInventories = {
-
-}
 
 function guiGetType(node) {
     return guiTypes[node.getAttribute('value')]
 }
 
-function guiToggleVisibility(guiType) {
+function guiToggleVisibility(guiType, guiID) {
     if (guiType == 'shop') {   
         target = guiIDs[0];
     }
@@ -37,6 +33,7 @@ function guiToggleVisibility(guiType) {
         console.log('big bug big smile');
     }
     if ($(target).css('visibility') == 'hidden') {
+        guiLoadData(guiType, guiID)
         $(target).css('visibility', 'visible');
     }
     else {
@@ -48,10 +45,9 @@ function guiClose(target) { //all of them
     $(target).css('visibility', 'hidden');
 }
 
-function guiLoadData(guiType) {
-    if (guiType == 'shop'){
-        // do something
-        console.log('function guiLoadData is incomplete, obviously')
+function guiLoadData(guiType, id) {
+    if (guiType == 'shop') {
+        shopLoad(id)
     }
     else {
         console.log('big bug big smile');

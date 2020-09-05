@@ -511,7 +511,43 @@ body {
     top: 140px;
     width: 40%;
     height: 72%;
+    overflow-y: auto;
     background-color: beige;
+}
+
+.shopItemArea div:last-child {
+    border: none;
+}
+
+.itemCard {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 54px;
+    width: calc(100% - 16px);
+    padding: 4px 8px 4px 4px;
+    border-bottom: 1px solid black;
+}
+
+.itemCardImageArea {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    height: 46px;
+    width: 46px;
+}
+
+.itemCardName {
+    position: absolute;
+    left: 60px;
+    top: 8px;
+}
+
+.itemCardPrice {
+    position: absolute;
+    left: 60px;
+    bottom: 8px;
 }
 
 #doubloonsInShop {
