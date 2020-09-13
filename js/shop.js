@@ -3,25 +3,48 @@ shopInventories = {
 };
 
 shopWorths = {
-    1113095: 1000, 
-    1342111: 1000, 
-    1282036: 1000, 
-    1282027: 1000, 
-    2870008: 1000, 
+    1113095: 15000000, 
+    1342111: 300000, 
+    1282036: 2999, 
+    1282027: 2500, 
+    2870008: 1033, 
     2870021: 1000, 
-    2000019: 1000, 
-    2046319: 1000, 
-    4000001: 1000, 
-    4000012: 1000
+    2000019: 15000, 
+    2046319: 1000000, 
+    4000001: 34000, 
+    4000012: 9
 };
 
 $('#shopHolder .guiInnerContentArea .closeButton').click(function() {
     guiClose(guiIDs[0])
 });
 
+$(document).ready(function() {
+    node = document.getElementById('shopButtonArea');
+    shopButtonAppeared(node)
+});
+
+function shopButtonAppeared(shopNode) {
+    $(shopNode).mouseenter(function(event) {
+        id = this.getAttribute('value');
+        if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
+            shopInventories[id].forEach(maybeFindItemName)
+        }
+        $(this).off(event)
+    });
+}
+
+function preloadTheShop() {
+    id = this.getAttribute('value')
+    if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
+        shopInventories[id].forEach(maybeFindItemName)
+    }
+    $(this).unbind('mouseenter', preloadTheShop)
+}
+
 function shopLoad(id) {
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').html('')
-    if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
+    if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) { // Essentially, this is a backup for if I forget to do   shopButtonAppeared(shopNode)
         shopInventories[id].forEach(maybeFindItemName)
         setTimeout(function(){ shopInventories[id].forEach(createItemCard); }, 30); //I really really can't figure out a better way. async: false was deprecated
     }  //                                                                             and nothing else works exactly like that.
@@ -36,7 +59,7 @@ const checkIfStoreItemsInKnownItems = (id) => knownItemNames.includes(id);
 
 function createItemCard(itemID) {
     newDiv = document.createElement('div');
-    newDiv.classList = ['itemCard'];
+    newDiv.classList = ['itemCard clickable'];
 
     newerDiv = document.createElement('div');
     newerDiv.classList = ['itemCardImageArea'];
@@ -49,9 +72,14 @@ function createItemCard(itemID) {
     newItemName.classList = ['itemCardName'];
     newDiv.appendChild(newItemName)
 
+    newCoinImg = document.createElement('img');
+    newCoinImg.src = "/files/doubloon.png";
+    newCoinImg.classList = ['itemCardPriceCoin'];
+    newDiv.appendChild(newCoinImg)
+
     newItemPrice = document.createElement('span');
-    newItemPrice.innerHTML = shopWorths[itemID];
-    newItemPrice.classList = ['itemCardPrice'];
+    newItemPrice.innerHTML = numberWithCommas(shopWorths[itemID]);
+    newItemPrice.classList = ['itemCardPrice numberText'];
     newDiv.appendChild(newItemPrice)
 
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').append(newDiv)

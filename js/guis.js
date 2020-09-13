@@ -13,6 +13,7 @@ $('body').keydown(function(e) {
 $(function() {
     $('#guiHolder').draggable({handle: '* .draggableBar'});
     $('#guiHolder').draggable({cancel: '* .guiInnerContentArea'});
+    $('#guiHolder').draggable({containment: 'window'});
     //$().disableSelection();
 } );
 
@@ -53,3 +54,17 @@ function guiLoadData(guiType, id) {
         console.log('big bug big smile');
     }
 }
+
+$('.textTightContainer').on('mousemove', function(event) {
+    console.log($(event.currentTarget).last())
+    $(event.currentTarget).children('.textTooltip').css({
+        'left': event.pageX +6,
+        'top': event.pageY +6,
+        'visibility': 'visible'
+    });
+});
+$('.textTightContainer').on('mouseleave', function(event) {
+    $(event.currentTarget).children('.textTooltip').css({
+        'visibility': 'hidden'
+    });
+});

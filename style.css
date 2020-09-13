@@ -24,7 +24,7 @@ body {
 #guiHolder {
     position: absolute;
     z-index: 99999999;
-    width: 640px;
+    width: 760px;
     height: 800px;
     left: calc(50% - 320px);
     top: calc(50% - 400px);
@@ -509,10 +509,10 @@ body {
 .shopItemArea {
     position: absolute;
     top: 140px;
-    width: 40%;
+    width: 45%;
     height: 72%;
     overflow-y: auto;
-    background-color: beige;
+    background-color: rgb(165, 188, 208);
 }
 
 .shopItemArea div:last-child {
@@ -541,13 +541,19 @@ body {
 .itemCardName {
     position: absolute;
     left: 60px;
-    top: 8px;
+    top: 6px;
+}
+
+.itemCardPriceCoin {
+    position: absolute;
+    bottom: 5px;
+    left: 60px;
 }
 
 .itemCardPrice {
     position: absolute;
-    left: 60px;
-    bottom: 8px;
+    left: 98px;
+    bottom: 10px;
 }
 
 #doubloonsInShop {
@@ -591,12 +597,7 @@ body {
 }
 
 .sellArea {
-    position: absolute;
     right: 24px;
-    top: 140px;
-    width: 40%;
-    height: 72%;
-    background-color: beige;
 }
 
 #inventoryArea {
@@ -757,6 +758,44 @@ body {
     width: 106px;
     height: 40px;
     background: linear-gradient(to bottom, #A4A4A4 90%, #BBBBBB 92%, #CCCCCC 93%, #FFFFFF 95%);
+}
+
+#etcDeveloperStuff {
+    position: absolute;
+    top: 600px;
+    padding: 8px;
+    height: 200px;
+    width: 400px;
+}
+
+.textTightContainer {
+    display: flex;
+    justify-items: center;
+    width: 160px;
+    height: 40px;
+    margin: 6px;
+    padding: 3px;
+    border: 1px solid black;
+    background-color: rgb(230, 230, 230);
+    overflow: hidden;
+    justify-content: center;
+}
+
+.textTightContainer input {
+    padding: 8px;
+    padding-right: 0px;
+    width: 100%;
+}
+
+.textTooltip {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    visibility: hidden;
+    pointer-events: none;
+    background-color: var(--inventory-holder-color);
+    color: white;
+    padding: 8px;
 }
 
 .clickable {

@@ -11,9 +11,29 @@ function itemDropSetup(img, aligner) {
 }
 
 function itemImageSetup(itemID) {
-    url = getItemURL(itemID);
+    if (knownItemImages.includes(itemID)) {
+        url = '/item/'.concat(itemID);
+        image = url.concat('/icon.png')
+    }
+    else {
+        $.ajax({
+            url:'/item/'.concat(itemID).concat('/icon.png'),
+            type:'HEAD',
+            error: function()
+            {
+                url = getItemURL(itemID);
+                image = url.concat("/icon");
+            },
+            success: function()
+            {
+                url = '/item/'.concat(itemID);
+                image = url.concat('/icon.png')
+            }
+        });
+        knownItemImages.push(itemID)
+    }
     //name = concat(url, "/name") and then parsing the result of the request and going ['name'] on it;
-    image = url.concat("/icon");
+    
     var img = new Image();
     img.classList = ["item clickable"];
     img.src = image;
@@ -45,19 +65,9 @@ function dropLoot() {
 
 
 // overcat: {cat: {subcat: [itemID, itemID, ...]}}
-itemsByType = {
-    'Equip': {
-        'Accessory': {
-            'Ring': []
-        }
-    },
-    'Use': {},
-    'Etc': {}
-}
+
 // itemID: [overcat, cat, subcat]
-itemsAndTheirTypes = {
-    '4000001': ['Etc', 'Other', 'Monster Drop']
-}
+
 function memorizeItemType(itemID) {
     if (typeof itemsAndTheirTypes[itemID] == 'undefined') {
         $.get(getItemURL(itemID), function(data) {
