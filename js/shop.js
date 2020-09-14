@@ -12,7 +12,7 @@ shopWorths = {
     2000019: 15000, 
     2046319: 1000000, 
     4000001: 34000, 
-    4000012: 9
+    4000012: 10
 };
 
 $('#shopHolder .guiInnerContentArea .closeButton').click(function() {

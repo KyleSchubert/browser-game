@@ -598,6 +598,21 @@ body {
 
 .sellArea {
     right: 24px;
+    background-image: url(/files/sell_background.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.beforeSellText1 {
+    position: absolute;
+    top: 454px;
+    left: 49px;
+}
+
+.beforeSellText2 {
+    position: absolute;
+    top: 85%;
+    left: 20%;
 }
 
 #inventoryArea {
