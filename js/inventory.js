@@ -124,16 +124,11 @@ function inventoryLoad() {
                 removeAllChildNodes(allTheSlots[s])
             }
         if (tab[s]) {
-            img = itemImageSetup(tab[s]);
-            allTheSlots[s].appendChild(img);
-            var span = document.createElement('span');
-            span.classList = ['numberText itemCount'];
-            if (!inventory.counts[tabName][s] == 0) {   
-                span.innerHTML = inventory.counts[tabName][s];
-            }
-            allTheSlots[s].appendChild(span);
+            itemHolder = itemHolderSetup(tab, s, false, tabName);
+            allTheSlots[s].appendChild(itemHolder);
         }
     }
+    makeDraggableItemsDraggable()
 }
 
 function inventoryLoadOne(tab, slot, itemID, justTheNumber=false) {
@@ -145,17 +140,34 @@ function inventoryLoadOne(tab, slot, itemID, justTheNumber=false) {
             document.getElementsByClassName('slot')[slot].getElementsByClassName('itemCount')[0].innerHTML = inventory.counts[tab][slot];
         }
         else {
-            img = itemImageSetup(itemID);
-            document.getElementsByClassName('slot')[slot].appendChild(img);
-            var span = document.createElement('span');
-            span.classList = ['numberText  itemCount'];
-            if (!inventory.counts[tab][slot] == 0) {
-                span.innerHTML = inventory.counts[tab][slot];
-            }
-            allTheSlots[slot].appendChild(span);
-            document.getElementsByClassName('slot')[slot].appendChild(span);
+            itemHolder = itemHolderSetup(tab, slot, true, itemID);
+            document.getElementsByClassName('slot')[slot].appendChild(itemHolder);
         }
     }
+    makeDraggableItemsDraggable()
+}
+
+function itemHolderSetup(tab, slot, isNew, etcData='') {
+    //img area
+    if (isNew) {
+        img = itemImageSetup(etcData);
+    }   
+    else {
+        img = itemImageSetup(tab[slot]);
+        tab = etcData;
+    }
+    //span area
+    var span = document.createElement('span');
+    span.classList = ['numberText itemCount'];
+    if (!inventory.counts[tab][slot] == 0) {   
+        span.innerHTML = inventory.counts[tab][slot];
+    }
+    //itemHolder area
+    itemHolder = document.createElement('div');
+    itemHolder.classList = ['draggableItem itemHolder'];
+    itemHolder.appendChild(img);
+    itemHolder.appendChild(span)
+    return itemHolder
 }
 
 // set up the inventory slots and load what should be in those slots AFTER

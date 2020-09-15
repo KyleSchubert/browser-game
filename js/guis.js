@@ -56,7 +56,6 @@ function guiLoadData(guiType, id) {
 }
 
 $('.textTightContainer').on('mousemove', function(event) {
-    console.log($(event.currentTarget).last())
     $(event.currentTarget).children('.textTooltip').css({
         'left': event.pageX +6,
         'top': event.pageY +6,

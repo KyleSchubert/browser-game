@@ -116,3 +116,21 @@ function getItemName(itemID) {
     url = "https://maplestory.io/api/GMS/215/item/".concat(itemID).concat('/name');
     return url
 }
+
+function sellProcess(itemCount, id, theItem) {
+    $(theItem).css('pointer-events', 'none')
+    $(theItem).css('visibility', 'hidden')
+    if (!itemCount) {
+        itemCount = 1;
+    }
+    value = shopWorths[id]*itemCount;
+    sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
+    console.log(sentence)
+    updateDoubloons(value)
+}
+
+var doubloons = 0;
+function updateDoubloons(value) {
+    doubloons = Number(doubloons) + value;
+    document.getElementsByClassName('amountOfDoubloons')[0].innerHTML = numberWithCommas(doubloons);
+}
