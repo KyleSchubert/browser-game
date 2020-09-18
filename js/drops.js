@@ -1,5 +1,3 @@
-testIDs = [1113095, 1342111, 1282036, 1282027, 2870008, 2870021, 2000019, 2046319, 4000001, 4000012, 4000097, 4000024, 1342098, 1582026, 1402266, 1412148, 4021029, 4021036, 4310100, 2001003, 2000000, 2870643, 2590009, 2049117, 2043219];
-
 function itemDropSetup(img, aligner) {
     $(img).on("click", img, lootItem);
     img.classList.add("droppedItem");
@@ -57,7 +55,7 @@ function dropLoot() {
     }
     aligner.style.marginLeft = "".concat((lootArea.offsetWidth - dropCount*32)/2, "px");
     for (var i = 0; i < dropCount; i++) {
-        id = testIDs[Math.floor((Math.random() * testIDs.length))]; //FOR TESTING
+        id = validItemIDs[Math.floor((Math.random() * validItemIDs.length))]; //FOR TESTING
         itemDropSetup(itemImageSetup(id), aligner)
         memorizeItemType(id)
     }

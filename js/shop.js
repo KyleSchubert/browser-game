@@ -4,14 +4,14 @@ shopInventories = {
 
 shopWorths = {
     1113095: 15000000, 
-    1342111: 300000, 
-    1282036: 2999, 
-    1282027: 2500, 
-    2870008: 1033, 
-    2870021: 1000, 
+    1342111: 351000000, 
+    1282036: 79999, 
+    1282027: 359000, 
+    2870008: 1200, 
+    2870021: 880, 
     2000019: 15000, 
-    2046319: 1000000, 
-    4000001: 34000, 
+    2046319: 240000, 
+    4000001: 34, 
     4000012: 10
 };
 
@@ -120,12 +120,34 @@ function getItemName(itemID) {
 function sellProcess(itemCount, id, theItem) {
     $(theItem).css('pointer-events', 'none')
     $(theItem).css('visibility', 'hidden')
-    if (!itemCount) {
-        itemCount = 1;
+    sellAmount = itemCount;
+    if (!sellAmount) {
+        sellAmount = 1;
     }
-    value = shopWorths[id]*itemCount;
+    if (!(id in shopWorths)) {
+        value = 1*sellAmount;
+    }
+    else {
+        value = shopWorths[id]*sellAmount;
+    }
     sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
     console.log(sentence)
+    tab = inventory.getter(inventoryCurrentSelectedTab.innerHTML);
+    counts = inventory.countsGetter(inventoryCurrentSelectedTab.innerHTML);
+    tab[theItem.getAttribute('data-slotID')] = 0;
+    if (!(counts[theItem.getAttribute('data-slotID')] == 0)) { // must not be an equip item
+        counts[theItem.getAttribute('data-slotID')] = itemCount-sellAmount;
+    }
+    if (itemCount - sellAmount <= 0) {
+        $("#slotsSpot").remove(theItem)
+    }
+    else {
+        $(theItem).css('left', '0px')
+        $(theItem).css('top', '0px')
+        $(theItem).css('pointer-events', 'auto')
+        $(theItem).css('visibility', 'visible')
+    }
+
     updateDoubloons(value)
 }
 

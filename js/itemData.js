@@ -15,3 +15,7 @@ var itemsByType = {"Equip":{"Accessory":{"Ring":[1113095]},"One-Handed Weapon":{
 
 
 var itemsAndTheirTypes = {"1113095":["Equip","Accessory","Ring"],"1282027":["Equip","One-Handed Weapon","Gauntlet"],"1282036":["Equip","One-Handed Weapon","Gauntlet"],"1342098":["Equip","One-Handed Weapon","Katara"],"1342111":["Equip","One-Handed Weapon","Katara"],"1402266":["Equip","Two-Handed Weapon","Two-Handed Sword"],"1412148":["Equip","Two-Handed Weapon","Two-Handed Axe"],"1582026":["Equip","Two-Handed Weapon","Arm Cannon"],"2000000":["Use","Consumable","Potion"],"2000019":["Use","Consumable","Potion"],"2001003":["Use","Consumable","Potion"],"2043219":["Use","Weapon Scroll","One-Handed BW"],"2046319":["Use","Armor Scroll","Accessory"],"2049117":["Use","Special Scroll","Chaos Scroll"],"2590009":["Use","Special Scroll","Soul Weapon"],"2870008":["Use","Monster/Familiar","Familiar Card"],"2870021":["Use","Monster/Familiar","Familiar Card"],"2870643":["Use","Monster/Familiar","Familiar Card"],"4000001":["Etc","Other","Monster Drop"],"4000012":["Etc","Other","Monster Drop"],"4000024":["Etc","Other","Monster Drop"],"4000097":["Etc","Other","Monster Drop"],"4021029":["Etc","Crafting","Crafting Item"],"4021036":["Etc","Crafting","Crafting Item"],"4310100":["Etc","Other","Coin"]};
+
+
+
+var validItemIDs = [1113095, 1342111, 1282036, 1282027, 2870008, 2870021, 2000019, 2046319, 4000001, 4000012, 4000097, 4000024, 1342098, 1582026, 1402266, 1412148, 4021029, 4021036, 4310100, 2001003, 2000000, 2870643, 2590009, 2049117, 2043219];

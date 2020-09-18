@@ -826,6 +826,21 @@ body {
     align-items: center;
 }
 
+#devProblemNotificationBox {
+    position: absolute;
+    padding: 8px;
+    top: 600px;
+    left: 200px;
+    background-color: rgb(214, 214, 214);
+    width: 70%;
+    height: 300px;
+}
+
+#devProblemNotificationBox .textTightContainer {
+    width: calc(100% - 32px);
+    margin: 10px;
+}
+
 .clickable {
     cursor: pointer;
 }

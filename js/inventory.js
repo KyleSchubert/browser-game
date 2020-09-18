@@ -64,6 +64,11 @@ var inventory = {
         string = str.charAt(0).toUpperCase() + str.slice(1);
         return inventory[string];
     },
+    countsGetter: function(wanted) {
+        str = wanted.toLowerCase();
+        string = str.charAt(0).toUpperCase() + str.slice(1);
+        return inventory.counts[string];
+    },
     counts: {
         Equip: [],
         Use: [178, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45],
@@ -79,11 +84,16 @@ $(document).ready(function() {
     $(inventoryTabs).on("click", inventoryTabs, switchTabs);
 });
 
+var inventoryCurrentSelectedTab = ''; // TODO: since i now have this I should probably change the variables so that only this gets used
+$(document).ready(function() {
+    inventoryCurrentSelectedTab = document.getElementsByClassName("subTabFocused")[0];
+})
+
 function switchTabs() {
-    currentSelected = document.getElementsByClassName("subTabFocused")[0];
-    if (currentSelected != this) {
-        currentSelected.classList.remove("subTabFocused");
+    if (inventoryCurrentSelectedTab != this) {
+        inventoryCurrentSelectedTab.classList.remove("subTabFocused");
         this.classList.add("subTabFocused");
+        inventoryCurrentSelectedTab = this;
         inventoryLoad();
     }
 }
@@ -164,6 +174,7 @@ function itemHolderSetup(tab, slot, isNew, etcData='') {
     }
     //itemHolder area
     itemHolder = document.createElement('div');
+    itemHolder.setAttribute('data-slotID', slot)
     itemHolder.classList = ['draggableItem itemHolder'];
     itemHolder.appendChild(img);
     itemHolder.appendChild(span)
