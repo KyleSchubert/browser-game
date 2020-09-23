@@ -46,18 +46,24 @@ function shopLoad(id) {
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').html('')
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) { // Essentially, this is a backup for if I forget to do   shopButtonAppeared(shopNode)
         shopInventories[id].forEach(maybeFindItemName)
-        setTimeout(function(){ shopInventories[id].forEach(createItemCard); }, 30); //I really really can't figure out a better way. async: false was deprecated
-    }  //                                                                             and nothing else works exactly like that.
+        setTimeout(function () {
+            shopInventories[id].forEach(function (i) {
+                createItemCard(i)
+            }); 
+        }, 30); //I really really can't figure out a better way. async: false was deprecated
+    }  //                                      and nothing else works exactly like that.
     else {
-        shopInventories[id].forEach(createItemCard)
+        shopInventories[id].forEach(function (i) {
+            createItemCard(i)
+        })
     }
     
 }
 
-const checkIfStoreItemsInKnownItems = (id) => knownItemNames.includes(id);
-    
+const checkIfStoreItemsInKnownItems = (id) => knownItemNames.includes(id); // i don't know what this means, but it is important
 
-function createItemCard(itemID) {
+
+function createItemCard(itemID, playerItem=false) {
     newDiv = document.createElement('div');
     newDiv.classList = ['itemCard clickable'];
 
@@ -82,7 +88,13 @@ function createItemCard(itemID) {
     newItemPrice.classList = ['itemCardPrice numberText'];
     newDiv.appendChild(newItemPrice)
 
-    $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').append(newDiv)
+    addSelectionListener(newDiv)
+    if (playerItem) {
+        $('#shopHolder .guiInnerContentArea .sellArea').append(newDiv)
+    }
+    else {
+        $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').append(newDiv)
+    }
 }
 
 function neededToWaitBeforeContinuing(id) {
@@ -132,8 +144,8 @@ function sellProcess(itemCount, id, theItem) {
     }
     sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
     console.log(sentence)
-    tab = inventory.getter(inventoryCurrentSelectedTab.innerHTML);
-    counts = inventory.countsGetter(inventoryCurrentSelectedTab.innerHTML);
+    tab = inventory.getter();
+    counts = inventory.countsGetter();
     tab[theItem.getAttribute('data-slotID')] = 0;
     if (!(counts[theItem.getAttribute('data-slotID')] == 0)) { // must not be an equip item
         counts[theItem.getAttribute('data-slotID')] = itemCount-sellAmount;
@@ -148,7 +160,14 @@ function sellProcess(itemCount, id, theItem) {
         $(theItem).css('visibility', 'visible')
     }
 
+    createItemCard(id, true)
+    removeSellingTip()
     updateDoubloons(value)
+}
+
+function removeSellingTip() {
+    $('.beforeSellText1').remove()
+    $('.beforeSellText2').remove()
 }
 
 var doubloons = 0;

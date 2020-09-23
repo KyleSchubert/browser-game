@@ -6,14 +6,22 @@ $('.guiOpeningButton').click(function() {
 guiIDs = ['#shopHolder'];
 $('body').keydown(function(e) {
     if (e.key === "Escape") { // escape key maps to keycode `27`
-        guiIDs.forEach(guiClose)
+        if (smallDialogBoxOpen) {
+            $('#smallDialogBoxHolder').css('visibility', 'hidden')
+        }
+        else {
+            guiIDs.forEach(guiClose)
+        }
     }
 });
 
 $(function() {
-    $('#guiHolder').draggable({handle: '* .draggableBar'});
-    $('#guiHolder').draggable({cancel: '* .guiInnerContentArea'});
+    $('#guiHolder').draggable({handle: '#shopHolder .draggableBar'});
+    $('#guiHolder').draggable({cancel: '#shopHolder .guiInnerContentArea'});
     $('#guiHolder').draggable({containment: 'window'});
+    $('#smallDialogBoxHolder').draggable({handle: '.draggableBar'})
+    $('#smallDialogBoxHolder').draggable({cancel: '.smallDialogBox'})
+    $('#smallDialogBoxHolder').draggable({containment: '#guiHolder'})
     //$().disableSelection();
 } );
 

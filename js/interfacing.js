@@ -55,3 +55,26 @@ function prepareSellBox(event, yes) {
         $(event.delegateTarget).children('.beforeSellText2').css('visibility', 'inherit')
     }
 }
+
+function addSelectionListener(node) {
+    $(node).mousedown(function(event) {
+        if ($('.selectedThing')[0]) {
+            if ($('.selectedThing')[0] == $(this)[0]) {
+                if ($(this).parent()[0].classList.contains('shopItemArea')) {
+                    triggerDialog('shop')
+                }
+            }
+            $('.selectedThing')[0].classList.remove('selectedThing')
+        }
+        this.classList.add('selectedThing')
+    })
+}
+
+function triggerDialog(reason) {
+    if (reason == 'shop') {
+        $('#smallDialogBoxHolder').css('visibility', 'visible')
+        $('#superBlocker').css('visibility', 'visible')
+        $('#superBlocker').css('pointer-events', 'auto')
+        $('#guiHolder #shopHolder div').css('pointer-events', 'none')
+    }
+}

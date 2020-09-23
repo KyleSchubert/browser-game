@@ -23,7 +23,7 @@ body {
 
 #guiHolder {
     position: absolute;
-    z-index: 5;
+    z-index: 6;
     width: 760px;
     height: 800px;
     left: calc(50% - 320px);
@@ -35,7 +35,29 @@ body {
     pointer-events: all;
 }
 
+#smallDialogBoxHolder {
+    position: absolute;
+    z-index: 6;
+    width: 30%;
+    height: 15%;
+    left: calc(35%);
+    top: calc(42.5%);
+    visibility: hidden;
+}
+
+#smallDialogBoxHolder .draggableBar {
+    height: 20% !important;
+}
+
+.smallDialogBox {
+    width: 100%;
+    height: 80%;
+    background-color: red;
+}
+
 #shopHolder {
+    position: absolute;
+    z-index: 4;
     height: 100%;
     width: 100%;
     visibility: hidden;
@@ -525,7 +547,7 @@ body {
     align-items: center;
     height: 54px;
     width: calc(100% - 16px);
-    padding: 4px 8px 4px 4px;
+    padding: 4px 12px 4px 4px;
     border-bottom: 1px solid black;
 }
 
@@ -843,4 +865,22 @@ body {
 
 .clickable {
     cursor: pointer;
+}
+
+.selectedThing {
+    background-color: #66a1d4  !important;
+}
+
+#superBlocker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background: repeating-linear-gradient(45deg,
+    rgba(0,0,0,0.2),
+    rgba(0,0,0,0.2) 8px,
+    rgba(0,0,0,0.25) 4px,
+    rgba(0,0,0,0.25) 12px);
+    visibility: hidden;
+    pointer-events: none;
 }

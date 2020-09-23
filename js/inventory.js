@@ -59,15 +59,19 @@ var inventory = {
     Equip: [1113095, 0, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148],
     Use: [2000019, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2046319],
     Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4000001],
-    getter: function(wanted) {
-        str = wanted.toLowerCase();
+    getter: function() {
+        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
         string = str.charAt(0).toUpperCase() + str.slice(1);
         return inventory[string];
     },
-    countsGetter: function(wanted) {
-        str = wanted.toLowerCase();
+    countsGetter: function() {
+        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
         string = str.charAt(0).toUpperCase() + str.slice(1);
         return inventory.counts[string];
+    },
+    readyName: function() {
+        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
+        return str.charAt(0).toUpperCase() + str.slice(1);
     },
     counts: {
         Equip: [],
@@ -125,52 +129,40 @@ function inventoryLoad() {
         sleep(50); // Le epic bruh
         allTheSlots = document.getElementsByClassName("slot");
     }
-    selectedTab = document.getElementById('moreInventoryButtonsArea').getElementsByClassName('subTabFocused')[0].innerHTML;
-    tab = inventory.getter(selectedTab);
-    str = selectedTab.toLowerCase();
-    tabName = str.charAt(0).toUpperCase() + str.slice(1);
-    for (var s = 0; s < NUM_OF_SLOTS; s++) {
-        if (allTheSlots[s].hasChildNodes()) {
-                removeAllChildNodes(allTheSlots[s])
+    tab = inventory.getter();
+    for (var slot = 0; slot < NUM_OF_SLOTS; slot++) {
+        if (allTheSlots[slot].hasChildNodes()) {
+                removeAllChildNodes(allTheSlots[slot])
             }
-        if (tab[s]) {
-            itemHolder = itemHolderSetup(tab, s, false, tabName);
-            allTheSlots[s].appendChild(itemHolder);
+        if (tab[slot]) {
+            img = itemImageSetup(tab[slot]);
+            itemHolder = itemHolderSetup(inventory.readyName(), slot, img);
+            allTheSlots[slot].appendChild(itemHolder);
         }
     }
     makeDraggableItemsDraggable()
 }
 
-function inventoryLoadOne(tab, slot, itemID, justTheNumber=false) {
-    selectedTab = document.getElementById('moreInventoryButtonsArea').getElementsByClassName('subTabFocused')[0].innerHTML;
-    selectedTab = selectedTab.toLowerCase();
-    selectedTabV2 = selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1);
-    if (tab == selectedTabV2) {
+function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false) {
+    if (tabName == inventory.readyName()) {
         if (justTheNumber) {
-            document.getElementsByClassName('slot')[slot].getElementsByClassName('itemCount')[0].innerHTML = inventory.counts[tab][slot];
+            document.getElementsByClassName('slot')[slot].getElementsByClassName('itemCount')[0].innerHTML = inventory.counts[tabName][slot];
         }
         else {
-            itemHolder = itemHolderSetup(tab, slot, true, itemID);
+            img = itemImageSetup(itemID);
+            itemHolder = itemHolderSetup(tabName, slot, img);
             document.getElementsByClassName('slot')[slot].appendChild(itemHolder);
         }
+        makeDraggableItemsDraggable()
     }
-    makeDraggableItemsDraggable()
 }
 
-function itemHolderSetup(tab, slot, isNew, etcData='') {
-    //img area
-    if (isNew) {
-        img = itemImageSetup(etcData);
-    }   
-    else {
-        img = itemImageSetup(tab[slot]);
-        tab = etcData;
-    }
+function itemHolderSetup(tabName, slot, img) {
     //span area
     var span = document.createElement('span');
     span.classList = ['numberText itemCount'];
-    if (!inventory.counts[tab][slot] == 0) {   
-        span.innerHTML = inventory.counts[tab][slot];
+    if (!inventory.counts[tabName][slot] == 0) {   
+        span.innerHTML = inventory.counts[tabName][slot];
     }
     //itemHolder area
     itemHolder = document.createElement('div');
