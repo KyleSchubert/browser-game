@@ -17,7 +17,11 @@
             <div id="smallDialogBoxHolder">
                 <div class="draggableBar"></div>
                 <div class="smallDialogBox">
-                    <span></span>
+                    <div id="smallTextArea">
+                        <span>Would you like to purchase<br>BLAH BLAH BLAH<br>for 93293284 doubloons?</span>
+                    </div>
+                    <button class="cancelButton mdl-button mdl-js-button mdl-button--raised" onclick=dialogCancel();>Cancel</button>
+                    <button class="proceedButton mdl-button mdl-js-button mdl-button--raised" onclick=dialogProceed();>Proceed</button>
                 </div>
             </div>
             <div id="shopHolder">
@@ -37,9 +41,6 @@
                 </div>
             </div>
         </div>
-        <audio id="pickupSound">
-            <source src="/files/pickup.wav" type="audio/wav">
-        </audio>
         <div class="mainArea">
             <form action="#">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -193,7 +194,7 @@
                 <input id="problemsWithItemNames"></input>
             </div>
         </div>
-        <!-- Game Logic -->
+        <!-- Game Stuff -->
         <script src="js/avatar.js"></script>
         <script src="js/drops.js"></script>
         <script src="js/guis.js"></script>
@@ -202,6 +203,7 @@
         <script src="js/itemData.js"></script>
         <script src="js/looting.js"></script>
         <script src="js/shop.js"></script>
+        <script src="js/sounds.js"></script>
         <!-- MDL thing -->
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <!-- the etc scripts -->

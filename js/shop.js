@@ -17,6 +17,7 @@ shopWorths = {
 
 $('#shopHolder .guiInnerContentArea .closeButton').click(function() {
     guiClose(guiIDs[0])
+    playSound(sounds[5]) // MenuUp.mp3
 });
 
 $(document).ready(function() {

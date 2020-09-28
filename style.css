@@ -38,21 +38,49 @@ body {
 #smallDialogBoxHolder {
     position: absolute;
     z-index: 6;
-    width: 30%;
-    height: 15%;
-    left: calc(35%);
-    top: calc(42.5%);
+    width: 40%;
+    height: 30%;
+    left: 30%;
+    top: 35.5%;
     visibility: hidden;
 }
 
 #smallDialogBoxHolder .draggableBar {
-    height: 20% !important;
+    height: 27px !important;
 }
 
 .smallDialogBox {
+    width: calc(100% - 24px);
+    padding: 12px;
+    height: calc(80% - 6px);
+    background-color: var(--gui-standard-color);
+}
+
+#smallTextArea {
+    display: flex;
+    background-color: #c1cbe0;
+    height: 77%;
     width: 100%;
-    height: 80%;
-    background-color: red;
+    margin-bottom: 8px;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#smallTextArea span {
+    padding: 6px;
+    width: calc(100% - 12px);
+    white-space: pre;
+}
+
+.cancelButton {
+    background-color: rgb(244,67,54) !important;
+    float: left;
+}
+
+.proceedButton {
+    background: rgb(76,175,80) !important;
+    float: right;
 }
 
 #shopHolder {
@@ -517,7 +545,7 @@ body {
     position: relative;
     background-color: var(--gui-standard-color);
     width: calc(100% - 48px);
-    height: calc(97% - 48px);
+    height: calc(97% - 51px);
     padding: 24px;
 }
 

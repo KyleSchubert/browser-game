@@ -7,10 +7,14 @@ guiIDs = ['#shopHolder'];
 $('body').keydown(function(e) {
     if (e.key === "Escape") { // escape key maps to keycode `27`
         if (smallDialogBoxOpen) {
-            $('#smallDialogBoxHolder').css('visibility', 'hidden')
+            closeSmallDialogBox()
         }
         else {
             guiIDs.forEach(guiClose)
+            if (somethingWasClosed) {
+                playSound(sounds[5])
+                somethingWasClosed = false;
+            }
         }
     }
 });
@@ -44,14 +48,19 @@ function guiToggleVisibility(guiType, guiID) {
     if ($(target).css('visibility') == 'hidden') {
         guiLoadData(guiType, guiID)
         $(target).css('visibility', 'visible');
+        playSound(sounds[6]) // Tab.mp3
     }
     else {
         $(target).css('visibility', 'hidden');
+        playSound(sounds[5]) // MenuUp.mp3
     }
 }
 
 function guiClose(target) { //all of them
-    $(target).css('visibility', 'hidden');
+    if ($(target).css('visibility') == 'visible') {
+        somethingWasClosed = true;
+        $(target).css('visibility', 'hidden');
+    }
 }
 
 function guiLoadData(guiType, id) {
@@ -75,3 +84,11 @@ $('.textTightContainer').on('mouseleave', function(event) {
         'visibility': 'hidden'
     });
 });
+
+function closeSmallDialogBox() {
+    $('#smallDialogBoxHolder').css('visibility', 'hidden')
+    $('#superBlocker').css('visibility', 'hidden')
+    $('#superBlocker').css('pointer-events', 'none')
+    $('#guiHolder #shopHolder div').css('pointer-events', 'auto')
+    smallDialogBoxOpen = false;
+}

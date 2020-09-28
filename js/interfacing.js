@@ -70,11 +70,23 @@ function addSelectionListener(node) {
     })
 }
 
+var smallDialogBoxOpen = false;
 function triggerDialog(reason) {
+    playSound(sounds[3])
     if (reason == 'shop') {
+        smallDialogBoxOpen = true;
         $('#smallDialogBoxHolder').css('visibility', 'visible')
         $('#superBlocker').css('visibility', 'visible')
         $('#superBlocker').css('pointer-events', 'auto')
         $('#guiHolder #shopHolder div').css('pointer-events', 'none')
     }
+}
+
+function dialogCancel() {
+    closeSmallDialogBox()
+}
+
+function dialogProceed() {
+    closeSmallDialogBox()
+    playSound(sounds[2])
 }

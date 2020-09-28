@@ -37,7 +37,7 @@ function checkForProblems() {
     });
     result = organizeResultList(resultList)
     $("#problemsWithItemPrices").val(result)
-    console.log('From "problemsWithItemPrices": ' + JSON.stringify(problematicIDs))
+    console.warn('From "problemsWithItemPrices": ' + JSON.stringify(problematicIDs))
     // problems with item names
     resultList = [];
     problematicIDs = [[],[]];
@@ -59,7 +59,7 @@ function checkForProblems() {
     });
     result = organizeResultList(resultList)
     $("#problemsWithItemNames").val(result)
-    console.log('From "problemsWithItemNames": ' + JSON.stringify(problematicIDs))
+    console.warn('From "problemsWithItemNames": ' + JSON.stringify(problematicIDs))
 }
 $(document).ready(checkForProblems())
 
@@ -91,3 +91,9 @@ $('.textTightContainer input').on('click', function() {
     document.execCommand("copy");
     $temp.remove();
 });
+
+
+// me
+function doNothing() {
+    return
+}
