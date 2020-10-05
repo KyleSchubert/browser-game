@@ -12,22 +12,26 @@ function createBuffer() {
     thing = this;
     ctx.decodeAudioData(this.response, function(b) {
         buffer = b;
-        b.test = thing.originalFileIndex;
+        b.gotten = thing.originalFileIndex;
+        b.true = TESTOMG.indexOf(b.length);
         sounds[thing.originalFileIndex] = buffer;
     }, function(e){console.warn(e)});
 }
 
 function prepareSound(file, index) {
     // please load the sound on the first try
-    file = '/files/sounds/' + file;
-    xhr = new XMLHttpRequest();
-    xhr.onload = createBuffer;
-    xhr.open('GET', file, true);
-    xhr.responseType = 'arraybuffer';
-    xhr.originalFileIndex = index;
-    xhr.send();
+    if (!sounds[index]) {
+        file = '/files/sounds/' + file;
+        xhr = new XMLHttpRequest();
+        xhr.onload = createBuffer;
+        xhr.open('GET', file, true);
+        xhr.responseType = 'arraybuffer';
+        xhr.originalFileIndex = index;
+        xhr.send();
+    }
 }
 
+var TESTOMG = [60769, 12538, 56424, 46393, 8777, 18808, 7523];
 var allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3'];
 
 function playSound(buf) {
@@ -43,35 +47,43 @@ function soundWork() {
     allSoundFiles.forEach(prepareSound);
 }
 
+function soundFileCheck() {
+    badEgg = false;
+    for (var i = 0;  i < allSoundFiles.length; i++) {
+        if (!sounds[i]) {
+            badEgg = true; // smelly rotten egg
+        }
+        else {
+            if (sounds[i].gotten != sounds[i].true) {
+                sounds[i] = null;
+                badEgg = true;
+            }
+        }
+    };
+    return badEgg
+}
+
 $(document).ready(function() { //double checks that I have every sound loaded
     soundWork() // FIRST TIME
-    badEgg = false;
-    window.setTimeout(soundWork(), 1000) // SECOND TIME
     window.setTimeout(function() {
-        for (var i = 0;  i < allSoundFiles.length; i++) {
-            if (!sounds[i]) {
-                badEgg = true; // smelly rotten egg
-            }
-        };
-        if (badEgg) {
-            console.error('SOUNDS GAVE OUT! WE BLEW IT!')
-            soundWork() // THIRD TIME WOOOOOOO
-            window.setTimeout(function() {
-                badEgg = false;
-                for (var i = 0;  i < allSoundFiles.length; i++) {
-                    if (!sounds[i]) {
-                        badEgg = true; // smelly rotten egg v2.0
+        soundWork() // SECOND TIME
+        window.setTimeout(function() {
+            badEgg = soundFileCheck();
+            if (badEgg) {
+                console.error('SOUNDS GAVE OUT! WE BLEW IT!')
+                soundWork() // THIRD TIME WOOOOOOO
+                window.setTimeout(function() {
+                    badEgg = soundFileCheck();
+                    if (badEgg) {
+                        console.error('We have one last resort to load these sounds: load them again!  >:^D')
+                        soundWork() // FOURTH TIME AWOOOOGA
                     }
-                };
-                if (badEgg) {
-                    console.error('We have one last resort to load these sounds: load them again!  >:^D')
-                    soundWork() // FOURTH TIME AWOOOOGA
-                }
-                else {
-                    console.log("OK, the sounds loaded, so we're fine again.")
-                }
-            }, 18000)
-        }
+                    else {
+                        console.log("OK. The sounds loaded, so we're fine again.")
+                    }
+                }, 18000)
+            }
+        }, 5000)
     }, 2000)
 })
 

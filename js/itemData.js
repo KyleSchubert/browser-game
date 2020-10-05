@@ -1,3 +1,5 @@
+var moneyWord = 'doubloons';
+
 var itemNames = {"1113095":"Forgotten Hero's Ring","1282027":"Ame-no-Uzume's Lucent Gauntlet","1282036":"Onyx Maple Lucent Gauntlet","1342111":"Arcane Umbra Katara","2000019":"Power Elixir","2046319":"Scroll for Accessory Magic ATT 15%","2870008":"Slime Familiar","2870021":"Orange Mushroom Familiar","4000001":"Orange Mushroom Cap","4000012":"Green Mushroom Cap"};
 
 

@@ -61,7 +61,7 @@ function addSelectionListener(node) {
         if ($('.selectedThing')[0]) {
             if ($('.selectedThing')[0] == $(this)[0]) {
                 if ($(this).parent()[0].classList.contains('shopItemArea')) {
-                    triggerDialog('shop')
+                    dialogTrigger('shop')
                 }
             }
             $('.selectedThing')[0].classList.remove('selectedThing')
@@ -71,7 +71,8 @@ function addSelectionListener(node) {
 }
 
 var smallDialogBoxOpen = false;
-function triggerDialog(reason) {
+function dialogTrigger(reason) {
+    dialogPrepare(reason);
     playSound(sounds[3])
     if (reason == 'shop') {
         smallDialogBoxOpen = true;
@@ -80,6 +81,31 @@ function triggerDialog(reason) {
         $('#superBlocker').css('pointer-events', 'auto')
         $('#guiHolder #shopHolder div').css('pointer-events', 'none')
     }
+}
+
+function dialogPrepare(reason) {
+    text = [];
+    if (reason == 'shop') {
+        card = $('.selectedThing')[0];
+        if ($(card).parent()[0].classList.contains('sellArea')) {
+            sell = true;
+            text.push('Would you like to sell')
+        }
+        else {
+            sell = false;
+            text.push('Would you like to purchase')
+        }
+        itemName = $(card).find('.itemCardName').text();
+        text.push('<b>' + itemName + '</b>')
+        itemPrice = $(card).find('.itemCardPrice').text();
+        text.push('for ' + itemPrice + ' ' + moneyWord + '?')
+    }
+    dialogSetText(text)
+}
+
+function dialogSetText(t) {
+    area = $('#smallTextArea span');
+    $(area).html(t.join('<br>')) 
 }
 
 function dialogCancel() {

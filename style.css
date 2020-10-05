@@ -12,6 +12,10 @@ body {
     align-items: flex-start;
 }
 
+button, img {
+    user-select: none;
+}
+
 .mainArea {
     padding: 16px;
 }
@@ -71,6 +75,7 @@ body {
     padding: 6px;
     width: calc(100% - 12px);
     white-space: pre;
+    user-select: none;
 }
 
 .cancelButton {
@@ -458,7 +463,6 @@ body {
 }
 
 .pickupAnimation {
-    user-select: none;
     pointer-events: none;
     animation-name: pickUpFade;
     animation-timing-function: linear;
@@ -481,7 +485,6 @@ body {
 }
 
 .droppedItem {
-    user-select: none;
     pointer-events: all;
     animation-name: hovering;
     animation-timing-function: linear;
@@ -515,12 +518,10 @@ body {
     background-color: #969696;
     background: linear-gradient(#969696, #2b2b2b);
     -webkit-user-drag: none;
-    user-select: none;
 }
 
 .guiOpeningButton img {
     -webkit-user-drag: none;
-    user-select: none;
 }
 
 #shopButtonArea img {
@@ -553,7 +554,6 @@ body {
     transform: scaleX(-1);
     left: 8px;
     -webkit-user-drag: none;
-    user-select: none;
 }
 
 .shopItemArea {
@@ -577,6 +577,7 @@ body {
     width: calc(100% - 16px);
     padding: 4px 12px 4px 4px;
     border-bottom: 1px solid black;
+    user-select: none;
 }
 
 .itemCardImageArea {
@@ -627,7 +628,6 @@ body {
 
 .doubloonsHolder img {
     -webkit-user-drag: none;
-    user-select: none;
 }
 
 .doubloonsHolder span {
