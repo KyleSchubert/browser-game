@@ -83,7 +83,7 @@ function organizeResultList(results) {
     return result
 }
 
-//https://stackoverflow.com/questions/22581345/click-button-copy-to-clipboard-using-jquery
+// https://stackoverflow.com/questions/22581345/click-button-copy-to-clipboard-using-jquery
 $('.textTightContainer input').on('click', function() {
     var $temp = $("<input>");
     $("body").append($temp);
@@ -92,8 +92,20 @@ $('.textTightContainer input').on('click', function() {
     $temp.remove();
 });
 
-
 // me
 function doNothing() {
     return
+}
+
+// https://stackoverflow.com/questions/16868122/mousemove-very-laggy/29276058#answer-29263341    with some tweaks but it's practically the same
+var SQUAREposX, SQUAREposY;
+$('body').mousemove(FollowSquare);
+function FollowSquare(e) {
+    e.preventDefault();
+    SQUAREposX = e.pageX-14;
+    SQUAREposY = e.pageY-14;
+    window.requestAnimationFrame(showBigImg);  
+}
+function showBigImg() {
+    $('#draggedItemHolder').css({'-webkit-transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)', 'transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)' });
 }

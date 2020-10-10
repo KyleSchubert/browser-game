@@ -13,7 +13,7 @@ function createBuffer() {
     ctx.decodeAudioData(this.response, function(b) {
         buffer = b;
         b.gotten = thing.originalFileIndex;
-        b.true = TESTOMG.indexOf(b.length);
+        b.true = UNIQUELENGTHS.indexOf(b.length);
         sounds[thing.originalFileIndex] = buffer;
     }, function(e){console.warn(e)});
 }
@@ -31,7 +31,7 @@ function prepareSound(file, index) {
     }
 }
 
-var TESTOMG = [60769, 12538, 56424, 46393, 8777, 18808, 7523];
+var UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523];
 var allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3'];
 
 function playSound(buf) {

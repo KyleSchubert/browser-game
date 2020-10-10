@@ -912,3 +912,11 @@ button, img {
     visibility: hidden;
     pointer-events: none;
 }
+
+#draggedItemHolder {
+    pointer-events: none;
+    z-index: 7;
+    position: absolute;
+    backface-visibility: hidden;
+    visibility: hidden;
+}

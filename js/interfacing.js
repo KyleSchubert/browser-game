@@ -1,16 +1,21 @@
 var isSomethingBeingDragged = false;
 var isSellBoxReady = false;
+var currentDraggedPARENT = '';
 
 function makeDraggableItemsDraggable() {
     $(function () {
         $('.draggableItem').draggable({
             start: function(event) {
-                $(event.currentTarget).css('zIndex', 6)
+                $(event.currentTarget).css('visibility', 'hidden')
+                $('#draggedItemHolder').css('visibility', 'visible')
                 isSomethingBeingDragged = true;
                 $(event.currentTarget).css('pointer-events', 'none')
+                imgLink = $(event.currentTarget).children('img').attr('src');
+                $('#draggedItemHolder').children('img').attr('src', imgLink);
             },
             stop: function(event) {
-                $(this).css('zIndex', 'auto')
+                $('#draggedItemHolder').css('visibility', 'hidden')
+                $(this).css('visibility', 'visible')
                 isSomethingBeingDragged = false;
                 $(this).css('pointer-events', 'auto')
                 if (isSellBoxReady) {
@@ -25,7 +30,6 @@ function makeDraggableItemsDraggable() {
         });
     });
 }
-
 
 $('.sellArea').on('mousemove', function(event) {
     if (isSomethingBeingDragged) { // someone wants to sell something
@@ -96,7 +100,7 @@ function dialogPrepare(reason) {
             text.push('Would you like to purchase')
         }
         itemName = $(card).find('.itemCardName').text();
-        text.push('<b>' + itemName + '</b>')
+        text.push('<strong>' + itemName + '</strong>')
         itemPrice = $(card).find('.itemCardPrice').text();
         text.push('for ' + itemPrice + ' ' + moneyWord + '?')
     }
