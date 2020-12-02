@@ -704,6 +704,22 @@ button, img {
     fill: var(--inventory-holder-color);
 }
 
+@keyframes blinkTab {
+    0% {
+        background-color: var(--inventory-holder-color);
+    }
+    50% {
+        background-color: #7b7b7b;
+    }
+    100% {
+        background-color: var(--inventory-holder-color);
+    }
+}
+
+.highlightedTab {
+    animation: 630ms linear infinite blinkTab;
+}
+
 .inventoryButtonHolder {
     width: 61px;
 }
@@ -716,17 +732,29 @@ button, img {
 }
 
 #slotsSpot {
-    margin: 7px;
+    display: table;
+    table-layout: fixed;
+    border-spacing: 3px;
+    margin: 5px;
     background-color: #FFFFFF;
 }
 
 .slot {
     position: relative;
     background-image: url("/files/slotSTOLEN.png");
-    width: 45px;
-    height: 45px;
+    width: 47px;
+    height: 47px;
     vertical-align: middle;
     text-align: center;
+}
+
+.highlightedSlot {
+    position: absolute;
+    width: 47px;
+    height: 47px;
+    left: 0px;
+    top: 0px;
+    pointer-events: none;
 }
 
 .itemCount {

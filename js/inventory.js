@@ -36,24 +36,6 @@ NUM_OF_SLOTS = ROWS_OF_SLOTS*COLS_OF_SLOTS;
 //console.log(inventory.equips[22] == undefined) //true
 //console.log(inventory.equips[2] == undefined) //true
 
-ITEM_REFERENCES = {
-    "1113095": {name: "I don't know"},
-    "1342111": {name: "I don't know"},
-    "1282036": {name: "I don't know"},
-    "1282027": {name: "I don't know"},
-    "2870008": {name: "I don't know"},
-    "2870021": {name: "I don't know"},
-    "2000019": {name: "I don't know"},
-    "2046319": {name: "I don't know"},
-    "4000001": {name: "I don't know"},
-    "4000012": {name: "I don't know"},
-    "4000097": {name: "I don't know"},
-    "4000024": {name: "I don't know"},
-    "1342098": {name: "I don't know"},
-    "1582026": {name: "I don't know"},
-    "1402266": {name: "I don't know"},
-    "1412148": {name: "I don't know"}
-}
 
 var inventory = {
     Equip: [1113095, 0, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148],
@@ -99,6 +81,13 @@ function switchTabs() {
         this.classList.add("subTabFocused");
         inventoryCurrentSelectedTab = this;
         inventoryLoad();
+        if (this.classList.contains('highlightedTab')) {
+            this.classList.remove('highlightedTab')
+             if (!highlightedSeen && ($(this).text() == highlightedTabName)) {
+                highlightedSeen = true;
+                makeSlotHighlighted(highlightedSlot)
+            }
+        }
     }
 }
 
@@ -180,3 +169,62 @@ $(document).ready(function() {
     };
     inventoryLoad(); // I know not of a better way to get this to load after that^  Its like the computer is too fast
 });
+
+// tab is the string name of the tab and slot is the integer number of the slot
+var highlightedSeen = true;
+function makeItemHighlighted(slot, tab) { // every new item should go through this function when it gets gathered
+    newTab = getMentionedTab(tab)
+    highlightedSeen = false;
+    previousHighlightedImage.remove()
+    $('.highlightedTab').removeClass('highlightedTab')
+    if (canWeMakeSlotHighlighted(slot, newTab)) {
+        makeSlotHighlighted(slot)
+    }
+    else {
+        makeTabHighlighted(newTab)
+    }
+}
+
+var highlightedTabName = '';
+function getMentionedTab(tabName) { // string name of tab goes in and the thing on the page comes out
+    tabName = tabName.toUpperCase();
+    if (tabName == 'EQUIP') {
+        target = $('#equipTab');
+    } 
+    else if (tabName == 'USE') {
+        target = $('#useTab');
+    }
+    else if (tabName == 'ETC') {
+        target = $('#etcTab');
+    }
+    else { // bad
+        console.error('function getMentionedTab - Not sure what the tabName variable is but it became: "' + tabName + '" minus the quotes')
+    }
+    highlightedTabName = tabName;
+    return target
+}
+
+function makeTabHighlighted(tab) { // thing on the page comes in
+    if (!$(tab).hasClass('subTabFocused')) {
+        $(tab).addClass('highlightedTab')
+    }
+}
+
+var highlightedSlot = 0;
+function canWeMakeSlotHighlighted(slot, newTab) {
+    highlightedSlot = slot;
+    if (!highlightedSeen && ($(inventoryCurrentSelectedTab).text() == newTab.text())) {
+        highlightedSeen = true; 
+        return true
+    }
+}
+
+var previousHighlightedImage = new Image();
+function makeSlotHighlighted(slot) {
+    var img = new Image();
+    img.classList = ["highlightedSlot"];
+    img.src = "/files/newitemYELLOW.gif";
+    img.setAttribute('draggable', false);
+    previousHighlightedImage = img;
+    $('.slot')[slot].append(img)
+}
