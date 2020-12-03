@@ -74,9 +74,15 @@ function addSelectionListener(node) {
     })
 }
 
-var smallDialogBoxOpen = false;
+var dialogAmountAreaAutoUpdateText = false;
+var dialogAmountAreaSharedReason = '';
 function dialogTrigger(reason) {
     dialogPrepare(reason);
+    dialogShow(reason)
+}
+
+var smallDialogBoxOpen = false;
+function dialogShow(reason) {
     playSound(sounds[3])
     if (reason == 'shop') {
         smallDialogBoxOpen = true;
@@ -88,8 +94,21 @@ function dialogTrigger(reason) {
 }
 
 function dialogPrepare(reason) {
+    dialogPrepareText(reason)
+    if (reason == 'shop') {
+        silentToggleVisibility(dialogAmountArea)
+        silentToggleVisibility(dialogTextArea)
+    }
+}
+
+const dialogTextArea = $('#smallTextArea');
+const dialogAmountArea = $('#smallAmountArea');
+var transferAmount = 1;
+function dialogPrepareText(reason) {
     text = [];
     if (reason == 'shop') {
+        dialogAmountAreaAutoUpdateText = true;
+        dialogAmountAreaSharedReason = 'shop';
         card = $('.selectedThing')[0];
         if ($(card).parent()[0].classList.contains('sellArea')) {
             sell = true;
@@ -100,12 +119,40 @@ function dialogPrepare(reason) {
             text.push('Would you like to purchase')
         }
         itemName = $(card).find('.itemCardName').text();
+        text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
         text.push('<strong>' + itemName + '</strong>')
         itemPrice = $(card).find('.itemCardPrice').text();
+        itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10);
+        itemPrice = numberWithCommas(itemPrice*transferAmount);
         text.push('for ' + itemPrice + ' ' + moneyWord + '?')
     }
     dialogSetText(text)
 }
+
+const transferMinimum = 1;
+const transferMaximum = 99999;
+$('#smallAmountArea').on('input', function() {
+    checkItFirst = dialogAmountArea.val().replace(/\D+/g, ''); // https://stackoverflow.com/questions/6649327/regex-to-remove-letters-symbols-except-numbers#answer-6649350
+    if (checkItFirst) {
+        if (transferMinimum <= checkItFirst) {
+            if (checkItFirst <= transferMaximum) {
+                transferAmount = checkItFirst;
+            }
+            else {
+                transferAmount = transferMaximum;
+            }
+        }
+        else {
+            transferAmount = transferMinimum;
+        }
+    }
+    else {
+        transferAmount = transferMinimum;
+    }
+    if (dialogAmountAreaAutoUpdateText) {
+        dialogPrepareText(dialogAmountAreaSharedReason)
+    }
+});
 
 function dialogSetText(t) {
     area = $('#smallTextArea span');

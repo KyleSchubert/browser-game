@@ -40,8 +40,7 @@ function itemImageSetup(itemID) {
     return img;
 }
 
-function dropLoot() {
-    dropCount = document.getElementById("dropCount").value;
+function dropLoot(dropCount=document.getElementById("dropCount").value) {
     var aligner = document.createElement("div");
     aligner.classList = ["dropAligner"];
     aligner.style.width = "".concat(dropCount*32, "px");

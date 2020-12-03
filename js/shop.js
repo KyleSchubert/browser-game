@@ -29,7 +29,7 @@ function shopButtonAppeared(shopNode) {
     $(shopNode).mouseenter(function(event) {
         id = this.getAttribute('value');
         if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
-            shopInventories[id].forEach(maybeFindItemName)
+            shopInventories[id].forEach(checkIfWeKnowTheItemName)
         }
         $(this).off(event)
     });
@@ -38,7 +38,7 @@ function shopButtonAppeared(shopNode) {
 function preloadTheShop() {
     id = this.getAttribute('value')
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
-        shopInventories[id].forEach(maybeFindItemName)
+        shopInventories[id].forEach(checkIfWeKnowTheItemName)
     }
     $(this).unbind('mouseenter', preloadTheShop)
 }
@@ -46,7 +46,7 @@ function preloadTheShop() {
 function shopLoad(id) {
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').html('')
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) { // Essentially, this is a backup for if I forget to do   shopButtonAppeared(shopNode)
-        shopInventories[id].forEach(maybeFindItemName)
+        shopInventories[id].forEach(checkIfWeKnowTheItemName)
         setTimeout(function () {
             shopInventories[id].forEach(function (i) {
                 createItemCard(i)
@@ -98,11 +98,11 @@ function createItemCard(itemID, playerItem=false) {
     }
 }
 
-function neededToWaitBeforeContinuing(id) {
+function neededToWaitBeforeContinuing(id) { // as in: needed to wait before continuing with getting the item name so it becomes known and saved
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: 'GET',
-            url: getItemName(id),
+            url: getUrlForItemName(id),
             success: function (data) {
                 resolve(data)
             },
@@ -113,8 +113,8 @@ function neededToWaitBeforeContinuing(id) {
     });  
 }
 
-function maybeFindItemName(id) {
-    if (!knownItemNames.includes(id)) {
+function checkIfWeKnowTheItemName(id) { // every item for the shop goes through here just in case
+    if (!knownItemNames.includes(id)) { // but here it only does stuff if the name isn't known
         neededToWaitBeforeContinuing(id).then(function(data) {
             wanted = data['name'];
             itemNames[id] = wanted;
@@ -125,7 +125,7 @@ function maybeFindItemName(id) {
     }
 }
 
-function getItemName(itemID) {
+function getUrlForItemName(itemID) { //
     url = "https://maplestory.io/api/GMS/215/item/".concat(itemID).concat('/name');
     return url
 }
@@ -143,8 +143,10 @@ function sellProcess(itemCount, id, theItem) {
     else {
         value = shopWorths[id]*sellAmount;
     }
+    // temporary v v v
     sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
     console.log(sentence)
+    // temporary ^ ^ ^
     tab = inventory.getter();
     counts = inventory.countsGetter();
     tab[theItem.getAttribute('data-slotID')] = 0;
@@ -172,7 +174,7 @@ function removeSellingTip() {
 }
 
 var doubloons = 0;
-function updateDoubloons(value) {
+function updateDoubloons(value=0) {
     doubloons = Number(doubloons) + value;
     document.getElementsByClassName('amountOfDoubloons')[0].innerHTML = numberWithCommas(doubloons);
 }

@@ -78,6 +78,19 @@ button, img {
     user-select: none;
 }
 
+#smallAmountArea {
+    position: absolute;
+    left: calc(50% - 84px);
+    width: 160px;
+    top: 154px;
+    height: 20px;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {  
+    appearance: none;
+}
+
 .cancelButton {
     background-color: rgb(244,67,54) !important;
     float: left;
@@ -810,6 +823,8 @@ button, img {
     position: relative;
     margin: 8px;
     background-color: var(--inventory-color);
+    height: 384px;
+    width: 264px;
 }
 
 #inventoryButtonArea {

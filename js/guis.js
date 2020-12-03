@@ -46,13 +46,24 @@ function guiToggleVisibility(guiType, guiID) {
         console.log('big bug big smile');
     }
     if ($(target).css('visibility') == 'hidden') {
-        guiLoadData(guiType, guiID)
+        guiLoadData(guiType, guiID) // this has to happen first!
         $(target).css('visibility', 'visible');
         playSound(sounds[6]) // Tab.mp3
     }
     else {
         $(target).css('visibility', 'hidden');
         playSound(sounds[5]) // MenuUp.mp3
+    }
+}
+
+function silentToggleVisibility(node) { //jquery version of the node
+    if (node.css('visibility') == 'hidden'){
+        $(node).css('visibility', 'visible');
+        return true // as in: "is it visible?" --> "yes"
+    }
+    else {
+        $(node).css('visibility', 'hidden');
+        return false // as in: "is it visible?" --> "no"
     }
 }
 
@@ -87,6 +98,10 @@ $('.textTightContainer').on('mouseleave', function(event) {
 
 function closeSmallDialogBox() {
     $('#smallDialogBoxHolder').css('visibility', 'hidden')
+    dialogAmountArea.css('visibility', 'hidden')
+    dialogTextArea.css('visibility', 'hidden')
+    dialogAmountArea.val(1)
+    transferAmount = 1;
     $('#superBlocker').css('visibility', 'hidden')
     $('#superBlocker').css('pointer-events', 'none')
     $('#guiHolder #shopHolder div').css('pointer-events', 'auto')
