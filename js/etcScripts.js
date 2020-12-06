@@ -107,5 +107,8 @@ function FollowSquare(e) {
     window.requestAnimationFrame(showBigImg);  
 }
 function showBigImg() {
-    $('#draggedItemHolder').css({'-webkit-transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)', 'transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)' });
+    $('#draggedItemHolder').css({
+        '-webkit-transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)',
+        'transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)'
+    });
 }

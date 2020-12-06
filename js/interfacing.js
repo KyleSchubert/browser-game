@@ -122,7 +122,7 @@ function dialogPrepareText(reason) {
         text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
         text.push('<strong>' + itemName + '</strong>')
         itemPrice = $(card).find('.itemCardPrice').text();
-        itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10);
+        itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
         itemPrice = numberWithCommas(itemPrice*transferAmount);
         text.push('for ' + itemPrice + ' ' + moneyWord + '?')
     }
