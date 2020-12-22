@@ -74,8 +74,10 @@ function addSelectionListener(node) {
     })
 }
 
-var dialogAmountAreaAutoUpdateText = false;
-var dialogAmountAreaSharedReason = '';
+var dialogAmountAreaAutoUpdateText = false; // self-explanatory
+var dialogAmountAreaWhatAreWeDoing = ''; // used to keep track of what the dialog amount area is updating for
+var dialogMainReason = ''; // used when the reason can't easily be given as an input to the function
+var dialogSubReason = ''; // used typically with the above variable
 function dialogTrigger(reason) {
     dialogPrepare(reason);
     dialogShow(reason)
@@ -84,6 +86,7 @@ function dialogTrigger(reason) {
 var smallDialogBoxOpen = false;
 function dialogShow(reason) {
     playSound(sounds[3])
+    dialogMainReason = reason;
     if (reason == 'shop') {
         smallDialogBoxOpen = true;
         $('#smallDialogBoxHolder').css('visibility', 'visible')
@@ -108,14 +111,14 @@ function dialogPrepareText(reason) {
     text = [];
     if (reason == 'shop') {
         dialogAmountAreaAutoUpdateText = true;
-        dialogAmountAreaSharedReason = 'shop';
+        dialogAmountAreaWhatAreWeDoing = 'shop';
         card = $('.selectedThing')[0];
         if ($(card).parent()[0].classList.contains('sellArea')) {
-            sell = true;
+            dialogSubReason = 'sell';
             text.push('Would you like to sell')
         }
         else {
-            sell = false;
+            dialogSubReason = 'buy';
             text.push('Would you like to purchase')
         }
         itemName = $(card).find('.itemCardName').text();
@@ -138,19 +141,13 @@ $('#smallAmountArea').on('input', function() {
             if (checkItFirst <= transferMaximum) {
                 transferAmount = checkItFirst;
             }
-            else {
-                transferAmount = transferMaximum;
-            }
+            else { transferAmount = transferMaximum; }
         }
-        else {
-            transferAmount = transferMinimum;
-        }
+        else { transferAmount = transferMinimum; }
     }
-    else {
-        transferAmount = transferMinimum;
-    }
+    else { transferAmount = transferMinimum; }
     if (dialogAmountAreaAutoUpdateText) {
-        dialogPrepareText(dialogAmountAreaSharedReason)
+        dialogPrepareText(dialogAmountAreaWhatAreWeDoing)
     }
 });
 
@@ -164,6 +161,14 @@ function dialogCancel() {
 }
 
 function dialogProceed() {
+    if (dialogMainReason == 'shop') {
+        if (dialogSubReason == 'buy') {
+            transferIt(true)
+        }
+        else if (dialogSubReason == 'sell') {
+            transferIt(false)
+        }
+    }
     closeSmallDialogBox()
     playSound(sounds[2])
 }

@@ -130,33 +130,28 @@ function getUrlForItemName(itemID) { //
     return url
 }
 
+function removeItem(slotNumber) {
+    tab = inventory.getter()
+    tab[slotNumber] = 0;
+    counts[slotNumber] = 0;
+    $('.slot')[slotNumber].children[0].remove()
+}
+
 function sellProcess(itemCount, id, theItem) {
     $(theItem).css('pointer-events', 'none')
     $(theItem).css('visibility', 'hidden')
-    sellAmount = itemCount;
-    if (!sellAmount) {
-        sellAmount = 1;
-    }
-    if (!(id in shopWorths)) {
-        value = 1*sellAmount;
-    }
-    else {
-        value = shopWorths[id]*sellAmount;
-    }
-    // temporary v v v
-    sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
-    console.log(sentence)
-    // temporary ^ ^ ^
+    sellAmount = transferIt(false, itemCount, id)
+    remaining = itemCount-sellAmount;
+
     tab = inventory.getter();
     counts = inventory.countsGetter();
-    tab[theItem.getAttribute('data-slotID')] = 0;
-    if (!(counts[theItem.getAttribute('data-slotID')] == 0)) { // must not be an equip item
-        counts[theItem.getAttribute('data-slotID')] = itemCount-sellAmount;
-    }
-    if (itemCount - sellAmount <= 0) {
-        $("#slotsSpot").remove(theItem)
+    slotNumber = theItem.getAttribute('data-slotID');
+    if (inventory.readyName() == 'Equip' || remaining <= 0) {
+        removeItem(slotNumber)
     }
     else {
+        counts[slotNumber] = remaining;
+        $('.slot:eq(' + slotNumber + ') span')[0].innerHTML = remaining;
         $(theItem).css('left', '0px')
         $(theItem).css('top', '0px')
         $(theItem).css('pointer-events', 'auto')
@@ -165,7 +160,27 @@ function sellProcess(itemCount, id, theItem) {
 
     createItemCard(id, true)
     removeSellingTip()
-    updateDoubloons(value)
+}
+
+function transferIt(buying, itemCount=1, id) {
+    if (buying) {
+        console.log('poop')
+    }
+    else {
+        transferAmount = 1; //temp
+        if (!(id in shopWorths)) {
+            value = 1*transferAmount;
+        }
+        else {
+            value = shopWorths[id]*transferAmount;
+        }
+        // temporary v v v
+        sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
+        console.log(sentence)
+        // temporary ^ ^ ^
+    }
+    updateDoubloons(value) // when buying the value should be negative
+    return transferAmount
 }
 
 function removeSellingTip() {
