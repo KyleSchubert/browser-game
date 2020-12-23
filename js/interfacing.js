@@ -107,10 +107,18 @@ function dialogShow(reason) {
 }
 
 function dialogPrepare(reason) {
+    prepareAmountInitialValue()
+    prepareAmountRange()
     dialogPrepareText(reason)
     if (reason == 'shop') {
-        silentToggleVisibility(dialogAmountArea)
-        silentToggleVisibility(dialogTextArea)
+        if ((!weAreCurrentlySelling && itemsAndTheirTypes[shopGetItemId()][0] == 'Equip') || (weAreCurrentlySelling && inventory.readyName() == 'Equip')) {
+            silentToggleVisibility(dialogTextArea)
+        }
+        else {
+            silentToggleVisibility(dialogAmountArea)
+            silentToggleVisibility(dialogTextArea)
+        }
+        
     }
 }
 
@@ -144,20 +152,54 @@ function dialogPrepareText(reason) {
     dialogSetText(text)
 }
 
-const transferMinimum = 1;
-const transferMaximum = 99999;
+const originalAmountMinimum = 1;
+const originalAmountMaximum = 9999;
+var amountMinimum = originalAmountMinimum;
+var amountMaximum = originalAmountMaximum;
+function prepareAmountRange() {
+    if ((!weAreCurrentlySelling && itemsAndTheirTypes[shopGetItemId()][0] == 'Equip') || (weAreCurrentlySelling && inventory.readyName() == 'Equip')) { // I guess this is a backup if i'm already hiding the input
+        amountMinimum = originalAmountMinimum;
+        amountMaximum = originalAmountMinimum;
+    }
+    else {
+        amountMinimum = originalAmountMinimum;
+        amountMaximum = originalAmountMaximum;
+    }
+}
+
+var amountInitialValue = 1;
+function prepareAmountInitialValue() {
+    if (weAreCurrentlySelling) {
+        if (inventory.readyName() == 'Equip') {
+            amountInitialValue = 1;
+        }
+        else {
+            amountInitialValue = parseInt(itemBeingSold.children[1].innerHTML);
+        }
+    }
+    else {
+        amountInitialValue = 1;
+    }
+    amountSetInitialValues()
+}
+
+function amountSetInitialValues(value=amountInitialValue) { // separated just in case I wanna do something with the fact that it's separated later
+    $('#smallAmountArea').val(value)
+    transferAmount = value;
+}
+
 $('#smallAmountArea').on('input', function() {
     checkItFirst = dialogAmountArea.val().replace(/\D+/g, ''); // https://stackoverflow.com/questions/6649327/regex-to-remove-letters-symbols-except-numbers#answer-6649350
     if (checkItFirst) {
-        if (transferMinimum <= checkItFirst) {
-            if (checkItFirst <= transferMaximum) {
+        if (amountMinimum <= checkItFirst) {
+            if (checkItFirst <= amountMaximum) {
                 transferAmount = checkItFirst;
             }
-            else { transferAmount = transferMaximum; }
+            else { transferAmount = amountMaximum; }
         }
-        else { transferAmount = transferMinimum; }
+        else { transferAmount = amountMinimum; }
     }
-    else { transferAmount = transferMinimum; }
+    else { transferAmount = amountMinimum; }
     if (dialogAmountAreaAutoUpdateText) {
         dialogPrepareText(dialogAmountAreaWhatAreWeDoing)
     }
