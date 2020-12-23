@@ -2,6 +2,10 @@ var isSomethingBeingDragged = false;
 var isSellBoxReady = false;
 var currentDraggedPARENT = '';
 
+var itemBeingSold = '';
+var itemBeingSoldCount = 0;
+var itemBeingSoldId = 0;
+
 function makeDraggableItemsDraggable() {
     $(function () {
         $('.draggableItem').draggable({
@@ -18,8 +22,14 @@ function makeDraggableItemsDraggable() {
                 $(this).css('visibility', 'visible')
                 isSomethingBeingDragged = false;
                 $(this).css('pointer-events', 'auto')
-                if (isSellBoxReady) {
-                    sellProcess($(this).children('.itemCount').html(), $(this).children('.item').val(), this)
+                if (isSellBoxReady) { // THEY MUST BE TRYING TO SELL THE ITEM
+                    itemBeingSoldCount = $(this).children('.itemCount').html();
+                    if (!itemBeingSoldCount) {
+                        itemBeingSoldCount = 1; // as in how many are in the dragged pile of items. NOT how many are they deciding to sell from that pile
+                    }
+                    itemBeingSoldId = $(this).children('.item').val();
+                    itemBeingSold = this;
+                    sellProcess()
                 }
                 else {
                     $(this).css('left', '0px')
@@ -113,18 +123,20 @@ function dialogPrepareText(reason) {
         dialogAmountAreaAutoUpdateText = true;
         dialogAmountAreaWhatAreWeDoing = 'shop';
         card = $('.selectedThing')[0];
-        if ($(card).parent()[0].classList.contains('sellArea')) {
+        if (weAreCurrentlySelling) {
             dialogSubReason = 'sell';
             text.push('Would you like to sell')
+            itemName = itemNames[itemBeingSoldId].toString();
+            itemPrice = shopWorths[itemBeingSoldId].toString();
         }
         else {
             dialogSubReason = 'buy';
             text.push('Would you like to purchase')
+            itemName = $(card).find('.itemCardName').text();
+            itemPrice = $(card).find('.itemCardPrice').text();
         }
-        itemName = $(card).find('.itemCardName').text();
         text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
         text.push('<strong>' + itemName + '</strong>')
-        itemPrice = $(card).find('.itemCardPrice').text();
         itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
         itemPrice = numberWithCommas(itemPrice*transferAmount);
         text.push('for ' + itemPrice + ' ' + moneyWord + '?')
@@ -161,12 +173,14 @@ function dialogCancel() {
 }
 
 function dialogProceed() {
+    $('#smallAmountArea').val(transferAmount)
     if (dialogMainReason == 'shop') {
         if (dialogSubReason == 'buy') {
             transferIt(true)
         }
         else if (dialogSubReason == 'sell') {
             transferIt(false)
+            secondPartOfSellProcess()
         }
     }
     closeSmallDialogBox()

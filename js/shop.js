@@ -130,57 +130,79 @@ function getUrlForItemName(itemID) { //
     return url
 }
 
-function removeItem(slotNumber) {
+function deleteItem(slotNumber) {
     tab = inventory.getter()
     tab[slotNumber] = 0;
     counts[slotNumber] = 0;
     $('.slot')[slotNumber].children[0].remove()
 }
 
-function sellProcess(itemCount, id, theItem) {
-    $(theItem).css('pointer-events', 'none')
-    $(theItem).css('visibility', 'hidden')
-    sellAmount = transferIt(false, itemCount, id)
-    remaining = itemCount-sellAmount;
+var sellingItemId = 0;
+var weAreCurrentlySelling = false;
+function sellProcess() {
+    $(itemBeingSold).css('pointer-events', 'none')
+    $(itemBeingSold).css('visibility', 'hidden')
+    sellingItemId = itemBeingSoldId; // ez fix or maybe this is just the brainiac solution?
+    weAreCurrentlySelling = true;
+    dialogTrigger('shop')
+}
 
+function secondPartOfSellProcess() {
+    soldAmount = shopGetTransferAmount();
+    remaining = itemBeingSoldCount-soldAmount;
     tab = inventory.getter();
     counts = inventory.countsGetter();
-    slotNumber = theItem.getAttribute('data-slotID');
+    slotNumber = itemBeingSold.getAttribute('data-slotID');
     if (inventory.readyName() == 'Equip' || remaining <= 0) {
-        removeItem(slotNumber)
+        deleteItem(slotNumber)
     }
     else {
         counts[slotNumber] = remaining;
         $('.slot:eq(' + slotNumber + ') span')[0].innerHTML = remaining;
-        $(theItem).css('left', '0px')
-        $(theItem).css('top', '0px')
-        $(theItem).css('pointer-events', 'auto')
-        $(theItem).css('visibility', 'visible')
+        $(itemBeingSold).css('left', '0px')
+        $(itemBeingSold).css('top', '0px')
+        $(itemBeingSold).css('pointer-events', 'auto')
+        $(itemBeingSold).css('visibility', 'visible')
     }
 
-    createItemCard(id, true)
+    weAreCurrentlySelling = false;
+    createItemCard(itemBeingSoldId, true)
     removeSellingTip()
 }
 
-function transferIt(buying, itemCount=1, id) {
+function shopGetTransferAmount() { // the dialog box has to be open while this happens; otherwise, it will just return whatever the thing's default value is
+    return $('#smallAmountArea').val()
+}
+
+function shopGetItemId() {
+    return $('.selectedThing:eq(0) img:eq(0)').val()
+}
+
+function transferIt(buying) { //id is only necessary for selling because it can be easily gotten when buying
+    transferAmount = shopGetTransferAmount();
     if (buying) {
-        console.log('poop')
+        id = shopGetItemId();
+        obtainItem(id, transferAmount)
+        value = -1;
     }
     else {
-        transferAmount = 1; //temp
-        if (!(id in shopWorths)) {
-            value = 1*transferAmount;
-        }
-        else {
-            value = shopWorths[id]*transferAmount;
-        }
-        // temporary v v v
-        sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
-        console.log(sentence)
-        // temporary ^ ^ ^
+        id = itemBeingSoldId;
+        value = 1;
+    }
+    if (!(id in shopWorths)) {
+        value = value*transferAmount;
+    }
+    else {
+        value = value*shopWorths[id]*transferAmount;
     }
     updateDoubloons(value) // when buying the value should be negative
-    return transferAmount
+    console.log(id)
+    console.log(value)
+    console.log(transferAmount)
+    // temporary v v v
+    sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
+    console.log(sentence)
+    // temporary ^ ^ ^
 }
 
 function removeSellingTip() {
