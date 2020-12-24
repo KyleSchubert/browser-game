@@ -64,7 +64,7 @@ function shopLoad(id) {
 const checkIfStoreItemsInKnownItems = (id) => knownItemNames.includes(id); // i don't know what this means, but it is important
 
 
-function createItemCard(itemID, playerItem=false) {
+function createItemCard(itemID, playerItem=false, limitedStock=0) {
     newDiv = document.createElement('div');
     newDiv.classList = ['itemCard clickable'];
 
@@ -96,6 +96,16 @@ function createItemCard(itemID, playerItem=false) {
     else {
         $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').append(newDiv)
     }
+    if (limitedStock) {
+        newerDiv.appendChild(createItemCardStock(limitedStock))
+    }
+}
+
+function createItemCardStock(amount) {
+    newStock = document.createElement('span');
+    newStock.innerHTML = amount;
+    newStock.classList = ['numberText itemCount'];
+    return newStock
 }
 
 function neededToWaitBeforeContinuing(id) { // as in: needed to wait before continuing with getting the item name so it becomes known and saved
@@ -166,8 +176,16 @@ function secondPartOfSellProcess() {
     }
 
     weAreCurrentlySelling = false;
-    createItemCard(itemBeingSoldId, true)
+    createItemCard(itemBeingSoldId, true, soldAmount)
     removeSellingTip()
+}
+
+function resetSellProcess() { // for when cancel is clicked or escape is pressed to cancel that sell dialog
+    $(itemBeingSold).css('left', '0px')
+    $(itemBeingSold).css('top', '0px')
+    $(itemBeingSold).css('pointer-events', 'auto')
+    $(itemBeingSold).css('visibility', 'visible')
+    weAreCurrentlySelling = false;
 }
 
 function shopGetTransferAmount() { // the dialog box has to be open while this happens; otherwise, it will just return whatever the thing's default value is
@@ -178,12 +196,38 @@ function shopGetItemId() {
     return $('.selectedThing:eq(0) img:eq(0)').val()
 }
 
+function shopGetStock() {
+    if ($('.selectedThing:eq(0) .itemCardImageArea span:eq(0)').length) { // this checks if the stock number exists
+        return parseInt($('.selectedThing:eq(0) .itemCardImageArea span:eq(0)').html()) // this gets the stock number
+    }
+    else {
+        return 0 // this is for when the item should have unlimited stock
+    }
+}
+
+function shopSetStock(amount, target='.selectedThing:eq(0)') { // target should be the item card in the shop that you want to edit
+    if ($(target + ' .itemCardImageArea span:eq(0)').length) { // this checks if the stock number exists
+        $(target + ' .itemCardImageArea span:eq(0)').html(amount.toString())
+    }
+    else {
+        $(target + ' .itemCardImageArea').append(createItemCardStock(amount))
+    }
+}
+
 function transferIt(buying) { //id is only necessary for selling because it can be easily gotten when buying
     transferAmount = shopGetTransferAmount();
     if (buying) {
         id = shopGetItemId();
         obtainItem(id, transferAmount)
         value = -1;
+        if (shopGetStock()) { // if there is a stock (even though it returns the stock I just wanna know if it's there)
+            if (shopGetStock()-transferAmount <= 0) { // (even though less than 0 shouldn't be possible)
+                shopDeleteItemCard()
+            }
+            else {
+                shopSetStock(shopGetStock()-transferAmount)
+            }
+        }
     }
     else {
         id = itemBeingSoldId;
@@ -203,6 +247,10 @@ function transferIt(buying) { //id is only necessary for selling because it can 
     sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
     console.log(sentence)
     // temporary ^ ^ ^
+}
+
+function shopDeleteItemCard(target='.selectedThing:eq(0)') {
+    $(target).remove()
 }
 
 function removeSellingTip() {

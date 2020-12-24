@@ -10,6 +10,7 @@ body {
     justify-content: flex-start;
     flex-flow: row;
     align-items: flex-start;
+    overflow: hidden;
 }
 
 button, img {
@@ -595,11 +596,12 @@ input[type=number]::-webkit-inner-spin-button {
 
 .itemCardImageArea {
     display: flex;
+    position: relative;
     align-items: center;
     text-align: center;
     justify-content: center;
-    height: 46px;
-    width: 46px;
+    height: 47px;
+    width: 47px;
 }
 
 .itemCardName {

@@ -163,7 +163,12 @@ function prepareAmountRange() {
     }
     else {
         amountMinimum = originalAmountMinimum;
-        amountMaximum = originalAmountMaximum;
+        if (shopGetStock()) {
+            amountMaximum = shopGetStock()
+        }
+        else {   
+            amountMaximum = originalAmountMaximum;
+        }
     }
 }
 
@@ -212,6 +217,7 @@ function dialogSetText(t) {
 
 function dialogCancel() {
     closeSmallDialogBox()
+    resetSellProcess()
 }
 
 function dialogProceed() {

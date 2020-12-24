@@ -8,6 +8,9 @@ $('body').keydown(function(e) {
     if (e.key === "Escape") { // escape key maps to keycode `27`
         if (smallDialogBoxOpen) {
             closeSmallDialogBox()
+            if (weAreCurrentlySelling) {
+                resetSellProcess()
+            }
         }
         else {
             guiIDs.forEach(guiClose)
@@ -18,6 +21,14 @@ $('body').keydown(function(e) {
         }
     }
 });
+
+$('body').keydown(function(e) {
+    if (e.key === "Enter") {
+        if (smallDialogBoxOpen) {
+            dialogProceed()
+        }
+    }
+})
 
 $(function() {
     $('#guiHolder').draggable({handle: '#shopHolder .draggableBar'});
