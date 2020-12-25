@@ -258,6 +258,20 @@ function removeSellingTip() {
     $('.beforeSellText2').remove()
 }
 
+function doTheyHaveEnoughDoubloons(needed) { // because I'll probably use this in more than one spot I don't know
+    if (needed <= doubloons) {
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+function shopMaxAffordNumber() { // this will only be used for when they're buying something anyways
+    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text());
+    return doubloons % price
+}
+
 var doubloons = 0;
 function updateDoubloons(value=0) {
     doubloons = Number(doubloons) + value;

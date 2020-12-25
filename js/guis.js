@@ -11,6 +11,9 @@ $('body').keydown(function(e) {
             if (weAreCurrentlySelling) {
                 resetSellProcess()
             }
+            if (dialogMainReason == 'too expensive') {
+                playSound(sounds[5])
+            }
         }
         else {
             guiIDs.forEach(guiClose)

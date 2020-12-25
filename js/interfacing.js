@@ -70,12 +70,18 @@ function prepareSellBox(event, yes) {
     }
 }
 
-function addSelectionListener(node) {
+function addSelectionListener(node) { // BUYING AN ITEM BUY CLICKING THE SELECTED THING AGAIN
     $(node).mousedown(function(event) {
         if ($('.selectedThing')[0]) {
             if ($('.selectedThing')[0] == $(this)[0]) {
                 if ($(this).parent()[0].classList.contains('shopItemArea')) {
-                    dialogTrigger('shop')
+                    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text());
+                    if (doTheyHaveEnoughDoubloons(price)) {
+                        dialogTrigger('shop')
+                    }
+                    else {
+                        dialogTrigger('too expensive')
+                    }
                 }
             }
             $('.selectedThing')[0].classList.remove('selectedThing')
@@ -98,12 +104,19 @@ function dialogShow(reason) {
     playSound(sounds[3])
     dialogMainReason = reason;
     if (reason == 'shop') {
-        smallDialogBoxOpen = true;
-        $('#smallDialogBoxHolder').css('visibility', 'visible')
-        $('#superBlocker').css('visibility', 'visible')
-        $('#superBlocker').css('pointer-events', 'auto')
-        $('#guiHolder #shopHolder div').css('pointer-events', 'none')
+        dialogActivateInteractivityControl()
     }
+    if (reason == 'too expensive') {
+        dialogActivateInteractivityControl()
+    }
+}
+
+function dialogActivateInteractivityControl() {
+    smallDialogBoxOpen = true;
+    $('#smallDialogBoxHolder').css('visibility', 'visible')
+    $('#superBlocker').css('visibility', 'visible')
+    $('#superBlocker').css('pointer-events', 'auto')
+    $('#guiHolder #shopHolder div').css('pointer-events', 'none')
 }
 
 function dialogPrepare(reason) {
@@ -120,6 +133,10 @@ function dialogPrepare(reason) {
         }
         
     }
+    else if (reason == 'too expensive') { // only happens if buying an item
+        dialogPrepareText(reason)
+        silentToggleVisibility(dialogTextArea)
+    }
 }
 
 const dialogTextArea = $('#smallTextArea');
@@ -130,7 +147,6 @@ function dialogPrepareText(reason) {
     if (reason == 'shop') {
         dialogAmountAreaAutoUpdateText = true;
         dialogAmountAreaWhatAreWeDoing = 'shop';
-        card = $('.selectedThing')[0];
         if (weAreCurrentlySelling) {
             dialogSubReason = 'sell';
             text.push('Would you like to sell')
@@ -140,14 +156,17 @@ function dialogPrepareText(reason) {
         else {
             dialogSubReason = 'buy';
             text.push('Would you like to purchase')
-            itemName = $(card).find('.itemCardName').text();
-            itemPrice = $(card).find('.itemCardPrice').text();
+            itemName = $('.selectedThing:eq(0) .itemCardName').text();
+            itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
         }
         text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
         text.push('<strong>' + itemName + '</strong>')
         itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
         itemPrice = numberWithCommas(itemPrice*transferAmount);
         text.push('for ' + itemPrice + ' ' + moneyWord + '?')
+    }
+    else if (reason == 'too expensive') {
+        text.push('This item cannot be afforded')
     }
     dialogSetText(text)
 }
@@ -158,16 +177,16 @@ var amountMinimum = originalAmountMinimum;
 var amountMaximum = originalAmountMaximum;
 function prepareAmountRange() {
     if ((!weAreCurrentlySelling && itemsAndTheirTypes[shopGetItemId()][0] == 'Equip') || (weAreCurrentlySelling && inventory.readyName() == 'Equip')) { // I guess this is a backup if i'm already hiding the input
-        amountMinimum = originalAmountMinimum;
-        amountMaximum = originalAmountMinimum;
+        amountMinimum = 1; // ^ that is   "buying an Equip item   OR   selling an Equip item"
+        amountMaximum = 1;
     }
     else {
         amountMinimum = originalAmountMinimum;
         if (shopGetStock()) {
-            amountMaximum = shopGetStock()
+            amountMaximum = Math.min(shopGetStock(), shopMaxAffordNumber());
         }
         else {   
-            amountMaximum = originalAmountMaximum;
+            amountMaximum = Math.min(originalAmountMaximum, shopMaxAffordNumber());
         }
     }
 }
@@ -216,6 +235,9 @@ function dialogSetText(t) {
 }
 
 function dialogCancel() {
+    if (dialogMainReason == 'too expensive') {
+        playSound(sounds[5])
+    }
     closeSmallDialogBox()
     resetSellProcess()
 }
@@ -230,7 +252,11 @@ function dialogProceed() {
             transferIt(false)
             secondPartOfSellProcess()
         }
+        playSound(sounds[2])
+    }
+    else if (dialogMainReason == 'too expensive') {
+        playSound(sounds[5]) // maybe no sound would be nicer?
     }
     closeSmallDialogBox()
-    playSound(sounds[2])
+    
 }
