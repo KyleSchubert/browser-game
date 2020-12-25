@@ -70,7 +70,7 @@ function prepareSellBox(event, yes) {
     }
 }
 
-function addSelectionListener(node) { // BUYING AN ITEM BUY CLICKING THE SELECTED THING AGAIN
+function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED THING AGAIN
     $(node).mousedown(function(event) {
         if ($('.selectedThing')[0]) {
             if ($('.selectedThing')[0] == $(this)[0]) {
