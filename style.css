@@ -516,6 +516,23 @@ input[type=number]::-webkit-inner-spin-button {
     height: 50px;
 }
 
+.easyList {
+    border: 1px solid black;
+    margin: 6px;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.easyItem:hover {
+    background-color: rgb(220, 224, 255);
+}
+
+.easySelected {
+    background-color: rgb(190,190,255) !important;
+}
+
 #shopButtonArea {
     top: 50px;
     display: flex;

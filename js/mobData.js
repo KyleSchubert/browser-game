@@ -1,0 +1,1 @@
+var knownMobs = ['tino', 'orange mushroom', 'mushmom'];

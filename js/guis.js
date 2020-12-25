@@ -121,3 +121,13 @@ function closeSmallDialogBox() {
     $('#guiHolder #shopHolder div').css('pointer-events', 'auto')
     smallDialogBoxOpen = false;
 }
+
+$('.easyItem').click(function(e) {
+    if (!$(e.currentTarget).hasClass('easySelected')) {
+        $('.easySelected').removeClass('easySelected')
+        $(e.currentTarget).addClass('easySelected')
+    }
+    else {
+        $('.easySelected').removeClass('easySelected')
+    }
+});
