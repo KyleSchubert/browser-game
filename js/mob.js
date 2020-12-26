@@ -38,11 +38,14 @@ function mobDie(origin='') {
     if (target.length > 0) {
         mobName = target.val();
         target.attr('src', '/mob/dead/' + mobName + '.gif')
-        $(target).on('transitionend webkitTransitionEnd oTransitionEnd', function () {
-            target.remove()
-        });
         target.css('transition-duration', mobDeathDuration[mobName].toString() + 'ms')
         target.addClass('mobDying')
     }
 }
 
+$(document).on('transitionend webkitTransitionEnd oTransitionEnd', '.mob', function (event) { // part of the mob death effect
+    $(event.currentTarget).remove()
+    mobDropAmount = Math.ceil(Math.random() * 6); // temporary example
+    dropLoot(mobDropAmount) // temporary example
+    console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + $(event.currentTarget).val())
+});
