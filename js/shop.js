@@ -268,8 +268,8 @@ function doTheyHaveEnoughDoubloons(needed) { // because I'll probably use this i
 }
 
 function shopMaxAffordNumber() { // this will only be used for when they're buying something anyways
-    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text());
-    return doubloons % price
+    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text().replace(/,/g, ''));
+    return Math.floor(doubloons / price)
 }
 
 var doubloons = 0;

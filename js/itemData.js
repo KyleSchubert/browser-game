@@ -21,22 +21,3 @@ var itemsAndTheirTypes = {"1113095":["Equip","Accessory","Ring"],"1282027":["Equ
 
 
 var validItemIDs = [1113095, 1342111, 1282036, 1282027, 2870008, 2870021, 2000019, 2046319, 4000001, 4000012, 4000097, 4000024, 1342098, 1582026, 1402266, 1412148, 4021029, 4021036, 4310100, 2001003, 2000000, 2870643, 2590009, 2049117, 2043219];
-
-var ITEM_REFERENCES = {
-    "1113095": {name: "I don't know"},
-    "1342111": {name: "I don't know"},
-    "1282036": {name: "I don't know"},
-    "1282027": {name: "I don't know"},
-    "2870008": {name: "I don't know"},
-    "2870021": {name: "I don't know"},
-    "2000019": {name: "I don't know"},
-    "2046319": {name: "I don't know"},
-    "4000001": {name: "I don't know"},
-    "4000012": {name: "I don't know"},
-    "4000097": {name: "I don't know"},
-    "4000024": {name: "I don't know"},
-    "1342098": {name: "I don't know"},
-    "1582026": {name: "I don't know"},
-    "1402266": {name: "I don't know"},
-    "1412148": {name: "I don't know"}
-}

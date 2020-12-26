@@ -75,7 +75,7 @@ function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED
         if ($('.selectedThing')[0]) {
             if ($('.selectedThing')[0] == $(this)[0]) {
                 if ($(this).parent()[0].classList.contains('shopItemArea')) {
-                    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text());
+                    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text().replace(/,/g, ''));
                     if (doTheyHaveEnoughDoubloons(price)) {
                         dialogTrigger('shop')
                     }
