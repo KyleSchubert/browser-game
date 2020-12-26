@@ -115,21 +115,23 @@
                 <div id="lootArea">
                     <hr id="lootBlocker">
                     <div id="lootSurface"></div>
+                    <div id="mobArea"></div>
                 </div>
                 <div class="subArea">
                     <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=clearItems();>
                         Clear Items
                     </button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=spawn(true);>
+                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=spawn();>
                         Spawn
                     </button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=clearItems();>
+                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=mobDie();>
                         Kill
                     </button>
                     <div class="easyList">
                         <span class="easyItem">Tino</span>
                         <span class="easyItem">Orange Mushroom</span>
                         <span class="easyItem">Mushmom</span>
+                        <span class="easyItem">Mutant Ribbon Pig</span>
                     </div>
                 </div>
             </div>
@@ -219,6 +221,8 @@
         <script src="js/looting.js"></script>
         <script src="js/shop.js"></script>
         <script src="js/sounds.js"></script>
+        <script src="js/mob.js"></script>
+        <script src="js/mobData.js"></script>
         <!-- MDL thing -->
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <!-- the etc scripts -->

@@ -131,6 +131,27 @@ input[type=number]::-webkit-inner-spin-button {
     width: 100%;
 }
 
+#mobArea {
+    display: flex;
+    position: relative;
+    place-content: center;
+    pointer-events: none;
+    height: 50px;
+    width: 100%;
+}
+
+.mob {
+    position: absolute;
+    pointer-events: all;
+    bottom: 0px;
+    opacity: 1;
+}
+
+.mobDying {
+    transition-property: opacity;
+    opacity: 0;
+}
+
 @keyframes dropAnimation {
     1% {
     transform: translateY(-2.54px) rotate(14.4deg);
@@ -517,12 +538,15 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .easyList {
+    display: flex;
     border: 1px solid black;
     margin: 6px;
     padding: 2px;
-    display: flex;
     flex-direction: column;
     text-align: center;
+    height: 80px;
+    width: calc(100% - 16px);
+    overflow-y: auto;
 }
 
 .easyItem:hover {
