@@ -110,6 +110,107 @@ input[type=number]::-webkit-inner-spin-button {
     visibility: hidden;
 }
 
+#statsArea {
+    position: relative;
+    width: 380px;
+    height: 560px;
+    background-color: green;
+}
+
+.infoRow .infoRow, .infoRow .infoColumn {
+    position: relative;
+    padding: 0px;
+}
+
+.infoColumn {
+    position: absolute;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    background-color: cyan;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.infoRow {
+    position: absolute;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    gap: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+#coreStats {
+    width: 200px;
+    height: 140px;
+    background-color: red;
+}
+
+#subStats {
+    top: 164px;
+    width: calc(100% - 32px);
+    height: 180px;
+    background-color: goldenrod;
+}
+
+#charStats {
+    top: 350px;
+    width: 200px;
+    height: 60px;
+    background-color: #66a1d4;
+}
+
+#etcStats {
+    top: 420px;
+    width: 120px;
+    height: 120px;
+    background-color: lavender;
+}
+
+.statHolder {
+    display: flex;
+    height: 28px;
+    width: calc(100% - 8px);
+    margin-left: 4px;
+    margin-right: 4px;
+    flex-direction: row;
+    align-items: center;
+    background-color: #969696;
+}
+
+.statName {
+    display: inline-flex;
+    height: 100%;
+    margin-left: 4px;
+    margin-right: 8px;
+    align-items: center;
+    background-color: rgb(208, 190, 255);
+}
+
+.statAmountWrapper {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    place-content: center;
+    flex: 1;
+    background-color: rgb(208, 190, 255);
+    
+}
+
+.statAmount {
+    position: absolute;
+    right: 8px;
+    vertical-align: middle;
+    width: 5em;
+    padding-left: 6px;
+    padding-right: 6px;
+    background-color: white;
+    text-align: right;
+}
+
 #avatarArea {
     display: flex;
     align-items: center;

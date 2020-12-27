@@ -45,58 +45,36 @@
                 </div>
             </div>
         </div>
-        <div class="mainArea">
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="hat">
-                    <label class="mdl-textfield__label" for="hat">Hat ID...</label>
+        <div class="mainArea" id="statsArea">
+            <div class="infoColumn" id="coreStats">
+                <div class="statHolder">
+                    <span class="statName">Str</span>
+                    <div class="statAmountWrapper">
+                        <span class="statAmount">10</span>
+                    </div>
                 </div>
-            </form>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="boots">
-                    <label class="mdl-textfield__label" for="boots">Boots ID...</label>
+            </div>
+            <div class="infoRow" id="subStats">
+                <div class="infoColumn">
+
                 </div>
-            </form>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="cape">
-                    <label class="mdl-textfield__label" for="cape">Cape ID...</label>
+                <div class="infoColumn">
+
                 </div>
-            </form>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="gloves">
-                    <label class="mdl-textfield__label" for="gloves">Gloves ID...</label>
+            </div>
+            <div class="infoColumn" id="charStats">
+                <div class="statHolder">
+                    <div></div>
                 </div>
-            </form>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="top">
-                    <label class="mdl-textfield__label" for="top">Top ID...</label>
+            </div>
+            <div class="infoColumn" id="etcStats">
+                <div class="statHolder">
+                    <div></div>
                 </div>
-            </form>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="bottom">
-                    <label class="mdl-textfield__label" for="bottom">Bottom ID...</label>
-                </div>
-            </form>
-            <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="weapon">
-                    <label class="mdl-textfield__label" for="weapon">Weapon ID...</label>
-                </div>
-            </form>
+            </div>
         </div>
         <div class="mainArea">
             <div class="subArea" id="avatarArea">
-                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=loadAvatar();>
-                    Load Avatar
-                </button>
-                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=loadBase();>
-                    Reset
-                </button>
                 <img id="avatar" src='https://maplestory.io/api/character/{"itemId":2000,"version":"213"},{"itemId":12000,"version":"213"},{"itemId":1005200,"version":"213"},{"itemId":1072745,"version":"213"},{"itemId":1102484,"version":"213"},{"itemId":1082544,"version":"213"},{"itemId":1042395,"version":"213"},{"itemId":1062258,"version":"213"},{"itemId":1242146,"version":"213"}/stand1/animated?flipX=true'>
             </div>
             <div class="subArea" id="itemArea">
@@ -219,10 +197,11 @@
         <script src="js/inventory.js"></script>
         <script src="js/itemData.js"></script>
         <script src="js/looting.js"></script>
-        <script src="js/shop.js"></script>
-        <script src="js/sounds.js"></script>
         <script src="js/mob.js"></script>
         <script src="js/mobData.js"></script>
+        <script src="js/shop.js"></script>
+        <script src="js/sounds.js"></script>
+        <script src="js/stats.js"></script>
         <!-- MDL thing -->
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <!-- the etc scripts -->
