@@ -178,37 +178,47 @@ input[type=number]::-webkit-inner-spin-button {
     margin-right: 4px;
     flex-direction: row;
     align-items: center;
-    background-color: #969696;
+    background: linear-gradient(90deg, rgb(169 255 230) 2%, rgb(218 255 128) 50%, rgba(255,255,255,1) 55%);
+    border-radius: 14px;
 }
 
 .statName {
     display: inline-flex;
     height: 100%;
-    margin-left: 4px;
-    margin-right: 8px;
+    width: 60px;
+    padding-left: 14px;
     align-items: center;
-    background-color: rgb(208, 190, 255);
 }
 
 .statAmountWrapper {
     display: flex;
+    position: relative;
     height: 100%;
+    margin-right: 14px;
+    border-left: 1px solid black;
     flex-direction: column;
     place-content: center;
     flex: 1;
-    background-color: rgb(208, 190, 255);
-    
+    background-color: white;
 }
 
 .statAmount {
     position: absolute;
-    right: 8px;
-    vertical-align: middle;
-    width: 5em;
+    width: calc(100% - 12px);
     padding-left: 6px;
     padding-right: 6px;
     background-color: white;
-    text-align: right;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.statButton {
+    position: absolute !important;
+    right: 4px !important;
+    background-color: rgb(253, 255, 220) !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    width: 28px !important;
 }
 
 #avatarArea {
