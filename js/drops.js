@@ -4,8 +4,8 @@ function itemDropSetup(img, aligner) {
     var div = document.createElement("div");
     div.classList = ["itemAnimationHelper"];
     document.getElementById("lootSurface").appendChild(aligner);
-    document.getElementsByClassName("dropAligner")[document.getElementsByClassName("dropAligner").length-1].appendChild(div);
-    document.getElementsByClassName("itemAnimationHelper")[document.getElementsByClassName("itemAnimationHelper").length-1].appendChild(img);
+    $('.dropAligner').last().append(div);
+    $('.itemAnimationHelper').last().append(img);
 }
 
 function itemImageSetup(itemID) {
