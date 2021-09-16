@@ -128,7 +128,7 @@ input[type=number]::-webkit-inner-spin-button {
     flex: 1;
     flex-direction: column;
     gap: 4px;
-    background-color: cyan;
+    background-color: rgb(31, 68, 68);
     padding-top: 4px;
     padding-bottom: 4px;
 }
@@ -266,6 +266,16 @@ input[type=number]::-webkit-inner-spin-button {
 .mobDying {
     transition-property: opacity;
     opacity: 0;
+}
+
+#mobHPArea {
+    text-align: center;
+    margin-top: 22px;
+}
+
+#mobHP {
+    color: white;
+    font-size: 24px;
 }
 
 @keyframes dropAnimation {
