@@ -48,15 +48,30 @@ var character = {
 
 const compoundedStatsToIterateThrough = Object.keys(character.compoundedStats);
 
-const displayValuesToUpdate = ['name', 'class', 'job', 'level', 'loot', 'gold', 'rarity', 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp', 'defense', 'pierce', 'evasion', 'accuracy'];
+const displayValuesToUpdate = ['name', 'attributePoints', 'class', 'job', 'level', 'loot', 'gold', 'rarity', 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp', 'defense', 'pierce', 'evasion', 'accuracy'];
 function updateCharacterDisplay() {
     getCompoundedStats() // I think I'd always want to do this if I'm updating it anyways
     displayValuesToUpdate.forEach(updateOneCharacterDisplay)
+    if (canAllocateAP) {
+        $('.statButton').removeAttr('disabled');
+    }
+    else {
+        $('.statButton').attr('disabled','disabled');
+    }
 }
 
+var canAllocateAP = false;
 function updateOneCharacterDisplay(subject) {
     if (subject in character.info) {
         value = character.info[subject];
+        if (subject == 'attributePoints') {
+            if (value > 0) {
+                canAllocateAP = true;
+            }
+            else {
+                canAllocateAP = false;
+            }
+        }
     }
     else {
         value = character.compoundedStats[subject];

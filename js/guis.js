@@ -131,3 +131,10 @@ $('.easyItem').click(function(e) {
         $('.easySelected').removeClass('easySelected')
     }
 });
+
+$('.statButton').click(function(e) {
+    allocatedStat = $(this).attr('stat');
+    character.stats[allocatedStat] ++;
+    character.info.attributePoints --;
+    updateCharacterDisplay()
+});

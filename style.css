@@ -166,6 +166,13 @@ input[type=number]::-webkit-inner-spin-button {
     background-color: salmon;
 }
 
+#AParea {
+    top: 16px;
+    right: 20px;
+    width: 160px;
+    background-color: rgb(44, 68, 150);
+}
+
 .statHolder {
     display: flex;
     height: 28px;

@@ -20,7 +20,7 @@ const statCoefficients = {
     evasion: 1
 };
 function getOneCompoundedStat(stat) { // updates the compoundStat and also returns it for if I want it (I might)
-    if (statsWithPercentMultipliers.includes('luck')) {
+    if (statsWithPercentMultipliers.includes('luck')) { // TEMPORARY TESTING
         wantPercent = true;
     }
     else {
@@ -36,7 +36,7 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
     }
     [flatValue, percentValue] = getEquipmentStat(stat, wantPercent);
     value += flatValue;
-    value *= 1 + percentValue / 100;
+    value *= (1 + percentValue / 100);
     character.compoundedStats[stat] = value;
     return value
 }
@@ -51,7 +51,7 @@ function getEquipmentStat(stat, percent=false) {
     Object.keys(character.equipment).filter(item => stat in character.equipment[item])
         .forEach(item => flats.push(character.equipment[item][stat]))
     if (percents.length) {
-        percentValue = percents.reduce((x, y) => x * y);
+        percentValue = percents.reduce((x, y) => x + y);
     }
     else {
         percentValue = 0;
