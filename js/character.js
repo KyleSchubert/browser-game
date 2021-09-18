@@ -1,3 +1,5 @@
+var leveledUp = false;
+
 var character = {
     info: {
         name: '-',
@@ -5,6 +7,7 @@ var character = {
         class: '-',
         job: '-',
         level: 1,
+        experience: 10,
         loot: 100,
         gold: 100,
         rarity: 100
@@ -43,7 +46,22 @@ var character = {
             mp: 10,
             luckPercent: 12
         }
+    },
+    gainExperience: function(amount) {
+        if (amount > 0) {
+            character.info.experience += amount;
+            leveledUp = false;
+            while (character.info.experience > experienceCurve[character.info.level]) {
+                character.info.level += 1;
+                character.info.attributePoints += 5;
+                leveledUp = true;
+            }
+            if (leveledUp) {
+                updateCharacterDisplay()
+            }
+        }
     }
+    
 };
 
 const compoundedStatsToIterateThrough = Object.keys(character.compoundedStats);

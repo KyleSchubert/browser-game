@@ -62,6 +62,9 @@ function mobDie(origin='') {
         mobDropAmount = Math.ceil(Math.random() * 6); // temporary example
         dropLoot(mobDropAmount) // temporary example
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName)
+        experienceAmount = Math.ceil(Math.random() * 6); // temporary example
+        character.gainExperience(experienceAmount)
+        console.log('gained experience from killing the mob: ' + experienceAmount.toString())
     }
 }
 
