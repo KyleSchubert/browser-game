@@ -189,7 +189,7 @@ function resetSellProcess() { // for when cancel is clicked or escape is pressed
 }
 
 function shopGetTransferAmount() { // the dialog box has to be open while this happens; otherwise, it will just return whatever the thing's default value is
-    return $('#smallAmountArea').val()
+    return parseInt($('#smallAmountArea').val())
 }
 
 function shopGetItemId() {

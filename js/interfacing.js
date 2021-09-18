@@ -23,7 +23,7 @@ function makeDraggableItemsDraggable() {
                 isSomethingBeingDragged = false;
                 $(this).css('pointer-events', 'auto')
                 if (isSellBoxReady) { // THEY MUST BE TRYING TO SELL THE ITEM
-                    itemBeingSoldCount = $(this).children('.itemCount').html();
+                    itemBeingSoldCount = parseInt($(this).children('.itemCount').html());
                     if (!itemBeingSoldCount) {
                         itemBeingSoldCount = 1; // as in how many are in the dragged pile of items. NOT how many are they deciding to sell from that pile
                     }
@@ -180,12 +180,18 @@ function prepareAmountRange() {
         amountMinimum = 1; // ^ that is   "buying an Equip item   OR   selling an Equip item"
         amountMaximum = 1;
     }
+    else if (weAreCurrentlySelling) {
+        amountMinimum = originalAmountMinimum;
+        amountMaximum = itemBeingSoldCount;
+    }
     else {
         amountMinimum = originalAmountMinimum;
         if (shopGetStock()) {
+            console.log('going A')
             amountMaximum = Math.min(shopGetStock(), shopMaxAffordNumber());
         }
         else {   
+            console.log('going B')
             amountMaximum = Math.min(originalAmountMaximum, shopMaxAffordNumber());
         }
     }
@@ -215,6 +221,7 @@ function amountSetInitialValues(value=amountInitialValue) { // separated just in
 $('#smallAmountArea').on('input', function() {
     checkItFirst = dialogAmountArea.val().replace(/\D+/g, ''); // https://stackoverflow.com/questions/6649327/regex-to-remove-letters-symbols-except-numbers#answer-6649350
     if (checkItFirst) {
+        
         if (amountMinimum <= checkItFirst) {
             if (checkItFirst <= amountMaximum) {
                 transferAmount = checkItFirst;
