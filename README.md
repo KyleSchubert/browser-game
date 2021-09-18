@@ -1,2 +1,2 @@
-# It's an incremental rpg I guess you could say
+# Incremental rpg
 At https://browser-game.kyleschubert.repl.co/
