@@ -37,6 +37,9 @@ var character = {
         accuracy: 0
     },
     equipment: {
+        weapon: {
+            type: 'intelligence'
+        },
         helmet: {
             luck: 5,
             evasion: 3,
