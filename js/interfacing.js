@@ -147,23 +147,45 @@ function dialogPrepareText(reason) {
     if (reason == 'shop') {
         dialogAmountAreaAutoUpdateText = true;
         dialogAmountAreaWhatAreWeDoing = 'shop';
-        if (weAreCurrentlySelling) {
-            dialogSubReason = 'sell';
-            text.push('Would you like to sell')
-            itemName = itemNames[itemBeingSoldId].toString();
-            itemPrice = shopWorths[itemBeingSoldId].toString();
+        if (storageIsOpen) {
+            if (weAreCurrentlySelling) {
+                dialogSubReason = 'deposit';
+                text.push('Would you like to deposit')
+                itemName = itemNames[itemBeingSoldId].toString();
+                itemPrice = shopWorths[itemBeingSoldId].toString();
+            }
+            else {
+                dialogSubReason = 'withdraw';
+                text.push('Would you like to withdraw')
+                itemName = $('.selectedThing:eq(0) .itemCardName').text();
+                itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
+            }
+            text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
+            text.push('<strong>' + itemName + '</strong>')
+            itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
+            itemPrice = numberWithCommas(transferAmount);
+            text.push('for ' + itemPrice + ' ' + moneyWord + '?')
         }
         else {
-            dialogSubReason = 'buy';
-            text.push('Would you like to purchase')
-            itemName = $('.selectedThing:eq(0) .itemCardName').text();
-            itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
+            if (weAreCurrentlySelling) {
+                dialogSubReason = 'sell';
+                text.push('Would you like to sell')
+                itemName = itemNames[itemBeingSoldId].toString();
+                itemPrice = shopWorths[itemBeingSoldId].toString();
+            }
+            else {
+                dialogSubReason = 'buy';
+                text.push('Would you like to purchase')
+                itemName = $('.selectedThing:eq(0) .itemCardName').text();
+                itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
+            }
+            text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
+            text.push('<strong>' + itemName + '</strong>')
+            itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
+            itemPrice = numberWithCommas(itemPrice*transferAmount);
+            text.push('for ' + itemPrice + ' ' + moneyWord + '?')
         }
-        text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
-        text.push('<strong>' + itemName + '</strong>')
-        itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
-        itemPrice = numberWithCommas(itemPrice*transferAmount);
-        text.push('for ' + itemPrice + ' ' + moneyWord + '?')
+        
     }
     else if (reason == 'too expensive') {
         text.push('This item cannot be afforded')
@@ -249,12 +271,24 @@ function dialogCancel() {
 function dialogProceed() {
     $('#smallAmountArea').val(transferAmount)
     if (dialogMainReason == 'shop') {
-        if (dialogSubReason == 'buy') {
-            transferIt(true)
-        }
-        else if (dialogSubReason == 'sell') {
-            transferIt(false)
-            secondPartOfSellProcess()
+        switch (dialogSubReason) {
+            case 'buy': 
+                transferIt(true);
+                break;
+            case 'sell': 
+                transferIt(false);
+                secondPartOfSellProcess();
+                break;
+            case 'withdraw':
+                transferIt(true);
+                break;
+            case 'deposit':
+                transferIt(false);
+                depositProcess();
+                break;
+            default:
+                console.log('there is no case for this dialogSubReason: ')
+                console.log(dialogSubReason)
         }
         playSound(sounds[2])
     }

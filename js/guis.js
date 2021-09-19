@@ -44,7 +44,8 @@ $(function() {
 } );
 
 guiTypes = {
-    80001: 'shop'
+    80001: 'shop',
+    80002: 'storage'
 }
 
 
@@ -53,11 +54,16 @@ function guiGetType(node) {
 }
 
 function guiToggleVisibility(guiType, guiID) {
-    if (guiType == 'shop') {   
-        target = guiIDs[0];
-    }
-    else {
-        console.log('big bug big smile');
+    switch(guiType) {
+        case 'shop':
+            target = guiIDs[0]; 
+            break;
+        case 'storage':
+            target = guiIDs[0];
+            break;
+        default:
+            console.log('in guiToggleVisibility, there is no case for this guiType: ');
+            console.log(guiType);
     }
     if ($(target).css('visibility') == 'hidden') {
         guiLoadData(guiType, guiID) // this has to happen first!
@@ -83,17 +89,23 @@ function silentToggleVisibility(node) { //jquery version of the node
 
 function guiClose(target) { //all of them
     if ($(target).css('visibility') == 'visible') {
+        storageIsOpen = false;
         somethingWasClosed = true;
         $(target).css('visibility', 'hidden');
     }
 }
 
 function guiLoadData(guiType, id) {
-    if (guiType == 'shop') {
-        shopLoad(id)
-    }
-    else {
-        console.log('big bug big smile');
+    switch (guiType) {
+        case 'shop':
+            shopLoad(id);
+            break;
+        case 'storage':
+            shopLoad(id, true);
+            break;
+        default:
+            console.log('guiLoadData does not have any case for this guiType: ');
+            console.log(guiType);
     }
 }
 

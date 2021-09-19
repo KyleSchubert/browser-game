@@ -1,6 +1,14 @@
 shopInventories = {
-    80001: [1113095, 1342111, 1282036, 1282027, 2870008, 2870021, 2000019, 2046319, 4000001, 4000012]
+    80001: [1113095, 1342111, 1282036, 1282027, 2870008, 2870021, 2000019, 2046319, 4000001, 4000012],
+    80002: []
 };
+
+shopStocks = {
+    80001: {
+        4000001: 1140
+    },
+    80002: {}
+}
 
 shopWorths = {
     1113095: 15000000, 
@@ -43,19 +51,30 @@ function preloadTheShop() {
     $(this).unbind('mouseenter', preloadTheShop)
 }
 
-function shopLoad(id) {
+var storageIsOpen = false;
+function shopLoad(id, isStorage=false) {
+    if (isStorage) {
+        $('.shopMerchantImage')[0].src = '/files/use-as-storage-guy.png';
+        $('.sellArea:eq(0)').css('background-image', 'url(/files/storage_background.png)') 
+        storageIsOpen = true;
+    }
+    else {
+        $('.shopMerchantImage')[0].src = '/files/use-as-shop-guy.png';
+        $('.sellArea:eq(0)').css('background-image', 'url(/files/sell_background.png)') 
+        storageIsOpen = false;
+    }
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').html('')
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) { // Essentially, this is a backup for if I forget to do   shopButtonAppeared(shopNode)
         shopInventories[id].forEach(checkIfWeKnowTheItemName)
         setTimeout(function () {
             shopInventories[id].forEach(function (i) {
-                createItemCard(i)
+                createItemCard(i, false, shopStocks[id][i], id)
             }); 
         }, 30); //I really really can't figure out a better way. async: false was deprecated
     }  //                                      and nothing else works exactly like that.
     else {
         shopInventories[id].forEach(function (i) {
-            createItemCard(i)
+            createItemCard(i,  false, shopStocks[id][i], id)
         })
     }
     
@@ -64,7 +83,10 @@ function shopLoad(id) {
 const checkIfStoreItemsInKnownItems = (id) => knownItemNames.includes(id); // i don't know what this means, but it is important
 
 
-function createItemCard(itemID, playerItem=false, limitedStock=0) {
+function createItemCard(itemID, playerItem=false, limitedStock=0, shopID=0) {
+    if (!limitedStock) {
+        limitedStock = 0;
+    }
     newDiv = document.createElement('div');
     newDiv.classList = ['itemCard clickable'];
 
@@ -82,13 +104,21 @@ function createItemCard(itemID, playerItem=false, limitedStock=0) {
     newCoinImg = document.createElement('img');
     newCoinImg.src = "/files/doubloon.png";
     newCoinImg.classList = ['itemCardPriceCoin'];
+    newCoinImg.value = shopID;
     newDiv.appendChild(newCoinImg)
 
-    newItemPrice = document.createElement('span');
-    newItemPrice.innerHTML = numberWithCommas(shopWorths[itemID]);
-    newItemPrice.classList = ['itemCardPrice numberText'];
-    newDiv.appendChild(newItemPrice)
-
+    if (shopID == '80002') {
+        newItemPrice = document.createElement('span');
+        newItemPrice.innerHTML = 1;
+        newItemPrice.classList = ['itemCardPrice numberText'];
+        newDiv.appendChild(newItemPrice)
+    }
+    else {
+        newItemPrice = document.createElement('span');
+        newItemPrice.innerHTML = numberWithCommas(shopWorths[itemID]);
+        newItemPrice.classList = ['itemCardPrice numberText'];
+        newDiv.appendChild(newItemPrice)
+    }
     addSelectionListener(newDiv)
     if (playerItem) {
         $('#shopHolder .guiInnerContentArea .sellArea').append(newDiv)
@@ -196,6 +226,10 @@ function shopGetItemId() {
     return $('.selectedThing:eq(0) img:eq(0)').val()
 }
 
+function getShop() {
+    return $('.selectedThing:eq(0) img:eq(1)').val()
+}
+
 function shopGetStock() {
     if ($('.selectedThing:eq(0) .itemCardImageArea span:eq(0)').length) { // this checks if the stock number exists
         return parseInt($('.selectedThing:eq(0) .itemCardImageArea span:eq(0)').html()) // this gets the stock number
@@ -221,11 +255,18 @@ function transferIt(buying) { //id is only necessary for selling because it can 
         obtainItem(id, transferAmount)
         value = -1;
         if (shopGetStock()) { // if there is a stock (even though it returns the stock I just wanna know if it's there)
-            if (shopGetStock()-transferAmount <= 0) { // (even though less than 0 shouldn't be possible)
+            let newAmount = shopGetStock()-transferAmount;
+            if (newAmount <= 0) { // (even though less than 0 shouldn't be possible)
+                shopStocks[getShop()][id] = 0;
+                let index = shopInventories[getShop()].indexOf(id);
+                if (index !== -1) {
+                    shopInventories[getShop()].splice(index, 1);
+                }
                 shopDeleteItemCard()
             }
             else {
-                shopSetStock(shopGetStock()-transferAmount)
+                shopStocks[getShop()][id] = newAmount;
+                shopSetStock(newAmount)
             }
         }
     }
@@ -233,17 +274,22 @@ function transferIt(buying) { //id is only necessary for selling because it can 
         id = itemBeingSoldId;
         value = 1;
     }
-    if (!(id in shopWorths)) {
+    if (storageIsOpen) {
         value = value*transferAmount;
     }
     else {
-        value = value*shopWorths[id]*transferAmount;
+        if (!(id in shopWorths)) {
+            value = value*transferAmount;
+        }
+        else {
+            value = value*shopWorths[id]*transferAmount;
+        }
     }
     updateDoubloons(value) // when buying the value should be negative
+    // temporary v v v
     console.log(id)
     console.log(value)
     console.log(transferAmount)
-    // temporary v v v
     sentence = 'The value of this stuff is ' + numberWithCommas(value) + '.';
     console.log(sentence)
     // temporary ^ ^ ^
