@@ -10,7 +10,11 @@ var character = {
         experience: 10,
         loot: 100,
         gold: 100,
-        rarity: 100
+        rarity: 100,
+        hpRegen: 1,
+        mpRegen: 1,
+        currentHp: 20,
+        currentMp: 20
     },
     stats: { // stats from skills and allocated points
         strength: 5,
@@ -95,7 +99,24 @@ function updateOneCharacterDisplay(subject) {
         }
     }
     else {
-        value = character.compoundedStats[subject];
+        switch (subject) {
+            case 'hp':
+                value = ''.concat(Math.round(character.info.currentHp), '/', Math.round(character.compoundedStats.hp));
+                break;
+            case 'mp':
+                value = ''.concat(Math.round(character.info.currentMp), '/', Math.round(character.compoundedStats.mp));
+                break;
+            case 'dexterity': case 'strength':
+                character.info.hpRegen = (1/5) * Math.min(character.compoundedStats.strength, character.compoundedStats.dexterity);
+                value = character.compoundedStats[subject];
+                break;
+            case 'intelligence': case 'luck':
+                character.info.mpRegen = (1/5) * Math.min(character.compoundedStats.intelligence, character.compoundedStats.luck);
+                value = character.compoundedStats[subject];
+                break;    
+            default:
+                value = character.compoundedStats[subject];
+        }
     }
     if (typeof value == 'number') {
         $('#' + subject + 'Value').text(Math.round(value))

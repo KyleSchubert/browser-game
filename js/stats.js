@@ -65,5 +65,25 @@ function getEquipmentStat(stat, percent=false) {
     return [flatValue, percentValue]
 }
 
-// This should go off
-updateCharacterDisplay()
+function regeneration() {
+    if (character.info.currentHp + character.info.hpRegen > character.compoundedStats.hp) {
+        character.info.currentHp = character.compoundedStats.hp;
+    }
+    else {
+        character.info.currentHp += character.info.hpRegen;
+    }
+    if (character.info.currentMp + character.info.mpRegen > character.compoundedStats.mp) {
+        character.info.currentMp = character.compoundedStats.mp;
+    }
+    else {
+        character.info.currentMp += character.info.mpRegen;
+    }
+    updateOneCharacterDisplay('hp')
+    updateOneCharacterDisplay('mp')
+    setTimeout(regeneration, 850)
+}
+
+$(document).ready(function() {
+    updateCharacterDisplay()
+    regeneration()
+})
