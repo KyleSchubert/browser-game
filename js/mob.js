@@ -72,12 +72,16 @@ function mobDie(origin='') {
         target.addClass('mobDying')
 
         mobDropAmount = Math.ceil(Math.random() * 6); // temporary example
-        dropLoot(mobDropAmount) // temporary example
+        dropLoot(mobDropAmount)
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName)
         
         experienceAmount = Math.ceil(Math.random() * 6); // temporary example
         character.gainExperience(experienceAmount)
         console.log('gained experience from killing the mob: ' + experienceAmount.toString())
+
+        doubloonsAmount = Math.ceil(Math.random() * 12); // temporary example
+        updateDoubloons(doubloonsAmount)
+        console.log('gained doubloons from killing the mob: ' + doubloonsAmount.toString())
     }
 }
 
