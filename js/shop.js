@@ -82,17 +82,24 @@ function shopLoad(id, isStorage=false) {
 
 const checkIfStoreItemsInKnownItems = (id) => knownItemNames.includes(id); // i don't know what this means, but it is important
 
-
 function createItemCard(itemID, playerItem=false, limitedStock=0, shopID=0) {
     if (!limitedStock) {
         limitedStock = 0;
     }
+    itemImageSetup(itemID, createItemCardContinued, [itemID, playerItem, limitedStock, shopID]);
+}
+
+function createItemCardContinued(newImg, data) {
+    itemID = data[0];
+    playerItem = data[1];
+    limitedStock = data[2];
+    shopID = data[3];
+
     newDiv = document.createElement('div');
     newDiv.classList = ['itemCard clickable'];
 
     newerDiv = document.createElement('div');
     newerDiv.classList = ['itemCardImageArea'];
-    newImg = itemImageSetup(itemID);
     newerDiv.appendChild(newImg)
     newDiv.appendChild(newerDiv)
 

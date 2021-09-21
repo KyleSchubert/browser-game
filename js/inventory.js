@@ -115,7 +115,6 @@ inventory.counts.Etc.fill(0, _, NUM_OF_SLOTS)
 function inventoryLoad() {
     allTheSlots = document.getElementsByClassName("slot");
     while (allTheSlots.length < 1) {
-        sleep(50); // Le epic bruh
         allTheSlots = document.getElementsByClassName("slot");
     }
     tab = inventory.getter();
@@ -124,9 +123,7 @@ function inventoryLoad() {
                 removeAllChildNodes(allTheSlots[slot])
             }
         if (tab[slot]) {
-            img = itemImageSetup(tab[slot]);
-            itemHolder = itemHolderSetup(inventory.readyName(), slot, img);
-            allTheSlots[slot].appendChild(itemHolder);
+            itemImageSetup(tab[slot], processInventoryImages, slot);
         }
     }
     makeDraggableItemsDraggable()
@@ -144,6 +141,11 @@ function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false) {
         }
         makeDraggableItemsDraggable()
     }
+}
+
+function processInventoryImages(img, slot) {
+    itemHolder = itemHolderSetup(inventory.readyName(), slot, img);
+    allTheSlots[slot].appendChild(itemHolder);
 }
 
 function itemHolderSetup(tabName, slot, img) {

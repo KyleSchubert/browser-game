@@ -8,10 +8,16 @@ function itemDropSetup(img, aligner) {
     $('.itemAnimationHelper').last().append(img);
 }
 
-function itemImageSetup(itemID) {
+function itemImageSetup(itemID, callback, slot=999999) {
     if (knownItemImages.includes(itemID)) {
-        url = '/item/'.concat(itemID);
-        image = url.concat('/icon.png')
+        url = '/item/'.concat(itemID).concat('/icon.png');
+        img = setupImage(url, itemID);
+        if (slot != 999999) {
+            callback(img, slot)
+        }
+        else {
+            return callback(img)
+        }
     }
     else {
         $.ajax({
@@ -19,25 +25,39 @@ function itemImageSetup(itemID) {
             type:'HEAD',
             error: function()
             {
-                url = getItemURL(itemID);
-                image = url.concat("/icon");
+                img = getItemURL(itemID).concat("/icon");
+                knownItemImages.push(itemID)
+                img = setupImage(img, itemID)
+                if (slot != 999999) {
+                    callback(img, slot)
+                }
+                else {
+                    return callback(img)
+                }
             },
             success: function()
             {
-                url = '/item/'.concat(itemID);
-                image = url.concat('/icon.png')
+                img = '/item/'.concat(itemID).concat('/icon.png');
+                knownItemImages.push(itemID)
+                img = setupImage(img, itemID)
+                if (slot != 999999) {
+                    callback(img, slot)
+                }
+                else {
+                    return callback(img)
+                }
             }
         });
-        knownItemImages.push(itemID)
     }
-    //name = concat(url, "/name") and then parsing the result of the request and going ['name'] on it;
-    
-    var img = new Image();
-    img.classList = ["item clickable"];
-    img.src = image;
-    img.value = itemID;
-    img.setAttribute('draggable', false);
-    return img;
+}
+
+function setupImage(url, itemID) {
+    var finishedImage = new Image();
+    finishedImage.classList = ["item clickable"];
+    finishedImage.src = url;
+    finishedImage.value = itemID;
+    finishedImage.setAttribute('draggable', false);
+    return finishedImage
 }
 
 function dropLoot(dropCount=$('#dropCount').val()) {
@@ -55,7 +75,7 @@ function dropLoot(dropCount=$('#dropCount').val()) {
     aligner.style.marginLeft = "".concat((lootArea.offsetWidth - dropCount*32)/2, "px");
     for (var i = 0; i < dropCount; i++) {
         id = validItemIDs[Math.floor((Math.random() * validItemIDs.length))]; //FOR TESTING
-        itemDropSetup(itemImageSetup(id), aligner)
+        itemImageSetup(id, itemDropSetup, aligner)
         memorizeItemType(id)
     }
 }
@@ -96,6 +116,6 @@ function clearItems() {
 }
 
 function getItemURL(id) {
-    url = "https://maplestory.io/api/GMS/215/item/".concat(id);
+    url = "https://maplestory.io/api/GMS/210.1.1/item/".concat(id);
     return url
 }
