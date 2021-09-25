@@ -171,7 +171,12 @@ function dialogPrepareText(reason) {
                 dialogSubReason = 'sell';
                 text.push('Would you like to sell')
                 itemName = itemNames[itemBeingSoldId].toString();
-                itemPrice = shopWorths[itemBeingSoldId].toString();
+                if (Object.keys(shopWorths).includes(itemBeingSoldId)) {
+                    itemPrice = shopWorths[itemBeingSoldId].toString();
+                }
+                else {
+                    itemPrice = '1';
+                }
             }
             else {
                 dialogSubReason = 'buy';

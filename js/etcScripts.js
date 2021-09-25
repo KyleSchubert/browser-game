@@ -19,6 +19,7 @@ function getLatestStuff() {
     $("#latest-itemData_knownItemImages").val(JSON.stringify(knownItemImages))
     $("#latest-itemData_itemsByType").val(JSON.stringify(itemsByType))
     $("#latest-itemData_itemsAndTheirTypes").val(JSON.stringify(itemsAndTheirTypes))
+    $("#latest-itemData_equipmentStats").val(JSON.stringify(equipmentStats))
     console.log('It ran.')
 }
 
@@ -42,7 +43,7 @@ function checkForProblems() {
     resultList = [];
     problematicIDs = [[],[]];
     validItemIDs.forEach(function(id) {
-        if (!(id in knownItemNames)) {
+        if (!(knownItemNames.includes(id))) {
             if (!resultList.includes('missing id in knownItemNames')) {
                 resultList.push('missing id in knownItemNames')
             }

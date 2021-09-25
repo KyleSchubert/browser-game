@@ -104,7 +104,31 @@ function memorizeItemType(itemID) {
             if (typeof itemsAndTheirTypes[itemID] == 'undefined') {
                 itemsAndTheirTypes[itemID] = [overcat, cat, subcat];
             }
+            
+            if (itemsAndTheirTypes[itemID][0] == 'Equip') {
+                memorizeEquipmentStats(itemID, data['metaInfo'])
+            }
+            
+            checkIfWeKnowTheItemName(itemID)
         });
+    }
+}
+
+// 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp'
+function memorizeEquipmentStats(itemID, stats) {
+    if (typeof equipmentStats[itemID] == 'undefined') {
+        let usedStats = Object.keys(stats);
+        equipmentStats[itemID] = {};
+        if (usedStats.includes('incSTR')) {equipmentStats[itemID]['strength'] = stats['incSTR'];}
+        if (usedStats.includes('incDEX')) {equipmentStats[itemID]['dexterity'] = stats['incDEX'];}
+        if (usedStats.includes('incINT')) {equipmentStats[itemID]['intelligence'] = stats['incINT'];}
+        if (usedStats.includes('incLUK')) {equipmentStats[itemID]['luck'] = stats['incLUK'];}
+        if (usedStats.includes('incMHP')) {equipmentStats[itemID]['hp'] = stats['incMHP'];}
+        if (usedStats.includes('incMMP')) {equipmentStats[itemID]['mp'] = stats['incMMP'];}
+        if (usedStats.includes('incPAD')) {equipmentStats[itemID]['physicalAttack'] = stats['incPAD'];}
+        if (usedStats.includes('incMAD')) {equipmentStats[itemID]['magicAttack'] = stats['incMAD'];}
+        if (usedStats.includes('bdR')) {equipmentStats[itemID]['bossDamageMultiplier'] = stats['bdR'];}
+        if (usedStats.includes('reqLevelEquip')) {equipmentStats[itemID]['reqLevelEquip'] = stats['reqLevelEquip'];}
     }
 }
 

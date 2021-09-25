@@ -135,12 +135,21 @@ function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false) {
             document.getElementsByClassName('slot')[slot].getElementsByClassName('itemCount')[0].innerHTML = inventory.counts[tabName][slot];
         }
         else {
-            img = itemImageSetup(itemID);
-            itemHolder = itemHolderSetup(tabName, slot, img);
-            document.getElementsByClassName('slot')[slot].appendChild(itemHolder);
+            data = [tabName, slot, itemID, justTheNumber];
+            itemImageSetup(itemID, secondPartOfInventoryLoadOne, data);
+            
         }
         makeDraggableItemsDraggable()
     }
+}
+
+function secondPartOfInventoryLoadOne(img, data) {
+    tabName = data[0];
+    slot = data[1];
+    itemID = data[2];
+    justTheNumber = data[3];
+    itemHolder = itemHolderSetup(tabName, slot, img);
+    document.getElementsByClassName('slot')[slot].appendChild(itemHolder);
 }
 
 function processInventoryImages(img, slot) {

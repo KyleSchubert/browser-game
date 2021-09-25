@@ -122,7 +122,12 @@ function createItemCardContinued(newImg, data) {
     }
     else {
         newItemPrice = document.createElement('span');
-        newItemPrice.innerHTML = numberWithCommas(shopWorths[itemID]);
+        if (itemID in shopWorths) {
+            newItemPrice.innerHTML = numberWithCommas(shopWorths[itemID]);
+        }
+        else {
+            newItemPrice.innerHTML = '1';
+        }
         newItemPrice.classList = ['itemCardPrice numberText'];
         newDiv.appendChild(newItemPrice)
     }
@@ -160,7 +165,7 @@ function neededToWaitBeforeContinuing(id) { // as in: needed to wait before cont
     });  
 }
 
-function checkIfWeKnowTheItemName(id) { // every item for the shop goes through here just in case
+function checkIfWeKnowTheItemName(id) { // every item for the shop and drops goes through here just in case
     if (!knownItemNames.includes(id)) { // but here it only does stuff if the name isn't known
         neededToWaitBeforeContinuing(id).then(function(data) {
             wanted = data['name'];
