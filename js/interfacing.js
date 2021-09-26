@@ -171,7 +171,7 @@ function dialogPrepareText(reason) {
                 dialogSubReason = 'sell';
                 text.push('Would you like to sell')
                 itemName = itemNames[itemBeingSoldId].toString();
-                if (Object.keys(shopWorths).includes(itemBeingSoldId)) {
+                if (Object.keys(shopWorths).includes(itemBeingSoldId.toString())) {
                     itemPrice = shopWorths[itemBeingSoldId].toString();
                 }
                 else {
@@ -229,7 +229,7 @@ function prepareAmountInitialValue() {
             amountInitialValue = 1;
         }
         else {
-            amountInitialValue = parseInt(itemBeingSold.children[1].innerHTML);
+            amountInitialValue = parseInt(itemBeingSold.children[2].innerHTML);
         }
     }
     else {

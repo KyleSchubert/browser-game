@@ -17,6 +17,7 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
     }
     else { // the equip tab only has 1 item per slot anyways
         inventory[targetTab][targetSlot] = itemID;
+        inventory.DetailedEquip[targetSlot] = new EquipItem(itemID);
         inventoryLoadOne(targetTab, targetSlot, itemID)
     }
     makeItemHighlighted(targetSlot, targetTab)

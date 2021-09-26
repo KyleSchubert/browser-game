@@ -1127,6 +1127,7 @@ input[type=number]::-webkit-inner-spin-button {
     width: 100%;
     font-size: 18px;
     text-align: left;
+    color: #b0ff9c;
 }
 
 .tooltipTopArea {
@@ -1141,6 +1142,7 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 12px;
     margin-left: 8px;
     bottom: -6px;
+    color: #f38e8e;
 }
 
 .tooltipBottomArea {

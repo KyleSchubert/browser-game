@@ -29,7 +29,7 @@ class EquipItem {
     }
     generateRNGStats() {
         let numberOfChanges = Math.floor(Math.random() * 3);
-        for (i=0; i<numberOfChanges; i++) {
+        for (let j=0; j<numberOfChanges; j++) {
             let changeQuality = Math.floor(Math.random() * 2);
             let statToChange = Math.floor(Math.random() * Object.keys(this.stats).length);
             statToChange = Object.keys(this.stats)[statToChange]
