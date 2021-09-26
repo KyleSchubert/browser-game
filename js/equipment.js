@@ -13,13 +13,19 @@ class EquipItem {
         if (this.hasName) {
             this.name = itemNames[itemID];
         }
+        else {
+            this.name = 'UNKNOWN_ITEM';
+        }
+        
         if (this.hasPrice) {
             this.price = shopWorths[itemID];
         }
+        else {
+            this.price = 1;
+        }
 
-        this.stats = {
-            'dung': 0
-        };
+        this.stats = equipmentStats[itemID];
+        this.usedStats = getUsedStats(this.stats);
     }
     generateRNGStats() {
         let numberOfChanges = Math.floor(Math.random() * 3);
@@ -38,4 +44,14 @@ class EquipItem {
             }
         }
     }
+}
+
+function getUsedStats(stats) {
+    let usedStats = [];
+    Object.keys(stats).forEach(function(stat) {
+        if (stats[stat] != 0 && stat != 'reqLevelEquip') {
+            usedStats.push(stat)
+        }
+    });
+    return usedStats
 }

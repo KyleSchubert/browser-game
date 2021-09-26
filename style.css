@@ -1109,6 +1109,49 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: center;
 }
 
+.itemTooltip {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    z-index: 8;
+    min-width: 200px;
+    visibility: hidden;
+    background-color: var(--gui-standard-color);
+    padding: 20px;
+    padding-bottom: 36px;
+    pointer-events: none;
+}
+
+.tooltipName {
+    width: 100%;
+    font-size: 18px;
+    text-align: left;
+}
+
+.tooltipTopArea {
+    display: flex;
+    margin-top: 6px;
+    padding-left: 8px;
+}
+
+.tooltipTopArea div {
+    position: relative;
+    align-self: flex-end;
+    font-size: 12px;
+    margin-left: 8px;
+    bottom: -6px;
+}
+
+.tooltipBottomArea {
+    text-align: left;
+    padding-top: 8px;
+}
+
+.tooltipStatsTextArea {
+    margin-inline-start: 12px;
+}
+
 #devProblemNotificationBox {
     position: absolute;
     padding: 8px;

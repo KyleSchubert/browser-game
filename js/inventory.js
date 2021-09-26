@@ -41,6 +41,7 @@ var inventory = {
     Equip: [1113095, 0, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148],
     Use: [2000019, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2046319],
     Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4000001],
+    DetailedEquip: [],
     getter: function() {
         str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
         string = str.charAt(0).toUpperCase() + str.slice(1);
@@ -68,6 +69,7 @@ $(document).ready(function() {
     inventoryTabs = document.getElementById('moreInventoryButtonsArea').getElementsByClassName("subTab");
     inventoryTabs[0].classList.add("subTabFocused");
     $(inventoryTabs).on("click", inventoryTabs, switchTabs);
+    inventory.DetailedEquip = [new EquipItem(1113095), 0, 0, new EquipItem(1113095), new EquipItem(1342111), 0, 0, 0, 0, new EquipItem(1412148)];
 });
 
 var inventoryCurrentSelectedTab = ''; // TODO: since i now have this I should probably change the variables so that only this gets used
@@ -157,19 +159,78 @@ function processInventoryImages(img, slot) {
     allTheSlots[slot].appendChild(itemHolder);
 }
 
+
+const inventoryStatPairs = {'strength': 'STR', 'dexterity': 'DEX', 'intelligence': 'INT', 'luck': 'LUK', 'magicAttack': 'MAGIC ATTACK', 'physicalAttack': 'PHYSICAL ATTACK', 'maxHP': 'MaxHP', 'maxMP': 'MaxMP', 'bossDamageMultiplier': 'BOSS DAMAGE MULTIPLIER'};
+
 function itemHolderSetup(tabName, slot, img) {
+    let itemID = inventory[tabName][slot];
     //span area
     var span = document.createElement('span');
     span.classList = ['numberText itemCount'];
     if (!inventory.counts[tabName][slot] == 0) {   
         span.innerHTML = inventory.counts[tabName][slot];
     }
+    //tooltip area
+    tooltip = document.createElement('div');
+    tooltip.classList = ['itemTooltip'];
+
+    tooltipName = document.createElement('div');
+    tooltipName.innerHTML = itemNames[itemID];
+    tooltipName.classList = ['tooltipName'];
+
+    tooltipTopArea = document.createElement('div');
+    tooltipTopArea.classList = ['tooltipTopArea'];
+
+    tooltipBottomArea = document.createElement('div');
+    tooltipBottomArea.classList = ['tooltipBottomArea'];
+
+    tooltipTopArea.appendChild(img.cloneNode())
+    
+    if (tabName == 'Equip') {
+        levelReqText = document.createElement('div');
+        levelReqText.innerHTML = 'REQ LEV: '.concat(inventory.DetailedEquip[slot]['stats']['reqLevelEquip']);
+        tooltipTopArea.appendChild(levelReqText)
+
+        categoryText = document.createElement('div');
+        categoryText.innerHTML = 'CATEGORY: '.concat(inventory.DetailedEquip[slot]['subType']);
+        tooltipBottomArea.appendChild(categoryText)
+
+        statsTextArea = document.createElement('div');
+        statsTextArea.classList = ['tooltipStatsTextArea'];
+        inventory.DetailedEquip[slot]['usedStats'].forEach(function(stat) {
+            let statText = document.createElement('div');
+            statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', inventory.DetailedEquip[slot]['stats'][stat]);
+            if (stat == 'bossDamageMultiplier') {
+                statText.innerHTML += '%';
+            }
+            statsTextArea.appendChild(statText)
+        });
+        tooltipBottomArea.appendChild(statsTextArea)
+    }
+
+    tooltip.appendChild(tooltipName)
+    tooltip.appendChild(tooltipTopArea)
+    tooltip.appendChild(tooltipBottomArea)
     //itemHolder area
     itemHolder = document.createElement('div');
     itemHolder.setAttribute('data-slotID', slot)
     itemHolder.classList = ['draggableItem itemHolder'];
-    itemHolder.appendChild(img);
+    itemHolder.appendChild(tooltip)
+    itemHolder.appendChild(img)
     itemHolder.appendChild(span)
+    
+    $(itemHolder).on('mousemove', function(event) {
+        $(event.currentTarget).children('.itemTooltip').css({
+            'left': event.pageX - 240,
+            'top': event.pageY + 16,
+            'visibility': 'visible'
+        });
+    });
+    $(itemHolder).on('mouseleave', function(event) {
+        $(event.currentTarget).children('.itemTooltip').css({
+            'visibility': 'hidden'
+        });
+    });
     return itemHolder
 }
 
