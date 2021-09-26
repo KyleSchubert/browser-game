@@ -36,26 +36,32 @@ function makeDraggableItemsDraggable() {
                 else if (isSwapItemsReady) {
                     pickedUpItemSlot = this.parentElement.getAttribute('data-slotID');
                     targetSlot = currentSwapDestination;
-                    let targetTab = inventory.readyName();
-                    removeAllChildNodes(document.getElementsByClassName('slot')[targetSlot])
-                    $(this).remove()
-                    if (targetTab == 'Equip') {
-                        _ = inventory.DetailedEquip[pickedUpItemSlot]
-                        inventory.DetailedEquip[pickedUpItemSlot] = inventory.DetailedEquip[targetSlot];
-                        inventory.DetailedEquip[targetSlot] = _;
-                    }
-                    _ = inventory[targetTab][pickedUpItemSlot]
-                    inventory[targetTab][pickedUpItemSlot] = inventory[targetTab][targetSlot];
-                    inventory[targetTab][targetSlot] = _;
+                    if (pickedUpItemSlot != targetSlot) {
+                        let targetTab = inventory.readyName();
+                        removeAllChildNodes(document.getElementsByClassName('slot')[targetSlot])
+                        $(this).remove()
+                        if (targetTab == 'Equip') {
+                            _ = inventory.DetailedEquip[pickedUpItemSlot]
+                            inventory.DetailedEquip[pickedUpItemSlot] = inventory.DetailedEquip[targetSlot];
+                            inventory.DetailedEquip[targetSlot] = _;
+                        }
+                        _ = inventory[targetTab][pickedUpItemSlot]
+                        inventory[targetTab][pickedUpItemSlot] = inventory[targetTab][targetSlot];
+                        inventory[targetTab][targetSlot] = _;
 
-                    _ = inventory.counts[inventory.readyName()][pickedUpItemSlot]
-                    inventory.counts[targetTab][pickedUpItemSlot] = inventory.counts[targetTab][targetSlot];
-                    inventory.counts[targetTab][targetSlot] = _;
-                    previousHighlightedImage.remove()
-                    if (inventory[targetTab][pickedUpItemSlot] != 0) {
-                        inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
+                        _ = inventory.counts[inventory.readyName()][pickedUpItemSlot]
+                        inventory.counts[targetTab][pickedUpItemSlot] = inventory.counts[targetTab][targetSlot];
+                        inventory.counts[targetTab][targetSlot] = _;
+                        previousHighlightedImage.remove()
+                        if (inventory[targetTab][pickedUpItemSlot] != 0) {
+                            inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
+                        }
+                        inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot])
                     }
-                    inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot])
+                    else {
+                        $(this).css('left', '0px')
+                        $(this).css('top', '0px')
+                    }
                 }
                 else {
                     $(this).css('left', '0px')
