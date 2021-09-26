@@ -3,7 +3,7 @@ function depositProcess() {
     remaining = itemBeingSoldCount-soldAmount;
     tab = inventory.getter();
     counts = inventory.countsGetter();
-    slotNumber = itemBeingSold.getAttribute('data-slotID');
+    slotNumber = itemBeingSold.parentElement.getAttribute('data-slotID');
     if (inventory.readyName() == 'Equip' || remaining <= 0) {
         deleteItem(slotNumber)
     }

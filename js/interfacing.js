@@ -1,10 +1,12 @@
 var isSomethingBeingDragged = false;
 var isSellBoxReady = false;
-var currentDraggedPARENT = '';
+var isSwapItemsReady = false;
+var currentSwapDestination = '';
 
 var itemBeingSold = '';
 var itemBeingSoldCount = 0;
 var itemBeingSoldId = 0;
+
 
 function makeDraggableItemsDraggable() {
     $(function () {
@@ -31,6 +33,30 @@ function makeDraggableItemsDraggable() {
                     itemBeingSold = this;
                     sellProcess()
                 }
+                else if (isSwapItemsReady) {
+                    pickedUpItemSlot = this.parentElement.getAttribute('data-slotID');
+                    targetSlot = currentSwapDestination;
+                    let targetTab = inventory.readyName();
+                    removeAllChildNodes(document.getElementsByClassName('slot')[targetSlot])
+                    $(this).remove()
+                    if (targetTab == 'Equip') {
+                        _ = inventory.DetailedEquip[pickedUpItemSlot]
+                        inventory.DetailedEquip[pickedUpItemSlot] = inventory.DetailedEquip[targetSlot];
+                        inventory.DetailedEquip[targetSlot] = _;
+                    }
+                    _ = inventory[targetTab][pickedUpItemSlot]
+                    inventory[targetTab][pickedUpItemSlot] = inventory[targetTab][targetSlot];
+                    inventory[targetTab][targetSlot] = _;
+
+                    _ = inventory.counts[inventory.readyName()][pickedUpItemSlot]
+                    inventory.counts[targetTab][pickedUpItemSlot] = inventory.counts[targetTab][targetSlot];
+                    inventory.counts[targetTab][targetSlot] = _;
+                    previousHighlightedImage.remove()
+                    if (inventory[targetTab][pickedUpItemSlot] != 0) {
+                        inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
+                    }
+                    inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot])
+                }
                 else {
                     $(this).css('left', '0px')
                     $(this).css('top', '0px')
@@ -39,6 +65,16 @@ function makeDraggableItemsDraggable() {
             containment: 'window'
         });
     });
+}
+
+function prepareToSwapItems(event, yes) {
+    if (yes) {
+        currentSwapDestination = event.delegateTarget.getAttribute('data-slotID');
+        isSwapItemsReady = true;
+    }
+    else {
+        isSwapItemsReady = false;
+    }
 }
 
 $('.sellArea').on('mousemove', function(event) {
@@ -303,3 +339,4 @@ function dialogProceed() {
     closeSmallDialogBox()
     
 }
+

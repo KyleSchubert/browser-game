@@ -70,6 +70,9 @@ $(document).ready(function() {
     inventoryTabs[0].classList.add("subTabFocused");
     $(inventoryTabs).on("click", inventoryTabs, switchTabs);
     inventory.DetailedEquip = [new EquipItem(1113095), 0, 0, new EquipItem(1113095), new EquipItem(1342111), 0, 0, 0, 0, new EquipItem(1412148)];
+    _ = inventory.DetailedEquip.length;
+    inventory.DetailedEquip.length = NUM_OF_SLOTS;
+    inventory.DetailedEquip.fill(0, _, NUM_OF_SLOTS)
 });
 
 var inventoryCurrentSelectedTab = ''; // TODO: since i now have this I should probably change the variables so that only this gets used
@@ -129,6 +132,18 @@ function inventoryLoad() {
         }
     }
     makeDraggableItemsDraggable()
+    $('.slot').mousemove(function(event) {
+        if (isSomethingBeingDragged) { // someone wants to swap items
+            prepareToSwapItems(event, 1)
+        }
+        else { // nevermind
+            prepareToSwapItems(event, 0)
+        }
+    });
+
+    $('.slot').mouseleave(function(event) {
+        prepareToSwapItems(event, 0)
+    })
 }
 
 function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false) {
@@ -142,6 +157,20 @@ function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false) {
             
         }
         makeDraggableItemsDraggable()
+
+        target = $('.slot:eq(' + slot + ')');
+        target.mousemove(function(event) {
+            if (isSomethingBeingDragged) { // someone wants to swap items
+                prepareToSwapItems(event, 1)
+            }
+            else { // nevermind
+                prepareToSwapItems(event, 0)
+            }
+        });
+
+        target.mouseleave(function(event) {
+            prepareToSwapItems(event, 0)
+        })
     }
 }
 
@@ -213,7 +242,6 @@ function itemHolderSetup(tabName, slot, img) {
     tooltip.appendChild(tooltipBottomArea)
     //itemHolder area
     itemHolder = document.createElement('div');
-    itemHolder.setAttribute('data-slotID', slot)
     itemHolder.classList = ['draggableItem itemHolder'];
     itemHolder.appendChild(tooltip)
     itemHolder.appendChild(img)
@@ -239,6 +267,11 @@ $(document).ready(function() {
     for (var i = 0;  i < ROWS_OF_SLOTS; i++) {
         $("#slotsSpot").append('<tr class="row"><td class="slot"></td><td class="slot"></td><td class="slot"></td><td class="slot"></td><td class="slot"></td></tr>');
     };
+    
+    for (var slot = 0; slot < NUM_OF_SLOTS; slot++) {
+        $('.slot:eq(' + slot + ')').attr('data-slotID', slot)
+    }
+
     inventoryLoad(); // I know not of a better way to get this to load after that^  Its like the computer is too fast
 });
 
