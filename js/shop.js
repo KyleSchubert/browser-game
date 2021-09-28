@@ -186,7 +186,8 @@ function deleteItem(slotNumber) {
     tab = inventory.getter()
     tab[slotNumber] = 0;
     counts[slotNumber] = 0;
-    $('.slot')[slotNumber].children[0].remove()
+    console.log($('.slot')[slotNumber])
+    $('.slot:eq(0)')[slotNumber].remove()
 }
 
 var sellingItemId = 0;

@@ -21,7 +21,6 @@ function makeDraggableItemsDraggable() {
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
             },
             stop: function(event) {
-                playSound(sounds[7]) // DragEnd.mp3
                 $('#draggedItemHolder').css('visibility', 'hidden')
                 $(this).css('visibility', 'visible')
                 isSomethingBeingDragged = false;
@@ -36,6 +35,7 @@ function makeDraggableItemsDraggable() {
                     sellProcess()
                 }
                 else if (isSwapItemsReady) {
+                    playSound(sounds[7]) // DragEnd.mp3
                     pickedUpItemSlot = this.parentElement.getAttribute('data-slotID');
                     targetSlot = currentSwapDestination;
                     if (pickedUpItemSlot != targetSlot) {
@@ -47,13 +47,26 @@ function makeDraggableItemsDraggable() {
                             inventory.DetailedEquip[pickedUpItemSlot] = inventory.DetailedEquip[targetSlot];
                             inventory.DetailedEquip[targetSlot] = _;
                         }
-                        _ = inventory[targetTab][pickedUpItemSlot]
-                        inventory[targetTab][pickedUpItemSlot] = inventory[targetTab][targetSlot];
-                        inventory[targetTab][targetSlot] = _;
+                        if (targetTab != 'Equip' && inventory[targetTab][pickedUpItemSlot] == inventory[targetTab][targetSlot]) { // same stackable item
+                            if (inventory.counts[targetTab][pickedUpItemSlot] + inventory.counts[targetTab][targetSlot] >= 9999) {
+                                inventory.counts[targetTab][pickedUpItemSlot] += (inventory.counts[targetTab][targetSlot] - 9999);
+                                inventory.counts[targetTab][targetSlot] = 9999;
+                            }
+                            else {
+                                inventory.counts[targetTab][targetSlot] += inventory.counts[targetTab][pickedUpItemSlot];
+                                inventory.counts[targetTab][pickedUpItemSlot] = 0;
+                                inventory[targetTab][pickedUpItemSlot] = 0;
+                            }
+                        }
+                        else {
+                            _ = inventory[targetTab][pickedUpItemSlot]
+                            inventory[targetTab][pickedUpItemSlot] = inventory[targetTab][targetSlot];
+                            inventory[targetTab][targetSlot] = _;
 
-                        _ = inventory.counts[inventory.readyName()][pickedUpItemSlot]
-                        inventory.counts[targetTab][pickedUpItemSlot] = inventory.counts[targetTab][targetSlot];
-                        inventory.counts[targetTab][targetSlot] = _;
+                            _ = inventory.counts[inventory.readyName()][pickedUpItemSlot]
+                            inventory.counts[targetTab][pickedUpItemSlot] = inventory.counts[targetTab][targetSlot];
+                            inventory.counts[targetTab][targetSlot] = _;
+                        }
                         previousHighlightedImage.remove()
                         if (inventory[targetTab][pickedUpItemSlot] != 0) {
                             inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
