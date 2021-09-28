@@ -60,7 +60,9 @@ function checkForProblems() {
     });
     result = organizeResultList(resultList)
     $("#problemsWithItemNames").val(result)
-    console.warn('From "problemsWithItemNames": ' + JSON.stringify(problematicIDs))
+    if (problematicIDs[0].length || problematicIDs[1].length) {
+        console.warn('From "problemsWithItemNames": ' + JSON.stringify(problematicIDs))
+    }
 }
 $(document).ready(checkForProblems())
 

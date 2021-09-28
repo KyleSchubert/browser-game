@@ -1,42 +1,50 @@
-// (THIS MAKES THE PICKUP SOUND ABLE TO PLAY WHILE IT IS STILL PLAYING WITHOUT OPENING AND CLOSING NETWORK REQUESTS EACH TIME)
-// Some stuff from here: https://stackoverflow.com/questions/30433667/cloning-audio-source-without-having-to-download-it-again
-window.AudioContext = window.AudioContext||window.webkitAudioContext;
-var buffer, ctx = new AudioContext(), gainNode = ctx.createGain();
+// Some stuff from here: https://developer.mozilla.org/en-US/docs/Games/Techniques/Audio_for_Web_Games
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioCtx = new AudioContext();
+const gainNode = audioCtx.createGain();
+
+const UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300];
+const allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3'];
+
+var sounds = [];
+
 if (window.AudioContext) {
-    gainNode.connect(ctx.destination);
+    gainNode.connect(audioCtx.destination);
     gainNode.gain.value = 0.16; 
 }
 
-var sounds = [];
-function createBuffer() {
-    thing = this;
-    ctx.decodeAudioData(this.response, function(b) {
-        buffer = b;
-        b.gotten = thing.originalFileIndex;
-        b.true = UNIQUELENGTHS.indexOf(b.length);
-        console.log(b)
-        sounds[thing.originalFileIndex] = buffer;
-    }, function(e){console.warn(e)});
+async function getFile(filepath) {
+  const response = await fetch(filepath);
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  return audioBuffer;
 }
 
-function prepareSound(file, index) {
-    // please load the sound on the first try
-    if (!sounds[index]) {
-        file = '/files/sounds/' + file;
-        xhr = new XMLHttpRequest();
-        xhr.onload = createBuffer;
-        xhr.open('GET', file, true);
-        xhr.responseType = 'arraybuffer';
-        xhr.originalFileIndex = index;
-        xhr.send();
-    }
+async function loadFile(filePath) {
+    filePath = '/files/sounds/' + filePath;
+    const track = await getFile(filePath);
+    return track;
 }
 
-var UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300];
-var allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3'];
+let offset = 0;
+
+function playTrack(audioBuffer) {
+  const trackSource = audioCtx.createBufferSource();
+  trackSource.buffer = audioBuffer;
+  trackSource.connect(audioCtx.destination)
+
+  if (offset == 0) {
+    trackSource.start();
+    offset = audioCtx.currentTime;
+  } else {
+    trackSource.start(0, audioCtx.currentTime - offset);
+  }
+
+  return trackSource;
+}
 
 function playSound(buf) {
-    var source = ctx.createBufferSource();
+    var source = audioCtx.createBufferSource();
     source.buffer = buf;
     source.connect(gainNode);
     source.onended = function(){if(this.stop)this.stop(); if(this.disconnect)this.disconnect();}
@@ -44,51 +52,14 @@ function playSound(buf) {
 }
 
 sounds.length = allSoundFiles.length;
-function soundWork() {
-    allSoundFiles.forEach(prepareSound);
-}
-
-function soundFileCheck() {
-    badEgg = false;
-    for (var i = 0;  i < allSoundFiles.length; i++) {
-        if (!sounds[i]) {
-            badEgg = true; // smelly rotten egg
-        }
-        else {
-            if (sounds[i].gotten != sounds[i].true) {
-                sounds[i] = null;
-                badEgg = true;
-            }
-        }
-    };
-    return badEgg
+function soundWork(sound) {
+    loadFile(sound).then((track) => {
+        sounds[UNIQUELENGTHS.indexOf(track.length)] = track;
+    })
 }
 
 $(document).ready(function() { //double checks that I have every sound loaded
-    soundWork() // FIRST TIME
-    window.setTimeout(function() {
-        badEgg = soundFileCheck();
-        if (badEgg) {
-            soundWork() // SECOND TIME
-            window.setTimeout(function() {
-                badEgg = soundFileCheck();
-                if (badEgg) {
-                    console.error('SOUNDS GAVE OUT! WE BLEW IT!')
-                    soundWork() // THIRD TIME WOOOOOOO
-                    window.setTimeout(function() {
-                        badEgg = soundFileCheck();
-                        if (badEgg) {
-                            console.error('We have one last resort to load these sounds: load them again!  >:^D')
-                            soundWork() // FOURTH TIME AWOOOOGA
-                        }
-                        else {
-                            console.log("OK. The sounds loaded, so we're fine again.")
-                        }
-                    }, 30000)
-                }
-            }, 10000)
-        }
-    }, 6000)
+    allSoundFiles.forEach(soundWork)
 })
 
 // Assigning the sounds to things
