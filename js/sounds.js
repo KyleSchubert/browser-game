@@ -31,8 +31,8 @@ function prepareSound(file, index) {
     }
 }
 
-var UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523];
-var allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3'];
+var UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300];
+var allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3'];
 
 function playSound(buf) {
     var source = ctx.createBufferSource();

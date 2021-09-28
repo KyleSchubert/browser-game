@@ -12,6 +12,7 @@ function makeDraggableItemsDraggable() {
     $(function () {
         $('.draggableItem').draggable({
             start: function(event) {
+                playSound(sounds[8]) // DragStart.mp3
                 $(event.currentTarget).css('visibility', 'hidden')
                 $('#draggedItemHolder').css('visibility', 'visible')
                 isSomethingBeingDragged = true;
@@ -20,6 +21,7 @@ function makeDraggableItemsDraggable() {
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
             },
             stop: function(event) {
+                playSound(sounds[7]) // DragEnd.mp3
                 $('#draggedItemHolder').css('visibility', 'hidden')
                 $(this).css('visibility', 'visible')
                 isSomethingBeingDragged = false;
