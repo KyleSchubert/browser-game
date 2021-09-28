@@ -14,6 +14,7 @@ function createBuffer() {
         buffer = b;
         b.gotten = thing.originalFileIndex;
         b.true = UNIQUELENGTHS.indexOf(b.length);
+        console.log(b)
         sounds[thing.originalFileIndex] = buffer;
     }, function(e){console.warn(e)});
 }
@@ -66,25 +67,28 @@ function soundFileCheck() {
 $(document).ready(function() { //double checks that I have every sound loaded
     soundWork() // FIRST TIME
     window.setTimeout(function() {
-        soundWork() // SECOND TIME
-        window.setTimeout(function() {
-            badEgg = soundFileCheck();
-            if (badEgg) {
-                console.error('SOUNDS GAVE OUT! WE BLEW IT!')
-                soundWork() // THIRD TIME WOOOOOOO
-                window.setTimeout(function() {
-                    badEgg = soundFileCheck();
-                    if (badEgg) {
-                        console.error('We have one last resort to load these sounds: load them again!  >:^D')
-                        soundWork() // FOURTH TIME AWOOOOGA
-                    }
-                    else {
-                        console.log("OK. The sounds loaded, so we're fine again.")
-                    }
-                }, 18000)
-            }
-        }, 5000)
-    }, 2000)
+        badEgg = soundFileCheck();
+        if (badEgg) {
+            soundWork() // SECOND TIME
+            window.setTimeout(function() {
+                badEgg = soundFileCheck();
+                if (badEgg) {
+                    console.error('SOUNDS GAVE OUT! WE BLEW IT!')
+                    soundWork() // THIRD TIME WOOOOOOO
+                    window.setTimeout(function() {
+                        badEgg = soundFileCheck();
+                        if (badEgg) {
+                            console.error('We have one last resort to load these sounds: load them again!  >:^D')
+                            soundWork() // FOURTH TIME AWOOOOGA
+                        }
+                        else {
+                            console.log("OK. The sounds loaded, so we're fine again.")
+                        }
+                    }, 30000)
+                }
+            }, 10000)
+        }
+    }, 6000)
 })
 
 // Assigning the sounds to things

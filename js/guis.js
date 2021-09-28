@@ -1,9 +1,12 @@
+var somethingIsOpen = false;
+
+
 $('.guiOpeningButton').click(function() {
     guiType = guiGetType(this);
     guiToggleVisibility(guiType, this.getAttribute('value'))
 });
 
-guiIDs = ['#shopHolder'];
+guiIDs = ['#shopHolder', '#equipmentHolder'];
 $('body').keydown(function(e) {
     if (e.key === "Escape") { // escape key maps to keycode `27`
         if (smallDialogBoxOpen) {
@@ -45,7 +48,8 @@ $(function() {
 
 guiTypes = {
     80001: 'shop',
-    80002: 'storage'
+    80002: 'storage',
+    200: 'equipment'
 }
 
 
@@ -61,22 +65,32 @@ function guiToggleVisibility(guiType, guiID) {
         case 'storage':
             target = guiIDs[0];
             break;
+        case 'equipment':
+            target = guiIDs[1];
+            break;
         default:
             console.log('in guiToggleVisibility, there is no case for this guiType: ');
             console.log(guiType);
     }
-    if ($(target).css('visibility') == 'hidden') {
+    if (somethingIsOpen) {
+        guiIDs.forEach(silentHide)
+        playSound(sounds[5]) // MenuUp.mp3
+        somethingIsOpen = false;
+    }
+    else { 
         guiLoadData(guiType, guiID) // this has to happen first!
         $(target).css('visibility', 'visible');
+        somethingIsOpen = true;
         playSound(sounds[6]) // Tab.mp3
-    }
-    else {
-        $(target).css('visibility', 'hidden');
-        playSound(sounds[5]) // MenuUp.mp3
     }
 }
 
-function silentToggleVisibility(node) { //jquery version of the node
+function silentHide(node) {
+    $(node).css('visibility', 'hidden'); 
+}
+
+function silentToggleVisibility(node) {
+    node = $(node);
     if (node.css('visibility') == 'hidden'){
         $(node).css('visibility', 'visible');
         return true // as in: "is it visible?" --> "yes"
@@ -149,4 +163,14 @@ $('.statButton').click(function(e) {
     character.stats[allocatedStat] ++;
     character.info.attributePoints --;
     updateCharacterDisplay()
+});
+
+$('#shopHolder .guiInnerContentArea .closeButton').click(function() {
+    guiClose(guiIDs[0])
+    playSound(sounds[5]) // MenuUp.mp3
+});
+
+$('#equipmentHolder .guiInnerContentArea .closeButton').click(function() {
+    guiClose(guiIDs[1])
+    playSound(sounds[5]) // MenuUp.mp3
 });

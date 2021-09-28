@@ -23,11 +23,6 @@ shopWorths = {
     4000012: 10
 };
 
-$('#shopHolder .guiInnerContentArea .closeButton').click(function() {
-    guiClose(guiIDs[0])
-    playSound(sounds[5]) // MenuUp.mp3
-});
-
 $(document).ready(function() {
     node = document.getElementById('shopButtonArea');
     shopButtonAppeared(node)

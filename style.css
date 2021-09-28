@@ -110,6 +110,14 @@ input[type=number]::-webkit-inner-spin-button {
     visibility: hidden;
 }
 
+#equipmentHolder {
+    position: absolute;
+    z-index: 4;
+    height: 50%;
+    width: 50%;
+    visibility: hidden;
+}
+
 #statsArea {
     position: relative;
     width: 380px;
@@ -753,7 +761,7 @@ input[type=number]::-webkit-inner-spin-button {
 .draggableBar {
     background: linear-gradient(to top, rgba(0,0,0, 0.83), var(--gui-standard-color));
     width: calc(100% - 6px);
-    height: 3%;
+    height: 24px;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     border-color: rgba(0,0,0,0);
