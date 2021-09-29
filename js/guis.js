@@ -38,9 +38,9 @@ $('body').keydown(function(e) {
 })
 
 $(function() {
-    $('#guiHolder').draggable({handle: '#shopHolder .draggableBar'});
-    $('#guiHolder').draggable({cancel: '#shopHolder .guiInnerContentArea'});
-    $('#guiHolder').draggable({containment: 'window'});
+    $('#guiHolder').draggable({handle: '.draggableBar'});
+    $('#guiHolder').draggable({cancel: '.guiInnerContentArea'});
+    $('#guiHolder').draggable({scroll: false});
     $('#smallDialogBoxHolder').draggable({handle: '.draggableBar'})
     $('#smallDialogBoxHolder').draggable({cancel: '.smallDialogBox'})
     $('#smallDialogBoxHolder').draggable({containment: '#guiHolder'})
@@ -77,6 +77,8 @@ function guiToggleVisibility(guiType, guiID) {
         guiIDs.forEach(silentHide)
         playSound(sounds[5]) // MenuUp.mp3
         somethingIsOpen = false;
+        $('#guiHolder').css('top', 'calc(50% - 400px)');
+        $('#guiHolder').css('left', 'calc(50% - 320px)');
     }
     else { 
         guiLoadData(guiType, guiID) // this has to happen first!
@@ -167,11 +169,13 @@ $('.statButton').click(function(e) {
 });
 
 $('#shopHolder .guiInnerContentArea .closeButton').click(function() {
+    somethingIsOpen = false;
     guiClose(guiIDs[0])
     playSound(sounds[5]) // MenuUp.mp3
 });
 
 $('#equipmentHolder .guiInnerContentArea .closeButton').click(function() {
+    somethingIsOpen = false;
     guiClose(guiIDs[1])
     playSound(sounds[5]) // MenuUp.mp3
 });
