@@ -221,7 +221,7 @@ function itemHolderSetup(tabName, slot, img) {
         tooltipTopArea.appendChild(levelReqText)
 
         categoryText = document.createElement('div');
-        categoryText.innerHTML = 'CATEGORY: '.concat(inventory.DetailedEquip[slot]['subType']);
+        categoryText.innerHTML = 'CATEGORY: '.concat(inventory.DetailedEquip[slot]['exactType']);
         tooltipBottomArea.appendChild(categoryText)
 
         statsTextArea = document.createElement('div');

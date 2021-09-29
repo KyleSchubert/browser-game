@@ -114,7 +114,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     z-index: 4;
     height: 50%;
-    width: 50%;
+    width: 52%;
     visibility: hidden;
 }
 
@@ -969,6 +969,18 @@ input[type=number]::-webkit-inner-spin-button {
     background-color: #FFFFFF;
 }
 
+#equipmentSlotsArea {
+    display: table;
+    table-layout: fixed;
+    background-color: #CCCCCC;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.disabledSlot {
+    background: rgba(0,0,0,0) !important;
+}
+
 .slot {
     position: relative;
     background-image: url("/files/slotSTOLEN.png");
@@ -976,6 +988,28 @@ input[type=number]::-webkit-inner-spin-button {
     height: 47px;
     vertical-align: middle;
     text-align: center;
+}
+
+.equipmentSlot {
+    position: relative;
+    background-image: url("/files/equipslot.png");
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.emptyEquipmentSlot {
+    vertical-align: top !important;
+    text-align: left !important;
+    overflow-wrap: break-word;
+}
+
+.slotRestrictionHelper {
+    position: relative;
+    left: 3px;
+    color: gainsboro;
+    font-size: 8px;
 }
 
 .highlightedSlot {

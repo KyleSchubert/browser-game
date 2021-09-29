@@ -23,6 +23,7 @@ $('body').keydown(function(e) {
             if (somethingWasClosed) {
                 playSound(sounds[5])
                 somethingWasClosed = false;
+                somethingIsOpen = false;
             }
         }
     }
