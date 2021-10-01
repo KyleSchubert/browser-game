@@ -1,5 +1,5 @@
 class EquipItem {
-    constructor(itemID) {
+    constructor(itemID, craftedStats={}) {
         itemID = parseInt(itemID);
         this.id = itemID;
         this.mainType = itemsAndTheirTypes[itemID][0];
@@ -27,6 +27,7 @@ class EquipItem {
 
         this.stats = equipmentStats[itemID];
         this.usedStats = getUsedStats(this.stats);
+        this.craftedStats = craftedStats;
     }
     generateRNGStats() {
         let numberOfChanges = Math.floor(Math.random() * 3);
@@ -99,7 +100,7 @@ const slotText = {
     'Gloves': 'Gloves',
     'Cape': 'Cape',
     'Shoes': 'Shoes'
-}
+};
 
 $(document).ready(function() {
     for (var i = 0;  i < 6; i++) {
@@ -121,12 +122,169 @@ $(document).ready(function() {
         })
     })
 
-    loadEquipment()
-})
-
-function loadEquipment() {
     for (var slot = 0; slot < 30; slot++) {
         $('.equipmentSlot:eq(' + slot + ')').addClass('emptyEquipmentSlot')
     }
+
+    character.equipment.length = 30;
+    character.equipment.fill({}, 0, 30)
+
+    itemsInEquipmentSlots = [new EquipItem(1112434, {luck: 5, evasion: 13, luckPercent: 18})];
+    itemsInEquipmentSlots.length = 30;
+    itemsInEquipmentSlots.fill(0, 1, 30)
+
+    equipmentLoad()
+})
+
+function getEquipmentCompoundStats(item) {
+    stats = {};
+    usedCraftedStats = Object.keys(item.craftedStats);
+    item.usedStats.forEach(function(value) {
+        if (usedCraftedStats.includes(value)) {
+            stats[value] = item.craftedStats[value] + item.stats[value];
+
+        }
+        else {
+            stats[value] = item.stats[value];
+        }
+    });
+    usedCraftedStats.forEach(function(value) {
+        if (!item.usedStats.includes(value)) {
+            stats[value] = item.craftedStats[value];
+        }
+    });
+    return stats
 }
 
+function equipmentLoad() {
+    $('.equipmentSlot:not(.disabledSlot) div').remove()
+    itemsInEquipmentSlots.forEach(function(value, slot) {
+        if (value) {
+            $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden')
+            $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot')
+            itemImageSetup(value.id, processEquipmentImages, slot)
+            character.equipment[slot] = getEquipmentCompoundStats(value);
+        }
+    });
+    updateCharacterDisplay()
+    makeDraggableItemsDraggable()
+    $('.equipmentSlot').mousemove(function(event) {
+        if (isSomethingBeingDragged) { // someone wants to swap items
+            prepareToSwapItems(event, 1)
+        }
+        else { // nevermind
+            prepareToSwapItems(event, 0)
+        }
+    });
+
+    $('.equipmentSlot').mouseleave(function(event) {
+        prepareToSwapItems(event, 0)
+    })
+}
+
+
+function inventoryLoadOne(theItem, slot) {
+    itemImageSetup(theItem.id, processEquipmentImages, slot);
+    updateCharacterDisplay()
+
+    makeDraggableItemsDraggable()
+
+    target = $('.equipmentSlot:eq(' + slot + ')');
+    target.mousemove(function(event) {
+        if (isSomethingBeingDragged) { // someone wants to swap items
+            prepareToSwapItems(event, 1)
+        }
+        else { // nevermind
+            prepareToSwapItems(event, 0)
+        }
+    });
+
+    target.mouseleave(function(event) {
+        prepareToSwapItems(event, 0)
+    })
+    
+}
+
+function processEquipmentImages(img, slot) {
+    itemHolder = equipmentItemHolderSetup(slot, img);
+    $('.equipmentSlot:eq(' + slot + ')').append(itemHolder)
+}
+
+function equipmentItemHolderSetup(slot, img) {
+    let itemID = itemsInEquipmentSlots[slot].id;
+    //tooltip area
+    tooltip = document.createElement('div');
+    tooltip.classList = ['itemTooltip'];
+
+    tooltipName = document.createElement('div');
+    tooltipName.innerHTML = itemNames[itemID];
+    tooltipName.classList = ['tooltipName'];
+
+    tooltipTopArea = document.createElement('div');
+    tooltipTopArea.classList = ['tooltipTopArea'];
+
+    tooltipBottomArea = document.createElement('div');
+    tooltipBottomArea.classList = ['tooltipBottomArea'];
+
+    tooltipTopArea.appendChild(img.cloneNode())
+    
+    levelReqText = document.createElement('div');
+    levelReqText.innerHTML = 'REQ LEV: '.concat(itemsInEquipmentSlots[slot]['stats']['reqLevelEquip']);
+    tooltipTopArea.appendChild(levelReqText)
+
+    categoryText = document.createElement('div');
+    categoryText.innerHTML = 'CATEGORY: '.concat(itemsInEquipmentSlots[slot]['exactType']);
+    tooltipBottomArea.appendChild(categoryText)
+
+    statsTextArea = document.createElement('div');
+    statsTextArea.classList = ['tooltipStatsTextArea'];
+    itemsInEquipmentSlots[slot]['usedStats'].forEach(function(stat) {
+        let statText = document.createElement('div');
+        statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', itemsInEquipmentSlots[slot]['stats'][stat]);
+        if (stat == 'bossDamageMultiplier') {
+            statText.innerHTML += '%';
+        }
+        statsTextArea.appendChild(statText)
+    });
+    Object.keys(itemsInEquipmentSlots[slot]['craftedStats']).forEach(function(stat) {
+        let statText = document.createElement('div');
+        statText.classList = ['craftedStat'];
+        if (stat.includes('Percent')) {
+            statName = stat.slice(0, stat.length-7)
+            statText.innerHTML = ''.concat(inventoryStatPairs[statName], ': +', itemsInEquipmentSlots[slot]['craftedStats'][stat], '%');
+        }
+        else {
+            statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', itemsInEquipmentSlots[slot]['craftedStats'][stat]);
+            if (stat == 'bossDamageMultiplier') {
+                statText.innerHTML += '%';
+            }
+        }
+        
+        statsTextArea.appendChild(statText)
+    });
+    tooltipBottomArea.appendChild(statsTextArea)
+    
+
+    tooltip.appendChild(tooltipName)
+    tooltip.appendChild(tooltipTopArea)
+    tooltip.appendChild(tooltipBottomArea)
+    //itemHolder area
+    itemHolder = document.createElement('div');
+    itemHolder.classList = ['draggableItem itemHolder'];
+    itemHolder.appendChild(tooltip)
+    itemHolder.appendChild(img)
+    
+    $(itemHolder).on('mousemove', function(event) {
+        $(event.currentTarget).children('.itemTooltip').css({
+            'left': event.pageX - 240,
+            'top': event.pageY + 16,
+            'visibility': 'visible'
+        });
+    });
+    $(itemHolder).on('mouseleave', function(event) {
+        $(event.currentTarget).children('.itemTooltip').css({
+            'visibility': 'hidden'
+        });
+    });
+    return itemHolder
+}

@@ -1006,8 +1006,9 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .slotRestrictionHelper {
-    position: relative;
+    position: absolute;
     left: 3px;
+    top: 4px;
     color: gainsboro;
     font-size: 8px;
 }
@@ -1215,6 +1216,10 @@ input[type=number]::-webkit-inner-spin-button {
 
 .tooltipStatsTextArea {
     margin-inline-start: 12px;
+}
+
+.craftedStat {
+    color: #bfffff;
 }
 
 #devProblemNotificationBox {

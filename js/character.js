@@ -6,7 +6,7 @@ var character = {
         attributePoints: 10,
         class: '-',
         job: '-',
-        level: 1,
+        level: 15,
         experience: 10,
         loot: 100,
         gold: 100,
@@ -40,20 +40,7 @@ var character = {
         evasion: 0,
         accuracy: 0
     },
-    equipment: {
-        weapon: {
-            type: 'intelligence'
-        },
-        helmet: {
-            luck: 5,
-            evasion: 3,
-            luckPercent: 6
-        },
-        body: {
-            mp: 10,
-            luckPercent: 12
-        }
-    },
+    equipment: [],
     gainExperience: function(amount) {
         if (amount > 0) {
             character.info.experience += amount;

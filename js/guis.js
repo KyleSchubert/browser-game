@@ -24,6 +24,8 @@ $('body').keydown(function(e) {
                 playSound(sounds[5])
                 somethingWasClosed = false;
                 somethingIsOpen = false;
+                $('#guiHolder').css('top', 'calc(50% - 400px)');
+                $('#guiHolder').css('left', 'calc(50% - 320px)');
             }
         }
     }
@@ -172,10 +174,14 @@ $('#shopHolder .guiInnerContentArea .closeButton').click(function() {
     somethingIsOpen = false;
     guiClose(guiIDs[0])
     playSound(sounds[5]) // MenuUp.mp3
+    $('#guiHolder').css('top', 'calc(50% - 400px)');
+    $('#guiHolder').css('left', 'calc(50% - 320px)');
 });
 
 $('#equipmentHolder .guiInnerContentArea .closeButton').click(function() {
     somethingIsOpen = false;
     guiClose(guiIDs[1])
     playSound(sounds[5]) // MenuUp.mp3
+    $('#guiHolder').css('top', 'calc(50% - 400px)');
+    $('#guiHolder').css('left', 'calc(50% - 320px)');
 });

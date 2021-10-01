@@ -45,11 +45,17 @@ function getEquipmentStat(stat, percent=false) {
     percents = [];
     flats = [];
     if (percent) {
-        Object.keys(character.equipment).filter(item => (stat + 'Percent') in character.equipment[item])
-            .forEach(item => percents.push(character.equipment[item][stat + 'Percent']))
+        character.equipment.forEach(function(slot) {
+            if (Object.keys(slot).includes(stat + 'Percent')) {
+                percents.push(slot[stat + 'Percent'])
+            }
+        })
     }
-    Object.keys(character.equipment).filter(item => stat in character.equipment[item])
-        .forEach(item => flats.push(character.equipment[item][stat]))
+    character.equipment.forEach(function(slot) {
+        if (Object.keys(slot).includes(stat)) {
+            flats.push(slot[stat])
+        }
+    })
     if (percents.length) {
         percentValue = percents.reduce((x, y) => x + y);
     }
