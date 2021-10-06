@@ -178,9 +178,6 @@ $(document).ready(function() {
 
 function getEquipmentCompoundStats(item) {
     stats = {};
-    console.log(item)
-    console.log(item['craftedStats'])
-    console.log(item.craftedStats)
     usedCraftedStats = Object.keys(item.craftedStats);
     item.usedStats.forEach(function(value) {
         if (usedCraftedStats.includes(value)) {
@@ -257,7 +254,6 @@ function processEquipmentImages(img, slot) {
 }
 
 function equipmentItemHolderSetup(slot, img) {
-    console.log(slot)
     let itemID = itemsInEquipmentSlots[slot].id;
     //tooltip area
     tooltip = document.createElement('div');

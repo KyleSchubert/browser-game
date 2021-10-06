@@ -36,7 +36,6 @@ function checkForProblems() {
         }
     });
     result = organizeResultList(resultList)
-    $("#problemsWithItemPrices").val(result)
     console.warn('From "problemsWithItemPrices": ' + JSON.stringify(problematicIDs))
     // problems with item names
     resultList = [];
@@ -58,7 +57,6 @@ function checkForProblems() {
         }
     });
     result = organizeResultList(resultList)
-    $("#problemsWithItemNames").val(result)
     if (problematicIDs[0].length || problematicIDs[1].length) {
         console.warn('From "problemsWithItemNames": ' + JSON.stringify(problematicIDs))
     }

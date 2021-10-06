@@ -1223,7 +1223,8 @@ input[type=number]::-webkit-inner-spin-button {
     color: #bfffff;
 }
 
-#devProblemNotificationBox {
+#dataMakerArea {
+    display: flex;
     position: absolute;
     padding: 8px;
     top: 600px;
@@ -1233,9 +1234,24 @@ input[type=number]::-webkit-inner-spin-button {
     height: 300px;
 }
 
-#devProblemNotificationBox .textTightContainer {
-    width: calc(100% - 32px);
-    margin: 10px;
+#makerSelectorsArea {
+    display: flex;
+    width: 600px;
+}
+
+#makerSelectorsArea div {
+    height: calc(100% - 16px);
+}
+
+#makerMainCategory {
+    height: 100px;
+}
+
+#makerVisual {
+    margin: 6px;
+    width: 268px;
+    height: 268px;
+    border: 1px solid black;
 }
 
 .clickable {
