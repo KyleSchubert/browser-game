@@ -38,40 +38,113 @@ function makeDraggableItemsDraggable() {
                     playSound(sounds[7]) // DragEnd.mp3
                     pickedUpItemSlot = this.parentElement.getAttribute('data-slotID');
                     targetSlot = currentSwapDestination;
+                    let involvingEquipmentScreen = (pickedUpItemSlot > 29 || targetSlot > 29);
+                    let involvingInventory = (pickedUpItemSlot < 30 || targetSlot < 30);
                     if (pickedUpItemSlot != targetSlot) {
-                        let targetTab = inventory.readyName();
-                        removeAllChildNodes(document.getElementsByClassName('slot')[targetSlot])
-                        $(this).remove()
-                        if (targetTab == 'Equip') {
-                            _ = inventory.DetailedEquip[pickedUpItemSlot]
-                            inventory.DetailedEquip[pickedUpItemSlot] = inventory.DetailedEquip[targetSlot];
-                            inventory.DetailedEquip[targetSlot] = _;
-                        }
-                        if (targetTab != 'Equip' && inventory[targetTab][pickedUpItemSlot] == inventory[targetTab][targetSlot]) { // same stackable item
-                            if (inventory.counts[targetTab][pickedUpItemSlot] + inventory.counts[targetTab][targetSlot] >= 9999) {
-                                inventory.counts[targetTab][pickedUpItemSlot] += (inventory.counts[targetTab][targetSlot] - 9999);
-                                inventory.counts[targetTab][targetSlot] = 9999;
+                        if (involvingEquipmentScreen && !involvingInventory) {
+                            if (canEquipToHere(targetSlot, pickedUpItemSlot)) {
+                                $(this).remove()
+                                $('[data-slotid="' + targetSlot + '"] .itemHolder').remove()
+                                _ = itemsInEquipmentSlots[pickedUpItemSlot-30]; // for some reason, doing the usual [1, 2] = [2, 1]; swap gives an error so oh well
+                                itemsInEquipmentSlots[pickedUpItemSlot-30] = itemsInEquipmentSlots[targetSlot-30];
+                                itemsInEquipmentSlots[targetSlot-30] = _;
+                                character.equipment[pickedUpItemSlot-30] = {};
+                                character.equipment[targetSlot-30] = {};
+                                if (itemsInEquipmentSlots[pickedUpItemSlot-30] != 0) {
+                                    equipmentLoadOne(itemsInEquipmentSlots[pickedUpItemSlot-30], pickedUpItemSlot-30)
+                                }
+                                else {
+                                    $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot')
+                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible')
+                                }
+                                equipmentLoadOne(itemsInEquipmentSlots[targetSlot-30], targetSlot-30)
+                                $('[data-slotid="' + targetSlot + '"]').removeClass('emptyEquipmentSlot')
+                                $('[data-slotid="' + targetSlot + '"] .slotRestrictionHelper').css('visibility', 'hidden')
                             }
                             else {
-                                inventory.counts[targetTab][targetSlot] += inventory.counts[targetTab][pickedUpItemSlot];
-                                inventory.counts[targetTab][pickedUpItemSlot] = 0;
-                                inventory[targetTab][pickedUpItemSlot] = 0;
+                                $(this).css('left', '0px')
+                                $(this).css('top', '0px')
                             }
                         }
-                        else {
-                            _ = inventory[targetTab][pickedUpItemSlot]
-                            inventory[targetTab][pickedUpItemSlot] = inventory[targetTab][targetSlot];
-                            inventory[targetTab][targetSlot] = _;
-
-                            _ = inventory.counts[inventory.readyName()][pickedUpItemSlot]
-                            inventory.counts[targetTab][pickedUpItemSlot] = inventory.counts[targetTab][targetSlot];
-                            inventory.counts[targetTab][targetSlot] = _;
+                        else if (involvingEquipmentScreen && involvingInventory) {
+                            let tab = inventory.readyName();
+                            if (tab == 'Equip') {
+                                if (pickedUpItemSlot > 29) {
+                                    equippedItemSlot = pickedUpItemSlot;
+                                    inventoryItemSlot = targetSlot;
+                                }
+                                else {
+                                    equippedItemSlot = targetSlot;
+                                    inventoryItemSlot = pickedUpItemSlot;
+                                }
+                                if (inventory.DetailedEquip[inventoryItemSlot]) {
+                                    if (canEquipToHere(equippedItemSlot, inventoryItemSlot)) {
+                                        removeAllChildNodes($('[data-slotid="' + inventoryItemSlot + '"]'))
+                                        if (itemsInEquipmentSlots[equippedItemSlot-30]) { // swapping an equipped item with an unequipped one
+                                            $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove()
+                                            let oldEquippedItem = itemsInEquipmentSlots[equippedItemSlot-30];
+                                            itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
+                                            inventory.DetailedEquip[inventoryItemSlot] = oldEquippedItem;
+                                            equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30)
+                                            inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot])
+                                        }
+                                        else { // equipping an item into an empty slot
+                                            itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
+                                            inventory.DetailedEquip[inventoryItemSlot] = 0;
+                                            inventory.Equip[inventoryItemSlot] = 0;
+                                            equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30)
+                                        }
+                                    }
+                                    else {
+                                        $(this).css('left', '0px')
+                                        $(this).css('top', '0px')
+                                    }
+                                }
+                                else { // unequipping an item
+                                    $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove()
+                                    character.equipment[equippedItemSlot-30] = {};
+                                    updateCharacterDisplay()
+                                    $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot')
+                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible')
+                                    inventory.DetailedEquip[inventoryItemSlot] = itemsInEquipmentSlots[equippedItemSlot-30];
+                                    inventory.Equip[inventoryItemSlot] = inventory.DetailedEquip[inventoryItemSlot].id;
+                                    itemsInEquipmentSlots[equippedItemSlot-30] = 0
+                                    inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot])
+                                }
+                            }
+                            else {
+                                $(this).css('left', '0px')
+                                $(this).css('top', '0px')
+                            }
                         }
-                        previousHighlightedImage.remove()
-                        if (inventory[targetTab][pickedUpItemSlot] != 0) {
-                            inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
+                        else { // just   involvingInventory
+                            let targetTab = inventory.readyName();
+                            removeAllChildNodes($('[data-slotid="' + targetSlot + '"]'))
+                            $(this).remove()
+                            if (targetTab == 'Equip') {
+                                [inventory.DetailedEquip[targetSlot], inventory.DetailedEquip[pickedUpItemSlot]] = [inventory.DetailedEquip[pickedUpItemSlot], inventory.DetailedEquip[targetSlot]];
+                            }
+                            if (targetTab != 'Equip' && inventory[targetTab][pickedUpItemSlot] == inventory[targetTab][targetSlot]) { // same stackable item
+                                if (inventory.counts[targetTab][pickedUpItemSlot] + inventory.counts[targetTab][targetSlot] >= 9999) {
+                                    inventory.counts[targetTab][pickedUpItemSlot] += (inventory.counts[targetTab][targetSlot] - 9999);
+                                    inventory.counts[targetTab][targetSlot] = 9999;
+                                }
+                                else {
+                                    inventory.counts[targetTab][targetSlot] += inventory.counts[targetTab][pickedUpItemSlot];
+                                    inventory.counts[targetTab][pickedUpItemSlot] = 0;
+                                    inventory[targetTab][pickedUpItemSlot] = 0;
+                                }
+                            }
+                            else {
+                                [inventory[targetTab][targetSlot], inventory[targetTab][pickedUpItemSlot]] = [inventory[targetTab][pickedUpItemSlot], inventory[targetTab][targetSlot]];
+                                [inventory.counts[targetTab][targetSlot], inventory.counts[targetTab][pickedUpItemSlot]] = [inventory.counts[targetTab][pickedUpItemSlot], inventory.counts[targetTab][targetSlot]];
+                            }
+                            previousHighlightedImage.remove()
+                            if (inventory[targetTab][pickedUpItemSlot] != 0) {
+                                inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
+                            }
+                            inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot])
                         }
-                        inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot])
                     }
                     else {
                         $(this).css('left', '0px')

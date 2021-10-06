@@ -50,8 +50,13 @@ function rollDamageToMob(skill='') {
         // do something
     }
     else {
-        let weaponType = character.equipment.weapon.type;
-        let baseDamage = character.compoundedStats[weaponType];
+        if (jQuery.isEmptyObject(character.equipment[16])) {
+            weaponType = 'strength';
+        }
+        else {
+            weaponType = character.equipment[16].weaponType;
+        }
+        baseDamage = character.compoundedStats[weaponType];
         damage = randomIntFromInterval(baseDamage * 0.6, baseDamage * 1.2)
     }
     return damage

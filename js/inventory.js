@@ -38,7 +38,7 @@ NUM_OF_SLOTS = ROWS_OF_SLOTS*COLS_OF_SLOTS;
 
 
 var inventory = {
-    Equip: [1113095, 0, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148],
+    Equip: [1113095, 1112434, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148],
     Use: [2000019, 0, 0, 0, 0, 2000019, 0, 0, 0, 0, 0, 2046319],
     Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4000001],
     DetailedEquip: [],
@@ -69,7 +69,7 @@ $(document).ready(function() {
     inventoryTabs = document.getElementById('moreInventoryButtonsArea').getElementsByClassName("subTab");
     inventoryTabs[0].classList.add("subTabFocused");
     $(inventoryTabs).on("click", inventoryTabs, switchTabs);
-    inventory.DetailedEquip = [new EquipItem(1113095), 0, 0, new EquipItem(1113095), new EquipItem(1342111), 0, 0, 0, 0, new EquipItem(1412148)];
+    inventory.DetailedEquip = [new EquipItem(1113095), new EquipItem(1112434), 0, new EquipItem(1113095), new EquipItem(1342111), 0, 0, 0, 0, new EquipItem(1412148)];
     _ = inventory.DetailedEquip.length;
     inventory.DetailedEquip.length = NUM_OF_SLOTS;
     inventory.DetailedEquip.fill(0, _, NUM_OF_SLOTS)
@@ -146,13 +146,13 @@ function inventoryLoad() {
     })
 }
 
-function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false) {
+function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false, equipItem=false) {
     if (tabName == inventory.readyName()) {
         if (justTheNumber) {
             document.getElementsByClassName('slot')[slot].getElementsByClassName('itemCount')[0].innerHTML = inventory.counts[tabName][slot];
         }
         else {
-            data = [tabName, slot, itemID, justTheNumber];
+            data = [tabName, slot, itemID, justTheNumber, equipItem];
             itemImageSetup(itemID, secondPartOfInventoryLoadOne, data);
             
         }
@@ -179,7 +179,13 @@ function secondPartOfInventoryLoadOne(img, data) {
     slot = data[1];
     itemID = data[2];
     justTheNumber = data[3];
-    itemHolder = itemHolderSetup(tabName, slot, img);
+    equipItem = data[4];
+    if (equipItem) { // for when the item should not be rerolled
+        itemHolder = itemHolderSetup(tabName, slot, img, equipItem);
+    }
+    else {
+        itemHolder = itemHolderSetup(tabName, slot, img);
+    }
     document.getElementsByClassName('slot')[slot].appendChild(itemHolder);
 }
 
@@ -191,8 +197,14 @@ function processInventoryImages(img, slot) {
 
 const inventoryStatPairs = {'strength': 'STR', 'dexterity': 'DEX', 'intelligence': 'INT', 'luck': 'LUK', 'magicAttack': 'MAGIC ATTACK', 'physicalAttack': 'PHYSICAL ATTACK', 'maxHP': 'MaxHP', 'maxMP': 'MaxMP', 'bossDamageMultiplier': 'BOSS DAMAGE MULTIPLIER', 'evasion': 'Evasion', 'defense': 'Defense', 'accuracy': 'Accuracy', 'pierce': 'Pierce'};
 
-function itemHolderSetup(tabName, slot, img) {
+function itemHolderSetup(tabName, slot, img, equipItem) {
     let itemID = inventory[tabName][slot];
+    if (equipItem) { // if it came from the equipment screen (not the tab)
+        source = equipItem;
+    }
+    else { // if it came from the tab or the ground or the shop
+        source = inventory.DetailedEquip[slot];
+    }
     //span area
     var span = document.createElement('span');
     span.classList = ['numberText itemCount'];
@@ -217,20 +229,35 @@ function itemHolderSetup(tabName, slot, img) {
     
     if (tabName == 'Equip') {
         levelReqText = document.createElement('div');
-        levelReqText.innerHTML = 'REQ LEV: '.concat(inventory.DetailedEquip[slot]['stats']['reqLevelEquip']);
+        levelReqText.innerHTML = 'REQ LEV: '.concat(source['stats']['reqLevelEquip']);
         tooltipTopArea.appendChild(levelReqText)
 
         categoryText = document.createElement('div');
-        categoryText.innerHTML = 'CATEGORY: '.concat(inventory.DetailedEquip[slot]['exactType']);
+        categoryText.innerHTML = 'CATEGORY: '.concat(source['exactType']);
         tooltipBottomArea.appendChild(categoryText)
 
         statsTextArea = document.createElement('div');
         statsTextArea.classList = ['tooltipStatsTextArea'];
-        inventory.DetailedEquip[slot]['usedStats'].forEach(function(stat) {
+        source['usedStats'].forEach(function(stat) {
             let statText = document.createElement('div');
-            statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', inventory.DetailedEquip[slot]['stats'][stat]);
+            statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', source['stats'][stat]);
             if (stat == 'bossDamageMultiplier') {
                 statText.innerHTML += '%';
+            }
+            statsTextArea.appendChild(statText)
+        });
+        Object.keys(source['craftedStats']).forEach(function(stat) {
+            let statText = document.createElement('div');
+            statText.classList = ['craftedStat'];
+            if (stat.includes('Percent')) {
+                statName = stat.slice(0, stat.length-7)
+                statText.innerHTML = ''.concat(inventoryStatPairs[statName], ': +', source['craftedStats'][stat], '%');
+            }
+            else {
+                statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', source['craftedStats'][stat]);
+                if (stat == 'bossDamageMultiplier') {
+                    statText.innerHTML += '%';
+                }
             }
             statsTextArea.appendChild(statText)
         });

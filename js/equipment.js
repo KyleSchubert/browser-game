@@ -102,13 +102,53 @@ const slotText = {
     'Shoes': 'Shoes'
 };
 
+function canEquipToHere(desiredSlot, itemSlot) {
+    console.log(desiredSlot)
+    console.log(itemSlot)
+    let itemID = 0;
+    if (itemSlot < 30) {
+        itemID = inventory.DetailedEquip[itemSlot].id;
+    }
+    else {
+        itemID = itemsInEquipmentSlots[itemSlot-30].id;
+    }
+    if (equipmentStats[itemID]['reqLevelEquip'] > character.info.level){
+        return false
+    }
+    else {
+        let actualType = '';
+        switch (itemsAndTheirTypes[itemID][1]) {
+            case 'Accessory':
+            case 'Armor':
+                actualType = itemsAndTheirTypes[itemID][2];
+                break;
+            case 'Two-handed Weapon':
+            case 'One-handed Weapon':
+                actualType = 'Weapon';
+                break;
+            case 'Secondary Weapon':
+                actualType = 'Sub Weapon';
+                break;
+            default: // assuming no others need specific help to find their slot
+                actualType = itemsAndTheirTypes[itemID][2]; // not sure what others could have so this should be safe
+                break; 
+        }
+        if (slotRestrictions[actualType].includes(desiredSlot-30)) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+}
+
 $(document).ready(function() {
     for (var i = 0;  i < 6; i++) {
         $("#equipmentSlotsArea").append('<tr class="row"><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td></tr>');
     };
     
     for (var slot = 0; slot < 30; slot++) {
-        $('.equipmentSlot:eq(' + slot + ')').attr('data-slotID', slot)
+        $('.equipmentSlot:eq(' + slot + ')').attr('data-slotID', 30+slot)
     }
 
     disabledSlots.forEach(function(value) {
@@ -138,6 +178,9 @@ $(document).ready(function() {
 
 function getEquipmentCompoundStats(item) {
     stats = {};
+    console.log(item)
+    console.log(item['craftedStats'])
+    console.log(item.craftedStats)
     usedCraftedStats = Object.keys(item.craftedStats);
     item.usedStats.forEach(function(value) {
         if (usedCraftedStats.includes(value)) {
@@ -183,10 +226,13 @@ function equipmentLoad() {
 }
 
 
-function inventoryLoadOne(theItem, slot) {
+function equipmentLoadOne(theItem, slot) {
+    $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden')
+    $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot')
     itemImageSetup(theItem.id, processEquipmentImages, slot);
-    updateCharacterDisplay()
+    character.equipment[slot] = getEquipmentCompoundStats(theItem);
 
+    updateCharacterDisplay()
     makeDraggableItemsDraggable()
 
     target = $('.equipmentSlot:eq(' + slot + ')');
@@ -211,6 +257,7 @@ function processEquipmentImages(img, slot) {
 }
 
 function equipmentItemHolderSetup(slot, img) {
+    console.log(slot)
     let itemID = itemsInEquipmentSlots[slot].id;
     //tooltip area
     tooltip = document.createElement('div');
