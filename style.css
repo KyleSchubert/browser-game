@@ -1236,11 +1236,17 @@ input[type=number]::-webkit-inner-spin-button {
 
 #makerSelectorsArea {
     display: flex;
-    width: 600px;
+    width: 320px;
+    height: 99px;
+    flex-direction: column;
 }
 
-#makerSelectorsArea div {
-    height: calc(100% - 16px);
+#makerSelectorsArea select {
+    width: calc(100% - 16px);
+}
+
+#makerSelectorsArea .chosen-container {
+    margin: 4px;
 }
 
 #makerMainCategory {
@@ -1248,9 +1254,9 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #makerVisual {
+    flex: none;
     margin: 6px;
-    width: 268px;
-    height: 268px;
+    height: 184px;
     border: 1px solid black;
 }
 

@@ -1,5 +1,5 @@
 var somethingIsOpen = false;
-
+var somethingWasClosed = false;
 
 $('.guiOpeningButton').click(function() {
     guiType = guiGetType(this);

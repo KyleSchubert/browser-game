@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
         <link rel="stylesheet" href="/jquery-ui.css">
+        <link rel="stylesheet" href="/chosen.min.css">
         <script src="jquery-3.5.1.min.js"></script>
     </head>
     <body>
@@ -315,23 +316,21 @@
         </div>
         <div id="dataMakerArea">
             <div id="makerSelectorsArea">
-                <div id="makerMainCategory" class="easyList">
-                    <h4>Main Category</h4>
-                    <span class="easyItem">ITEMS</span>
-                    <span class="easyItem">MOBS</span>
-                </div>
-                <div id="makerSubCategory" class="easyList">
-                    <h4>Sub Category</h4>
-                    <span class="easyItem">-</span>
-                </div>
-                <div id="makerSpecificCategory" class="easyList">
-                    <h4>Specific Thing</h4>
-                    <span class="easyItem">-</span>
+                <select class="chosen-select" data-index="0">
+                    <option>Mobs</option>
+                    <option>Items - Equip</option>
+                    <option>Items - Use</option>
+                    <option>Items - Etc</option>
+                </select>
+                <select class="chosen-select" data-index="1">
+                </select>
+                <select class="chosen-select" data-index="2">
+                </select>
+                <div id="makerVisual">
+                    <img src="/files/doubloon.png" style="visibility: hidden">
                 </div>
             </div>
-            <div id="makerVisual">
-                <img src="/files/doubloon.png" style="visibility: hidden">
-            </div>
+            
         </div>
         <!-- Game Stuff -->
         <script src="js/avatar.js"></script>
@@ -356,5 +355,6 @@
         <script src="js/etcScripts.js"></script>
         <script src="jquery-ui.js"></script>
         <script src="chosen.jquery.min.js"></script>
+        <script src="chosen.proto.min.js"></script>
     </body>
 </html>
