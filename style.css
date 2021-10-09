@@ -1254,10 +1254,29 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #makerVisual {
+    display: flex;
     flex: none;
+    justify-content: center;
     margin: 6px;
     height: 184px;
     border: 1px solid black;
+}
+
+#makerVisual img {
+    place-self: center;
+}
+
+#makerDataArea {
+    width: 350px;
+    position: relative;
+    top: 1px;
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid black;
+}
+
+#makerDataArea select {
+    width: calc(100% - 80px);
 }
 
 .clickable {
