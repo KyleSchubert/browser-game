@@ -10,14 +10,14 @@ var sounds = [];
 
 if (window.AudioContext) {
     gainNode.connect(audioCtx.destination);
-    gainNode.gain.value = 0.16; 
+    gainNode.gain.value = 0.16;
 }
 
 async function getFile(filepath) {
-  const response = await fetch(filepath);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-  return audioBuffer;
+    const response = await fetch(filepath);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    return audioBuffer;
 }
 
 async function loadFile(filePath) {
@@ -29,25 +29,28 @@ async function loadFile(filePath) {
 let offset = 0;
 
 function playTrack(audioBuffer) {
-  const trackSource = audioCtx.createBufferSource();
-  trackSource.buffer = audioBuffer;
-  trackSource.connect(audioCtx.destination)
+    const trackSource = audioCtx.createBufferSource();
+    trackSource.buffer = audioBuffer;
+    trackSource.connect(audioCtx.destination);
 
-  if (offset == 0) {
-    trackSource.start();
-    offset = audioCtx.currentTime;
-  } else {
-    trackSource.start(0, audioCtx.currentTime - offset);
-  }
+    if (offset == 0) {
+        trackSource.start();
+        offset = audioCtx.currentTime;
+    }
+    else {
+        trackSource.start(0, audioCtx.currentTime - offset);
+    }
 
-  return trackSource;
+    return trackSource;
 }
 
 function playSound(buf) {
-    var source = audioCtx.createBufferSource();
+    const source = audioCtx.createBufferSource();
     source.buffer = buf;
     source.connect(gainNode);
-    source.onended = function(){if(this.stop)this.stop(); if(this.disconnect)this.disconnect();}
+    source.onended = function() {
+        if (this.stop) this.stop(); if (this.disconnect) this.disconnect();
+    };
     source.start(0);
 }
 
@@ -55,14 +58,14 @@ sounds.length = allSoundFiles.length;
 function soundWork(sound) {
     loadFile(sound).then((track) => {
         sounds[UNIQUELENGTHS.indexOf(track.length)] = track;
-    })
+    });
 }
 
-$(document).ready(function() { //double checks that I have every sound loaded
-    allSoundFiles.forEach(soundWork)
-})
+$(document).ready(function() { // double checks that I have every sound loaded
+    allSoundFiles.forEach(soundWork);
+});
 
 // Assigning the sounds to things
 $('#testSound').click(function() {
-    playSound(sounds[0]) // pickup.wav
+    playSound(sounds[0]); // pickup.wav
 });

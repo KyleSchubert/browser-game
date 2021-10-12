@@ -1,3 +1,4 @@
+/* eslint-disable */
 var knownMobs = ['tino', 'orange mushroom', 'mushmom', 'mutant ribbon pig'];
 
 // found using   http://gifduration.konstochvanligasaker.se/     (these are in milliseconds)

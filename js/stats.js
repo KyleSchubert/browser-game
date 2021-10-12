@@ -1,5 +1,5 @@
 function getCompoundedStats() {
-    compoundedStatsToIterateThrough.forEach(getOneCompoundedStat)
+    compoundedStatsToIterateThrough.forEach(getOneCompoundedStat);
 }
 
 const statsWithPercentMultipliers = ['strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp'];
@@ -29,7 +29,7 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
     value = character.stats[stat];
     if (stat in relatedStats) {
         values = [];
-        relatedStats[stat].forEach(x => values.push(character.compoundedStats[x]))
+        relatedStats[stat].forEach((x) => values.push(character.compoundedStats[x]));
         sum = values.reduce((x, y) => x + y);
         sum *= statCoefficients[stat];
         value += sum;
@@ -38,7 +38,7 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
     value += flatValue;
     value *= (1 + percentValue / 100);
     character.compoundedStats[stat] = value;
-    return value
+    return value;
 }
 
 function getEquipmentStat(stat, percent=false) {
@@ -47,15 +47,15 @@ function getEquipmentStat(stat, percent=false) {
     if (percent) {
         character.equipment.forEach(function(slot) {
             if (Object.keys(slot).includes(stat + 'Percent')) {
-                percents.push(slot[stat + 'Percent'])
+                percents.push(slot[stat + 'Percent']);
             }
-        })
+        });
     }
     character.equipment.forEach(function(slot) {
         if (Object.keys(slot).includes(stat)) {
-            flats.push(slot[stat])
+            flats.push(slot[stat]);
         }
-    })
+    });
     if (percents.length) {
         percentValue = percents.reduce((x, y) => x + y);
     }
@@ -68,7 +68,7 @@ function getEquipmentStat(stat, percent=false) {
     else {
         flatValue = 0;
     }
-    return [flatValue, percentValue]
+    return [flatValue, percentValue];
 }
 
 function regeneration() {
@@ -84,12 +84,12 @@ function regeneration() {
     else {
         character.info.currentMp += character.info.mpRegen;
     }
-    updateOneCharacterDisplay('hp')
-    updateOneCharacterDisplay('mp')
-    setTimeout(regeneration, 850)
+    updateOneCharacterDisplay('hp');
+    updateOneCharacterDisplay('mp');
+    setTimeout(regeneration, 850);
 }
 
 $(document).ready(function() {
-    updateCharacterDisplay()
-    regeneration()
-})
+    updateCharacterDisplay();
+    regeneration();
+});

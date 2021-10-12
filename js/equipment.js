@@ -10,14 +10,14 @@ class EquipItem {
 
         this.hasName = knownItemNames.includes(itemID);
         this.hasPrice = Object.keys(shopWorths).includes(itemID.toString());
-        
+
         if (this.hasName) {
             this.name = itemNames[itemID];
         }
         else {
             this.name = 'UNKNOWN_ITEM';
         }
-        
+
         if (this.hasPrice) {
             this.price = shopWorths[itemID];
         }
@@ -30,18 +30,18 @@ class EquipItem {
         this.craftedStats = craftedStats;
     }
     generateRNGStats() {
-        let numberOfChanges = Math.floor(Math.random() * 3);
+        const numberOfChanges = Math.floor(Math.random() * 3);
         for (let j=0; j<numberOfChanges; j++) {
-            let changeQuality = Math.floor(Math.random() * 2);
+            const changeQuality = Math.floor(Math.random() * 2);
             let statToChange = Math.floor(Math.random() * Object.keys(this.stats).length);
-            statToChange = Object.keys(this.stats)[statToChange]
+            statToChange = Object.keys(this.stats)[statToChange];
             if (changeQuality) { // (1) good roll
-                this.stats[statToChange] += 1
+                this.stats[statToChange] += 1;
             }
             else { // (0) bad roll
-                let neutralChange = Math.floor(Math.random() * 2);
+                const neutralChange = Math.floor(Math.random() * 2);
                 if (!neutralChange) {
-                    this.stats[statToChange] -= 1
+                    this.stats[statToChange] -= 1;
                 }
             }
         }
@@ -49,13 +49,13 @@ class EquipItem {
 }
 
 function getUsedStats(stats) {
-    let usedStats = [];
+    const usedStats = [];
     Object.keys(stats).forEach(function(stat) {
         if (stats[stat] != 0 && stat != 'reqLevelEquip') {
-            usedStats.push(stat)
+            usedStats.push(stat);
         }
     });
-    return usedStats
+    return usedStats;
 }
 
 // makes the slots
@@ -78,7 +78,7 @@ const slotRestrictions = {
     'Bottom': [22],
     'Gloves': [23],
     'Cape': [24],
-    'Shoes': [27],
+    'Shoes': [27]
 };
 const slotText = {
     'Ring': 'Ring',
@@ -103,8 +103,8 @@ const slotText = {
 };
 
 function canEquipToHere(desiredSlot, itemSlot) {
-    console.log(desiredSlot)
-    console.log(itemSlot)
+    console.log(desiredSlot);
+    console.log(itemSlot);
     let itemID = 0;
     if (itemSlot < 30) {
         itemID = inventory.DetailedEquip[itemSlot].id;
@@ -112,8 +112,8 @@ function canEquipToHere(desiredSlot, itemSlot) {
     else {
         itemID = itemsInEquipmentSlots[itemSlot-30].id;
     }
-    if (equipmentStats[itemID]['reqLevelEquip'] > character.info.level){
-        return false
+    if (equipmentStats[itemID]['reqLevelEquip'] > character.info.level) {
+        return false;
     }
     else {
         let actualType = '';
@@ -131,50 +131,50 @@ function canEquipToHere(desiredSlot, itemSlot) {
                 break;
             default: // assuming no others need specific help to find their slot
                 actualType = itemsAndTheirTypes[itemID][2]; // not sure what others could have so this should be safe
-                break; 
+                break;
         }
         if (slotRestrictions[actualType].includes(desiredSlot-30)) {
-            return true
+            return true;
         }
         else {
-            return false
+            return false;
         }
     }
 }
 
 $(document).ready(function() {
-    for (var i = 0;  i < 6; i++) {
-        $("#equipmentSlotsArea").append('<tr class="row"><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td></tr>');
+    for (let i = 0; i < 6; i++) {
+        $('#equipmentSlotsArea').append('<tr class="row"><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td></tr>');
     };
-    
+
     for (var slot = 0; slot < 30; slot++) {
-        $('.equipmentSlot:eq(' + slot + ')').attr('data-slotID', 30+slot)
+        $('.equipmentSlot:eq(' + slot + ')').attr('data-slotID', 30+slot);
     }
 
     disabledSlots.forEach(function(value) {
-        $('.equipmentSlot:eq(' + value + ')').addClass('disabledSlot')
-    })
+        $('.equipmentSlot:eq(' + value + ')').addClass('disabledSlot');
+    });
 
     Object.keys(slotRestrictions).forEach(function(key) {
-        let slots = slotRestrictions[key];
+        const slots = slotRestrictions[key];
         slots.forEach(function(slot) {
-            $('.equipmentSlot:eq(' + slot + ')').append('<span class="slotRestrictionHelper">' + slotText[key].toUpperCase() + '</span>')
-        })
-    })
+            $('.equipmentSlot:eq(' + slot + ')').append('<span class="slotRestrictionHelper">' + slotText[key].toUpperCase() + '</span>');
+        });
+    });
 
     for (var slot = 0; slot < 30; slot++) {
-        $('.equipmentSlot:eq(' + slot + ')').addClass('emptyEquipmentSlot')
+        $('.equipmentSlot:eq(' + slot + ')').addClass('emptyEquipmentSlot');
     }
 
     character.equipment.length = 30;
-    character.equipment.fill({}, 0, 30)
+    character.equipment.fill({}, 0, 30);
 
     itemsInEquipmentSlots = [new EquipItem(1112434, {luck: 5, evasion: 13, luckPercent: 18})];
     itemsInEquipmentSlots.length = 30;
-    itemsInEquipmentSlots.fill(0, 1, 30)
+    itemsInEquipmentSlots.fill(0, 1, 30);
 
-    equipmentLoad()
-})
+    equipmentLoad();
+});
 
 function getEquipmentCompoundStats(item) {
     stats = {};
@@ -182,7 +182,6 @@ function getEquipmentCompoundStats(item) {
     item.usedStats.forEach(function(value) {
         if (usedCraftedStats.includes(value)) {
             stats[value] = item.craftedStats[value] + item.stats[value];
-
         }
         else {
             stats[value] = item.stats[value];
@@ -193,69 +192,68 @@ function getEquipmentCompoundStats(item) {
             stats[value] = item.craftedStats[value];
         }
     });
-    return stats
+    return stats;
 }
 
 function equipmentLoad() {
-    $('.equipmentSlot:not(.disabledSlot) div').remove()
+    $('.equipmentSlot:not(.disabledSlot) div').remove();
     itemsInEquipmentSlots.forEach(function(value, slot) {
         if (value) {
-            $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden')
-            $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot')
-            itemImageSetup(value.id, processEquipmentImages, slot)
+            $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden');
+            $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot');
+            itemImageSetup(value.id, processEquipmentImages, slot);
             character.equipment[slot] = getEquipmentCompoundStats(value);
         }
     });
-    updateCharacterDisplay()
-    makeDraggableItemsDraggable()
+    updateCharacterDisplay();
+    makeDraggableItemsDraggable();
     $('.equipmentSlot').mousemove(function(event) {
         if (isSomethingBeingDragged) { // someone wants to swap items
-            prepareToSwapItems(event, 1)
+            prepareToSwapItems(event, 1);
         }
         else { // nevermind
-            prepareToSwapItems(event, 0)
+            prepareToSwapItems(event, 0);
         }
     });
 
     $('.equipmentSlot').mouseleave(function(event) {
-        prepareToSwapItems(event, 0)
-    })
+        prepareToSwapItems(event, 0);
+    });
 }
 
 
 function equipmentLoadOne(theItem, slot) {
-    $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden')
-    $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot')
+    $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden');
+    $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot');
     itemImageSetup(theItem.id, processEquipmentImages, slot);
     character.equipment[slot] = getEquipmentCompoundStats(theItem);
 
-    updateCharacterDisplay()
-    makeDraggableItemsDraggable()
+    updateCharacterDisplay();
+    makeDraggableItemsDraggable();
 
     target = $('.equipmentSlot:eq(' + slot + ')');
     target.mousemove(function(event) {
         if (isSomethingBeingDragged) { // someone wants to swap items
-            prepareToSwapItems(event, 1)
+            prepareToSwapItems(event, 1);
         }
         else { // nevermind
-            prepareToSwapItems(event, 0)
+            prepareToSwapItems(event, 0);
         }
     });
 
     target.mouseleave(function(event) {
-        prepareToSwapItems(event, 0)
-    })
-    
+        prepareToSwapItems(event, 0);
+    });
 }
 
 function processEquipmentImages(img, slot) {
     itemHolder = equipmentItemHolderSetup(slot, img);
-    $('.equipmentSlot:eq(' + slot + ')').append(itemHolder)
+    $('.equipmentSlot:eq(' + slot + ')').append(itemHolder);
 }
 
 function equipmentItemHolderSetup(slot, img) {
-    let itemID = itemsInEquipmentSlots[slot].id;
-    //tooltip area
+    const itemID = itemsInEquipmentSlots[slot].id;
+    // tooltip area
     tooltip = document.createElement('div');
     tooltip.classList = ['itemTooltip'];
 
@@ -269,31 +267,31 @@ function equipmentItemHolderSetup(slot, img) {
     tooltipBottomArea = document.createElement('div');
     tooltipBottomArea.classList = ['tooltipBottomArea'];
 
-    tooltipTopArea.appendChild(img.cloneNode())
-    
+    tooltipTopArea.appendChild(img.cloneNode());
+
     levelReqText = document.createElement('div');
     levelReqText.innerHTML = 'REQ LEV: '.concat(itemsInEquipmentSlots[slot]['stats']['reqLevelEquip']);
-    tooltipTopArea.appendChild(levelReqText)
+    tooltipTopArea.appendChild(levelReqText);
 
     categoryText = document.createElement('div');
     categoryText.innerHTML = 'CATEGORY: '.concat(itemsInEquipmentSlots[slot]['exactType']);
-    tooltipBottomArea.appendChild(categoryText)
+    tooltipBottomArea.appendChild(categoryText);
 
     statsTextArea = document.createElement('div');
     statsTextArea.classList = ['tooltipStatsTextArea'];
     itemsInEquipmentSlots[slot]['usedStats'].forEach(function(stat) {
-        let statText = document.createElement('div');
+        const statText = document.createElement('div');
         statText.innerHTML = ''.concat(inventoryStatPairs[stat], ': +', itemsInEquipmentSlots[slot]['stats'][stat]);
         if (stat == 'bossDamageMultiplier') {
             statText.innerHTML += '%';
         }
-        statsTextArea.appendChild(statText)
+        statsTextArea.appendChild(statText);
     });
     Object.keys(itemsInEquipmentSlots[slot]['craftedStats']).forEach(function(stat) {
-        let statText = document.createElement('div');
+        const statText = document.createElement('div');
         statText.classList = ['craftedStat'];
         if (stat.includes('Percent')) {
-            statName = stat.slice(0, stat.length-7)
+            statName = stat.slice(0, stat.length-7);
             statText.innerHTML = ''.concat(inventoryStatPairs[statName], ': +', itemsInEquipmentSlots[slot]['craftedStats'][stat], '%');
         }
         else {
@@ -302,21 +300,21 @@ function equipmentItemHolderSetup(slot, img) {
                 statText.innerHTML += '%';
             }
         }
-        
-        statsTextArea.appendChild(statText)
-    });
-    tooltipBottomArea.appendChild(statsTextArea)
-    
 
-    tooltip.appendChild(tooltipName)
-    tooltip.appendChild(tooltipTopArea)
-    tooltip.appendChild(tooltipBottomArea)
-    //itemHolder area
+        statsTextArea.appendChild(statText);
+    });
+    tooltipBottomArea.appendChild(statsTextArea);
+
+
+    tooltip.appendChild(tooltipName);
+    tooltip.appendChild(tooltipTopArea);
+    tooltip.appendChild(tooltipBottomArea);
+    // itemHolder area
     itemHolder = document.createElement('div');
     itemHolder.classList = ['draggableItem itemHolder'];
-    itemHolder.appendChild(tooltip)
-    itemHolder.appendChild(img)
-    
+    itemHolder.appendChild(tooltip);
+    itemHolder.appendChild(img);
+
     $(itemHolder).on('mousemove', function(event) {
         $(event.currentTarget).children('.itemTooltip').css({
             'left': event.pageX - 240,
@@ -329,5 +327,5 @@ function equipmentItemHolderSetup(slot, img) {
             'visibility': 'hidden'
         });
     });
-    return itemHolder
+    return itemHolder;
 }

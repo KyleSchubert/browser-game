@@ -9,22 +9,22 @@ var itemBeingSoldId = 0;
 
 
 function makeDraggableItemsDraggable() {
-    $(function () {
+    $(function() {
         $('.draggableItem').draggable({
             start: function(event) {
-                playSound(sounds[8]) // DragStart.mp3
-                $(event.currentTarget).css('visibility', 'hidden')
-                $('#draggedItemHolder').css('visibility', 'visible')
+                playSound(sounds[8]); // DragStart.mp3
+                $(event.currentTarget).css('visibility', 'hidden');
+                $('#draggedItemHolder').css('visibility', 'visible');
                 isSomethingBeingDragged = true;
-                $(event.currentTarget).css('pointer-events', 'none')
+                $(event.currentTarget).css('pointer-events', 'none');
                 imgLink = $(event.currentTarget).children('img').attr('src');
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
             },
             stop: function(event) {
-                $('#draggedItemHolder').css('visibility', 'hidden')
-                $(this).css('visibility', 'visible')
+                $('#draggedItemHolder').css('visibility', 'hidden');
+                $(this).css('visibility', 'visible');
                 isSomethingBeingDragged = false;
-                $(this).css('pointer-events', 'auto')
+                $(this).css('pointer-events', 'auto');
                 if (isSellBoxReady) { // THEY MUST BE TRYING TO SELL THE ITEM
                     itemBeingSoldCount = parseInt($(this).children('.itemCount').html());
                     if (!itemBeingSoldCount) {
@@ -32,42 +32,42 @@ function makeDraggableItemsDraggable() {
                     }
                     itemBeingSoldId = $(this).children('.item').val();
                     itemBeingSold = this;
-                    sellProcess()
+                    sellProcess();
                 }
                 else if (isSwapItemsReady) {
-                    playSound(sounds[7]) // DragEnd.mp3
+                    playSound(sounds[7]); // DragEnd.mp3
                     pickedUpItemSlot = this.parentElement.getAttribute('data-slotID');
                     targetSlot = currentSwapDestination;
-                    let involvingEquipmentScreen = (pickedUpItemSlot > 29 || targetSlot > 29);
-                    let involvingInventory = (pickedUpItemSlot < 30 || targetSlot < 30);
+                    const involvingEquipmentScreen = (pickedUpItemSlot > 29 || targetSlot > 29);
+                    const involvingInventory = (pickedUpItemSlot < 30 || targetSlot < 30);
                     if (pickedUpItemSlot != targetSlot) {
                         if (involvingEquipmentScreen && !involvingInventory) {
                             if (canEquipToHere(targetSlot, pickedUpItemSlot)) {
-                                $(this).remove()
-                                $('[data-slotid="' + targetSlot + '"] .itemHolder').remove()
+                                $(this).remove();
+                                $('[data-slotid="' + targetSlot + '"] .itemHolder').remove();
                                 _ = itemsInEquipmentSlots[pickedUpItemSlot-30]; // for some reason, doing the usual [1, 2] = [2, 1]; swap gives an error so oh well
                                 itemsInEquipmentSlots[pickedUpItemSlot-30] = itemsInEquipmentSlots[targetSlot-30];
                                 itemsInEquipmentSlots[targetSlot-30] = _;
                                 character.equipment[pickedUpItemSlot-30] = {};
                                 character.equipment[targetSlot-30] = {};
                                 if (itemsInEquipmentSlots[pickedUpItemSlot-30] != 0) {
-                                    equipmentLoadOne(itemsInEquipmentSlots[pickedUpItemSlot-30], pickedUpItemSlot-30)
+                                    equipmentLoadOne(itemsInEquipmentSlots[pickedUpItemSlot-30], pickedUpItemSlot-30);
                                 }
                                 else {
-                                    $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot')
-                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible')
+                                    $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot');
+                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible');
                                 }
-                                equipmentLoadOne(itemsInEquipmentSlots[targetSlot-30], targetSlot-30)
-                                $('[data-slotid="' + targetSlot + '"]').removeClass('emptyEquipmentSlot')
-                                $('[data-slotid="' + targetSlot + '"] .slotRestrictionHelper').css('visibility', 'hidden')
+                                equipmentLoadOne(itemsInEquipmentSlots[targetSlot-30], targetSlot-30);
+                                $('[data-slotid="' + targetSlot + '"]').removeClass('emptyEquipmentSlot');
+                                $('[data-slotid="' + targetSlot + '"] .slotRestrictionHelper').css('visibility', 'hidden');
                             }
                             else {
-                                $(this).css('left', '0px')
-                                $(this).css('top', '0px')
+                                $(this).css('left', '0px');
+                                $(this).css('top', '0px');
                             }
                         }
                         else if (involvingEquipmentScreen && involvingInventory) {
-                            let tab = inventory.readyName();
+                            const tab = inventory.readyName();
                             if (tab == 'Equip') {
                                 if (pickedUpItemSlot > 29) {
                                     equippedItemSlot = pickedUpItemSlot;
@@ -79,48 +79,48 @@ function makeDraggableItemsDraggable() {
                                 }
                                 if (inventory.DetailedEquip[inventoryItemSlot]) {
                                     if (canEquipToHere(equippedItemSlot, inventoryItemSlot)) {
-                                        removeAllChildNodes($('[data-slotid="' + inventoryItemSlot + '"]'))
+                                        removeAllChildNodes($('[data-slotid="' + inventoryItemSlot + '"]'));
                                         if (itemsInEquipmentSlots[equippedItemSlot-30]) { // swapping an equipped item with an unequipped one
-                                            $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove()
-                                            let oldEquippedItem = itemsInEquipmentSlots[equippedItemSlot-30];
+                                            $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove();
+                                            const oldEquippedItem = itemsInEquipmentSlots[equippedItemSlot-30];
                                             itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
                                             inventory.DetailedEquip[inventoryItemSlot] = oldEquippedItem;
-                                            equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30)
-                                            inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot])
+                                            equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30);
+                                            inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot]);
                                         }
                                         else { // equipping an item into an empty slot
                                             itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
                                             inventory.DetailedEquip[inventoryItemSlot] = 0;
                                             inventory.Equip[inventoryItemSlot] = 0;
-                                            equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30)
+                                            equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30);
                                         }
                                     }
                                     else {
-                                        $(this).css('left', '0px')
-                                        $(this).css('top', '0px')
+                                        $(this).css('left', '0px');
+                                        $(this).css('top', '0px');
                                     }
                                 }
                                 else { // unequipping an item
-                                    $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove()
+                                    $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove();
                                     character.equipment[equippedItemSlot-30] = {};
-                                    updateCharacterDisplay()
-                                    $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot')
-                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible')
+                                    updateCharacterDisplay();
+                                    $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot');
+                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible');
                                     inventory.DetailedEquip[inventoryItemSlot] = itemsInEquipmentSlots[equippedItemSlot-30];
                                     inventory.Equip[inventoryItemSlot] = inventory.DetailedEquip[inventoryItemSlot].id;
-                                    itemsInEquipmentSlots[equippedItemSlot-30] = 0
-                                    inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot])
+                                    itemsInEquipmentSlots[equippedItemSlot-30] = 0;
+                                    inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot]);
                                 }
                             }
                             else {
-                                $(this).css('left', '0px')
-                                $(this).css('top', '0px')
+                                $(this).css('left', '0px');
+                                $(this).css('top', '0px');
                             }
                         }
                         else { // just   involvingInventory
-                            let targetTab = inventory.readyName();
-                            removeAllChildNodes($('[data-slotid="' + targetSlot + '"]'))
-                            $(this).remove()
+                            const targetTab = inventory.readyName();
+                            removeAllChildNodes($('[data-slotid="' + targetSlot + '"]'));
+                            $(this).remove();
                             if (targetTab == 'Equip') {
                                 [inventory.DetailedEquip[targetSlot], inventory.DetailedEquip[pickedUpItemSlot]] = [inventory.DetailedEquip[pickedUpItemSlot], inventory.DetailedEquip[targetSlot]];
                             }
@@ -139,21 +139,21 @@ function makeDraggableItemsDraggable() {
                                 [inventory[targetTab][targetSlot], inventory[targetTab][pickedUpItemSlot]] = [inventory[targetTab][pickedUpItemSlot], inventory[targetTab][targetSlot]];
                                 [inventory.counts[targetTab][targetSlot], inventory.counts[targetTab][pickedUpItemSlot]] = [inventory.counts[targetTab][pickedUpItemSlot], inventory.counts[targetTab][targetSlot]];
                             }
-                            previousHighlightedImage.remove()
+                            previousHighlightedImage.remove();
                             if (inventory[targetTab][pickedUpItemSlot] != 0) {
-                                inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot])
+                                inventoryLoadOne(targetTab, pickedUpItemSlot, inventory[targetTab][pickedUpItemSlot]);
                             }
-                            inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot])
+                            inventoryLoadOne(targetTab, targetSlot, inventory[targetTab][targetSlot]);
                         }
                     }
                     else {
-                        $(this).css('left', '0px')
-                        $(this).css('top', '0px')
+                        $(this).css('left', '0px');
+                        $(this).css('top', '0px');
                     }
                 }
                 else {
-                    $(this).css('left', '0px')
-                    $(this).css('top', '0px')
+                    $(this).css('left', '0px');
+                    $(this).css('top', '0px');
                 }
             },
             containment: 'window'
@@ -173,30 +173,30 @@ function prepareToSwapItems(event, yes) {
 
 $('.sellArea').on('mousemove', function(event) {
     if (isSomethingBeingDragged) { // someone wants to sell something
-        prepareSellBox(event, 1)
+        prepareSellBox(event, 1);
     }
     else { // they don't :^(
-        prepareSellBox(event, 0)
+        prepareSellBox(event, 0);
     }
 });
 
 $('.sellArea').on('mouseleave', function(event) {
-    prepareSellBox(event, 0)
-})
+    prepareSellBox(event, 0);
+});
 
 const originalSellAreaBackgroundColor = $('.sellArea').css('background-color');
 function prepareSellBox(event, yes) {
     if (yes) {
         isSellBoxReady = true;
-        $(event.delegateTarget).css('background-color', 'rgb(218, 218, 218')
-        $(event.delegateTarget).children('.beforeSellText1').css('visibility', 'hidden')
-        $(event.delegateTarget).children('.beforeSellText2').css('visibility', 'hidden')
+        $(event.delegateTarget).css('background-color', 'rgb(218, 218, 218');
+        $(event.delegateTarget).children('.beforeSellText1').css('visibility', 'hidden');
+        $(event.delegateTarget).children('.beforeSellText2').css('visibility', 'hidden');
     }
     else {
         isSellBoxReady = false;
-        $(event.delegateTarget).css('background-color', originalSellAreaBackgroundColor)
-        $(event.delegateTarget).children('.beforeSellText1').css('visibility', 'inherit')
-        $(event.delegateTarget).children('.beforeSellText2').css('visibility', 'inherit')
+        $(event.delegateTarget).css('background-color', originalSellAreaBackgroundColor);
+        $(event.delegateTarget).children('.beforeSellText1').css('visibility', 'inherit');
+        $(event.delegateTarget).children('.beforeSellText2').css('visibility', 'inherit');
     }
 }
 
@@ -207,17 +207,17 @@ function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED
                 if ($(this).parent()[0].classList.contains('shopItemArea')) {
                     price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text().replace(/,/g, ''));
                     if (doTheyHaveEnoughDoubloons(price)) {
-                        dialogTrigger('shop')
+                        dialogTrigger('shop');
                     }
                     else {
-                        dialogTrigger('too expensive')
+                        dialogTrigger('too expensive');
                     }
                 }
             }
-            $('.selectedThing')[0].classList.remove('selectedThing')
+            $('.selectedThing')[0].classList.remove('selectedThing');
         }
-        this.classList.add('selectedThing')
-    })
+        this.classList.add('selectedThing');
+    });
 }
 
 var dialogAmountAreaAutoUpdateText = false; // self-explanatory
@@ -226,46 +226,45 @@ var dialogMainReason = ''; // used when the reason can't easily be given as an i
 var dialogSubReason = ''; // used typically with the above variable
 function dialogTrigger(reason) {
     dialogPrepare(reason);
-    dialogShow(reason)
+    dialogShow(reason);
 }
 
 var smallDialogBoxOpen = false;
 function dialogShow(reason) {
-    playSound(sounds[3])
+    playSound(sounds[3]);
     dialogMainReason = reason;
     if (reason == 'shop') {
-        dialogActivateInteractivityControl()
+        dialogActivateInteractivityControl();
     }
     if (reason == 'too expensive') {
-        dialogActivateInteractivityControl()
+        dialogActivateInteractivityControl();
     }
 }
 
 function dialogActivateInteractivityControl() {
     smallDialogBoxOpen = true;
-    $('#smallDialogBoxHolder').css('visibility', 'visible')
-    $('#superBlocker').css('visibility', 'visible')
-    $('#superBlocker').css('pointer-events', 'auto')
-    $('#guiHolder #shopHolder div').css('pointer-events', 'none')
+    $('#smallDialogBoxHolder').css('visibility', 'visible');
+    $('#superBlocker').css('visibility', 'visible');
+    $('#superBlocker').css('pointer-events', 'auto');
+    $('#guiHolder #shopHolder div').css('pointer-events', 'none');
 }
 
 function dialogPrepare(reason) {
-    prepareAmountInitialValue()
-    prepareAmountRange()
-    dialogPrepareText(reason)
+    prepareAmountInitialValue();
+    prepareAmountRange();
+    dialogPrepareText(reason);
     if (reason == 'shop') {
         if ((!weAreCurrentlySelling && itemsAndTheirTypes[shopGetItemId()][0] == 'Equip') || (weAreCurrentlySelling && inventory.readyName() == 'Equip')) {
-            silentToggleVisibility(dialogTextArea)
+            silentToggleVisibility(dialogTextArea);
         }
         else {
-            silentToggleVisibility(dialogAmountArea)
-            silentToggleVisibility(dialogTextArea)
+            silentToggleVisibility(dialogAmountArea);
+            silentToggleVisibility(dialogTextArea);
         }
-        
     }
     else if (reason == 'too expensive') { // only happens if buying an item
-        dialogPrepareText(reason)
-        silentToggleVisibility(dialogTextArea)
+        dialogPrepareText(reason);
+        silentToggleVisibility(dialogTextArea);
     }
 }
 
@@ -280,26 +279,26 @@ function dialogPrepareText(reason) {
         if (storageIsOpen) {
             if (weAreCurrentlySelling) {
                 dialogSubReason = 'deposit';
-                text.push('Would you like to deposit')
+                text.push('Would you like to deposit');
                 itemName = itemNames[itemBeingSoldId].toString();
                 itemPrice = shopWorths[itemBeingSoldId].toString();
             }
             else {
                 dialogSubReason = 'withdraw';
-                text.push('Would you like to withdraw')
+                text.push('Would you like to withdraw');
                 itemName = $('.selectedThing:eq(0) .itemCardName').text();
                 itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
             }
-            text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
-            text.push('<strong>' + itemName + '</strong>')
+            text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>');
+            text.push('<strong>' + itemName + '</strong>');
             itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
             itemPrice = numberWithCommas(transferAmount);
-            text.push('for ' + itemPrice + ' ' + moneyWord + '?')
+            text.push('for ' + itemPrice + ' ' + moneyWord + '?');
         }
         else {
             if (weAreCurrentlySelling) {
                 dialogSubReason = 'sell';
-                text.push('Would you like to sell')
+                text.push('Would you like to sell');
                 itemName = itemNames[itemBeingSoldId].toString();
                 if (Object.keys(shopWorths).includes(itemBeingSoldId.toString())) {
                     itemPrice = shopWorths[itemBeingSoldId].toString();
@@ -310,22 +309,21 @@ function dialogPrepareText(reason) {
             }
             else {
                 dialogSubReason = 'buy';
-                text.push('Would you like to purchase')
+                text.push('Would you like to purchase');
                 itemName = $('.selectedThing:eq(0) .itemCardName').text();
                 itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
             }
-            text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>')
-            text.push('<strong>' + itemName + '</strong>')
+            text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>');
+            text.push('<strong>' + itemName + '</strong>');
             itemPrice = parseInt(itemPrice.replace(/,/g, ''), 10); // https://stackoverflow.com/questions/4083372/in-javascript-jquery-what-is-the-best-way-to-convert-a-number-with-a-comma-int#answer-4083378
             itemPrice = numberWithCommas(itemPrice*transferAmount);
-            text.push('for ' + itemPrice + ' ' + moneyWord + '?')
+            text.push('for ' + itemPrice + ' ' + moneyWord + '?');
         }
-        
     }
     else if (reason == 'too expensive') {
-        text.push('This item cannot be afforded')
+        text.push('This item cannot be afforded');
     }
-    dialogSetText(text)
+    dialogSetText(text);
 }
 
 const originalAmountMinimum = 1;
@@ -346,7 +344,7 @@ function prepareAmountRange() {
         if (shopGetStock()) {
             amountMaximum = Math.min(shopGetStock(), shopMaxAffordNumber());
         }
-        else {   
+        else {
             amountMaximum = Math.min(originalAmountMaximum, shopMaxAffordNumber());
         }
     }
@@ -365,11 +363,11 @@ function prepareAmountInitialValue() {
     else {
         amountInitialValue = 1;
     }
-    amountSetInitialValues()
+    amountSetInitialValues();
 }
 
 function amountSetInitialValues(value=amountInitialValue) { // separated just in case I wanna do something with the fact that it's separated later
-    $('#smallAmountArea').val(value)
+    $('#smallAmountArea').val(value);
     transferAmount = value;
 }
 
@@ -380,37 +378,43 @@ $('#smallAmountArea').on('input', function() {
             if (checkItFirst <= amountMaximum) {
                 transferAmount = checkItFirst;
             }
-            else { transferAmount = amountMaximum; }
+            else {
+                transferAmount = amountMaximum;
+            }
         }
-        else { transferAmount = amountMinimum; }
+        else {
+            transferAmount = amountMinimum;
+        }
     }
-    else { transferAmount = amountMinimum; }
+    else {
+        transferAmount = amountMinimum;
+    }
     if (dialogAmountAreaAutoUpdateText) {
-        dialogPrepareText(dialogAmountAreaWhatAreWeDoing)
+        dialogPrepareText(dialogAmountAreaWhatAreWeDoing);
     }
 });
 
 function dialogSetText(t) {
     area = $('#smallTextArea span');
-    $(area).html(t.join('<br>')) 
+    $(area).html(t.join('<br>'));
 }
 
 function dialogCancel() {
     if (dialogMainReason == 'too expensive') {
-        playSound(sounds[5])
+        playSound(sounds[5]);
     }
-    closeSmallDialogBox()
-    resetSellProcess()
+    closeSmallDialogBox();
+    resetSellProcess();
 }
 
 function dialogProceed() {
-    $('#smallAmountArea').val(transferAmount)
+    $('#smallAmountArea').val(transferAmount);
     if (dialogMainReason == 'shop') {
         switch (dialogSubReason) {
-            case 'buy': 
+            case 'buy':
                 transferIt(true);
                 break;
-            case 'sell': 
+            case 'sell':
                 transferIt(false);
                 secondPartOfSellProcess();
                 break;
@@ -422,15 +426,14 @@ function dialogProceed() {
                 depositProcess();
                 break;
             default:
-                console.log('there is no case for this dialogSubReason: ')
-                console.log(dialogSubReason)
+                console.log('there is no case for this dialogSubReason: ');
+                console.log(dialogSubReason);
         }
-        playSound(sounds[2])
+        playSound(sounds[2]);
     }
     else if (dialogMainReason == 'too expensive') {
-        playSound(sounds[5]) // maybe no sound would be nicer?
+        playSound(sounds[5]); // maybe no sound would be nicer?
     }
-    closeSmallDialogBox()
-    
+    closeSmallDialogBox();
 }
 

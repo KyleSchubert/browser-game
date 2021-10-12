@@ -51,24 +51,24 @@ var character = {
                 leveledUp = true;
             }
             if (leveledUp) {
-                updateCharacterDisplay()
+                updateCharacterDisplay();
             }
         }
     }
-    
+
 };
 
 const compoundedStatsToIterateThrough = Object.keys(character.compoundedStats);
 
 const displayValuesToUpdate = ['name', 'attributePoints', 'class', 'job', 'level', 'loot', 'gold', 'rarity', 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp', 'defense', 'pierce', 'evasion', 'accuracy'];
 function updateCharacterDisplay() {
-    getCompoundedStats() // I think I'd always want to do this if I'm updating it anyways
-    displayValuesToUpdate.forEach(updateOneCharacterDisplay)
+    getCompoundedStats(); // I think I'd always want to do this if I'm updating it anyways
+    displayValuesToUpdate.forEach(updateOneCharacterDisplay);
     if (canAllocateAP) {
         $('.statButton').removeAttr('disabled');
     }
     else {
-        $('.statButton').attr('disabled','disabled');
+        $('.statButton').attr('disabled', 'disabled');
     }
 }
 
@@ -100,15 +100,15 @@ function updateOneCharacterDisplay(subject) {
             case 'intelligence': case 'luck':
                 character.info.mpRegen = (1/5) * Math.min(character.compoundedStats.intelligence, character.compoundedStats.luck);
                 value = character.compoundedStats[subject];
-                break;    
+                break;
             default:
                 value = character.compoundedStats[subject];
         }
     }
     if (typeof value == 'number') {
-        $('#' + subject + 'Value').text(Math.round(value))
+        $('#' + subject + 'Value').text(Math.round(value));
     }
     else {
-        $('#' + subject + 'Value').text(value)
+        $('#' + subject + 'Value').text(value);
     }
 }

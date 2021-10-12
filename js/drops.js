@@ -1,9 +1,9 @@
 function itemDropSetup(img, aligner) {
-    $(img).on("click", img, lootItem);
-    img.classList.add("droppedItem");
-    var div = document.createElement("div");
-    div.classList = ["itemAnimationHelper"];
-    document.getElementById("lootSurface").appendChild(aligner);
+    $(img).on('click', img, lootItem);
+    img.classList.add('droppedItem');
+    const div = document.createElement('div');
+    div.classList = ['itemAnimationHelper'];
+    document.getElementById('lootSurface').appendChild(aligner);
     $('.dropAligner').last().append(div);
     $('.itemAnimationHelper').last().append(img);
 }
@@ -13,38 +13,36 @@ function itemImageSetup(itemID, callback, slot=999999) {
         url = '/item/'.concat(itemID).concat('/icon.png');
         img = setupImage(url, itemID);
         if (slot != 999999) {
-            callback(img, slot)
+            callback(img, slot);
         }
         else {
-            return callback(img)
+            return callback(img);
         }
     }
     else {
         $.ajax({
-            url:'/item/'.concat(itemID).concat('/icon.png'),
-            type:'HEAD',
-            error: function()
-            {
-                img = getItemURL(itemID).concat("/icon");
-                knownItemImages.push(itemID)
-                img = setupImage(img, itemID)
+            url: '/item/'.concat(itemID).concat('/icon.png'),
+            type: 'HEAD',
+            error: function() {
+                img = getItemURL(itemID).concat('/icon');
+                knownItemImages.push(itemID);
+                img = setupImage(img, itemID);
                 if (slot != 999999) {
-                    callback(img, slot)
+                    callback(img, slot);
                 }
                 else {
-                    return callback(img)
+                    return callback(img);
                 }
             },
-            success: function()
-            {
+            success: function() {
                 img = '/item/'.concat(itemID).concat('/icon.png');
-                knownItemImages.push(itemID)
-                img = setupImage(img, itemID)
+                knownItemImages.push(itemID);
+                img = setupImage(img, itemID);
                 if (slot != 999999) {
-                    callback(img, slot)
+                    callback(img, slot);
                 }
                 else {
-                    return callback(img)
+                    return callback(img);
                 }
             }
         });
@@ -52,31 +50,31 @@ function itemImageSetup(itemID, callback, slot=999999) {
 }
 
 function setupImage(url, itemID) {
-    var finishedImage = new Image();
-    finishedImage.classList = ["item clickable"];
+    const finishedImage = new Image();
+    finishedImage.classList = ['item clickable'];
     finishedImage.src = url;
     finishedImage.value = itemID;
     finishedImage.setAttribute('draggable', false);
-    return finishedImage
+    return finishedImage;
 }
 
 function dropLoot(dropCount=$('#dropCount').val()) {
-    var aligner = document.createElement("div");
-    aligner.classList = ["dropAligner"];
-    aligner.style.width = "".concat(dropCount*32, "px");
+    const aligner = document.createElement('div');
+    aligner.classList = ['dropAligner'];
+    aligner.style.width = ''.concat(dropCount*32, 'px');
     aligner.value = dropCount;
-    const lootSurface = document.getElementById("lootSurface");
+    const lootSurface = document.getElementById('lootSurface');
     if (lootSurface.lastElementChild) {
         aligner.style.zIndex = Number(lootArea.lastElementChild.style.zIndex)+1;
     }
     else {
         aligner.style.zIndex = 1;
     }
-    aligner.style.marginLeft = "".concat((lootArea.offsetWidth - dropCount*32)/2, "px");
-    for (var i = 0; i < dropCount; i++) {
-        id = validItemIDs[Math.floor((Math.random() * validItemIDs.length))]; //FOR TESTING
-        itemImageSetup(id, itemDropSetup, aligner)
-        memorizeItemType(id)
+    aligner.style.marginLeft = ''.concat((lootArea.offsetWidth - dropCount*32)/2, 'px');
+    for (let i = 0; i < dropCount; i++) {
+        id = validItemIDs[Math.floor((Math.random() * validItemIDs.length))]; // FOR TESTING
+        itemImageSetup(id, itemDropSetup, aligner);
+        memorizeItemType(id);
     }
 }
 
@@ -104,12 +102,12 @@ function memorizeItemType(itemID) {
             if (typeof itemsAndTheirTypes[itemID] == 'undefined') {
                 itemsAndTheirTypes[itemID] = [overcat, cat, subcat];
             }
-            
+
             if (itemsAndTheirTypes[itemID][0] == 'Equip') {
-                memorizeEquipmentStats(itemID, data['metaInfo'])
+                memorizeEquipmentStats(itemID, data['metaInfo']);
             }
-            
-            checkIfWeKnowTheItemName(itemID)
+
+            checkIfWeKnowTheItemName(itemID);
         });
     }
 }
@@ -117,29 +115,49 @@ function memorizeItemType(itemID) {
 // 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp'
 function memorizeEquipmentStats(itemID, stats) {
     if (typeof equipmentStats[itemID] == 'undefined') {
-        let usedStats = Object.keys(stats);
+        const usedStats = Object.keys(stats);
         equipmentStats[itemID] = {};
-        if (usedStats.includes('incSTR')) {equipmentStats[itemID]['strength'] = stats['incSTR'];}
-        if (usedStats.includes('incDEX')) {equipmentStats[itemID]['dexterity'] = stats['incDEX'];}
-        if (usedStats.includes('incINT')) {equipmentStats[itemID]['intelligence'] = stats['incINT'];}
-        if (usedStats.includes('incLUK')) {equipmentStats[itemID]['luck'] = stats['incLUK'];}
-        if (usedStats.includes('incMHP')) {equipmentStats[itemID]['hp'] = stats['incMHP'];}
-        if (usedStats.includes('incMMP')) {equipmentStats[itemID]['mp'] = stats['incMMP'];}
-        if (usedStats.includes('incPAD')) {equipmentStats[itemID]['physicalAttack'] = stats['incPAD'];}
-        if (usedStats.includes('incMAD')) {equipmentStats[itemID]['magicAttack'] = stats['incMAD'];}
-        if (usedStats.includes('bdR')) {equipmentStats[itemID]['bossDamageMultiplier'] = stats['bdR'];}
-        if (usedStats.includes('reqLevelEquip')) {equipmentStats[itemID]['reqLevelEquip'] = stats['reqLevelEquip'];}
+        if (usedStats.includes('incSTR')) {
+            equipmentStats[itemID]['strength'] = stats['incSTR'];
+        }
+        if (usedStats.includes('incDEX')) {
+            equipmentStats[itemID]['dexterity'] = stats['incDEX'];
+        }
+        if (usedStats.includes('incINT')) {
+            equipmentStats[itemID]['intelligence'] = stats['incINT'];
+        }
+        if (usedStats.includes('incLUK')) {
+            equipmentStats[itemID]['luck'] = stats['incLUK'];
+        }
+        if (usedStats.includes('incMHP')) {
+            equipmentStats[itemID]['hp'] = stats['incMHP'];
+        }
+        if (usedStats.includes('incMMP')) {
+            equipmentStats[itemID]['mp'] = stats['incMMP'];
+        }
+        if (usedStats.includes('incPAD')) {
+            equipmentStats[itemID]['physicalAttack'] = stats['incPAD'];
+        }
+        if (usedStats.includes('incMAD')) {
+            equipmentStats[itemID]['magicAttack'] = stats['incMAD'];
+        }
+        if (usedStats.includes('bdR')) {
+            equipmentStats[itemID]['bossDamageMultiplier'] = stats['bdR'];
+        }
+        if (usedStats.includes('reqLevelEquip')) {
+            equipmentStats[itemID]['reqLevelEquip'] = stats['reqLevelEquip'];
+        }
     }
 }
 
 function clearItems() {
-    const lootSurface = document.getElementById("lootSurface");
+    const lootSurface = document.getElementById('lootSurface');
     while (lootSurface.lastElementChild) {
         lootSurface.removeChild(lootSurface.lastElementChild);
     }
 }
 
 function getItemURL(id) {
-    url = "https://maplestory.io/api/GMS/210.1.1/item/".concat(id);
-    return url
+    url = 'https://maplestory.io/api/GMS/210.1.1/item/'.concat(id);
+    return url;
 }

@@ -3,25 +3,25 @@ var somethingWasClosed = false;
 
 $('.guiOpeningButton').click(function() {
     guiType = guiGetType(this);
-    guiToggleVisibility(guiType, this.getAttribute('value'))
+    guiToggleVisibility(guiType, this.getAttribute('value'));
 });
 
 guiIDs = ['#shopHolder', '#equipmentHolder'];
 $('body').keydown(function(e) {
-    if (e.key === "Escape") { // escape key maps to keycode `27`
+    if (e.key === 'Escape') { // escape key maps to keycode `27`
         if (smallDialogBoxOpen) {
-            closeSmallDialogBox()
+            closeSmallDialogBox();
             if (weAreCurrentlySelling) {
-                resetSellProcess()
+                resetSellProcess();
             }
             if (dialogMainReason == 'too expensive') {
-                playSound(sounds[5])
+                playSound(sounds[5]);
             }
         }
         else {
-            guiIDs.forEach(guiClose)
+            guiIDs.forEach(guiClose);
             if (somethingWasClosed) {
-                playSound(sounds[5])
+                playSound(sounds[5]);
                 somethingWasClosed = false;
                 somethingIsOpen = false;
                 $('#guiHolder').css('top', 'calc(50% - 400px)');
@@ -32,38 +32,38 @@ $('body').keydown(function(e) {
 });
 
 $('body').keydown(function(e) {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
         if (smallDialogBoxOpen) {
-            dialogProceed()
+            dialogProceed();
         }
     }
-})
+});
 
 $(function() {
     $('#guiHolder').draggable({handle: '.draggableBar'});
     $('#guiHolder').draggable({cancel: '.guiInnerContentArea'});
     $('#guiHolder').draggable({scroll: false});
-    $('#smallDialogBoxHolder').draggable({handle: '.draggableBar'})
-    $('#smallDialogBoxHolder').draggable({cancel: '.smallDialogBox'})
-    $('#smallDialogBoxHolder').draggable({containment: '#guiHolder'})
-    //$().disableSelection();
+    $('#smallDialogBoxHolder').draggable({handle: '.draggableBar'});
+    $('#smallDialogBoxHolder').draggable({cancel: '.smallDialogBox'});
+    $('#smallDialogBoxHolder').draggable({containment: '#guiHolder'});
+    // $().disableSelection();
 } );
 
 guiTypes = {
     80001: 'shop',
     80002: 'storage',
     200: 'equipment'
-}
+};
 
 
 function guiGetType(node) {
-    return guiTypes[node.getAttribute('value')]
+    return guiTypes[node.getAttribute('value')];
 }
 
 function guiToggleVisibility(guiType, guiID) {
-    switch(guiType) {
+    switch (guiType) {
         case 'shop':
-            target = guiIDs[0]; 
+            target = guiIDs[0];
             break;
         case 'storage':
             target = guiIDs[0];
@@ -76,37 +76,37 @@ function guiToggleVisibility(guiType, guiID) {
             console.log(guiType);
     }
     if (somethingIsOpen) {
-        guiIDs.forEach(silentHide)
-        playSound(sounds[5]) // MenuUp.mp3
+        guiIDs.forEach(silentHide);
+        playSound(sounds[5]); // MenuUp.mp3
         somethingIsOpen = false;
         $('#guiHolder').css('top', 'calc(50% - 400px)');
         $('#guiHolder').css('left', 'calc(50% - 320px)');
     }
-    else { 
-        guiLoadData(guiType, guiID) // this has to happen first!
+    else {
+        guiLoadData(guiType, guiID); // this has to happen first!
         $(target).css('visibility', 'visible');
         somethingIsOpen = true;
-        playSound(sounds[6]) // Tab.mp3
+        playSound(sounds[6]); // Tab.mp3
     }
 }
 
 function silentHide(node) {
-    $(node).css('visibility', 'hidden'); 
+    $(node).css('visibility', 'hidden');
 }
 
 function silentToggleVisibility(node) {
     node = $(node);
-    if (node.css('visibility') == 'hidden'){
+    if (node.css('visibility') == 'hidden') {
         $(node).css('visibility', 'visible');
-        return true // as in: "is it visible?" --> "yes"
+        return true; // as in: "is it visible?" --> "yes"
     }
     else {
         $(node).css('visibility', 'hidden');
-        return false // as in: "is it visible?" --> "no"
+        return false; // as in: "is it visible?" --> "no"
     }
 }
 
-function guiClose(target) { //all of them
+function guiClose(target) { // all of them
     if ($(target).css('visibility') == 'visible') {
         storageIsOpen = false;
         somethingWasClosed = true;
@@ -142,24 +142,24 @@ $('.textTightContainer, .statName').on('mouseleave', function(event) {
 });
 
 function closeSmallDialogBox() {
-    $('#smallDialogBoxHolder').css('visibility', 'hidden')
-    dialogAmountArea.css('visibility', 'hidden')
-    dialogTextArea.css('visibility', 'hidden')
-    dialogAmountArea.val(1)
+    $('#smallDialogBoxHolder').css('visibility', 'hidden');
+    dialogAmountArea.css('visibility', 'hidden');
+    dialogTextArea.css('visibility', 'hidden');
+    dialogAmountArea.val(1);
     transferAmount = 1;
-    $('#superBlocker').css('visibility', 'hidden')
-    $('#superBlocker').css('pointer-events', 'none')
-    $('#guiHolder #shopHolder div').css('pointer-events', 'auto')
+    $('#superBlocker').css('visibility', 'hidden');
+    $('#superBlocker').css('pointer-events', 'none');
+    $('#guiHolder #shopHolder div').css('pointer-events', 'auto');
     smallDialogBoxOpen = false;
 }
 
 $('.easyItem').click(function(e) {
     if (!$(e.currentTarget).hasClass('easySelected')) {
-        $('.easySelected').removeClass('easySelected')
-        $(e.currentTarget).addClass('easySelected')
+        $('.easySelected').removeClass('easySelected');
+        $(e.currentTarget).addClass('easySelected');
     }
     else {
-        $('.easySelected').removeClass('easySelected')
+        $('.easySelected').removeClass('easySelected');
     }
 });
 
@@ -167,21 +167,21 @@ $('.statButton').click(function(e) {
     allocatedStat = $(this).attr('stat');
     character.stats[allocatedStat] ++;
     character.info.attributePoints --;
-    updateCharacterDisplay()
+    updateCharacterDisplay();
 });
 
 $('#shopHolder .guiInnerContentArea .closeButton').click(function() {
     somethingIsOpen = false;
-    guiClose(guiIDs[0])
-    playSound(sounds[5]) // MenuUp.mp3
+    guiClose(guiIDs[0]);
+    playSound(sounds[5]); // MenuUp.mp3
     $('#guiHolder').css('top', 'calc(50% - 400px)');
     $('#guiHolder').css('left', 'calc(50% - 320px)');
 });
 
 $('#equipmentHolder .guiInnerContentArea .closeButton').click(function() {
     somethingIsOpen = false;
-    guiClose(guiIDs[1])
-    playSound(sounds[5]) // MenuUp.mp3
+    guiClose(guiIDs[1]);
+    playSound(sounds[5]); // MenuUp.mp3
     $('#guiHolder').css('top', 'calc(50% - 400px)');
     $('#guiHolder').css('left', 'calc(50% - 320px)');
 });
