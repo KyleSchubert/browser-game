@@ -92,9 +92,11 @@ function chosenLoadNextOptions(e, parameters) {
         if (chosenInitialCategory == 'Mobs') {
             name = parameters.selected.toLowerCase();
             $('#makerVisual img').attr('src', '/mob/alive/' + name + '.gif')
+            makerLoadTheEditor(name, 'Mobs')
         }
         else if (chosenInitialCategory == 'Items') {
             itemImageSetup(parameters.selected, setMakerVisualPartTwo)
+            makerLoadTheEditor(parameters.selected, 'Items')
         }
     }
     $('.chosen-select:eq(' + targetSelectArea + ')').empty()
@@ -112,4 +114,13 @@ function chosenLoadNextOptions(e, parameters) {
 function setMakerVisualPartTwo(img) {
     $('#makerVisual img').replaceWith(img)
     return
+}
+
+function makerLoadTheEditor(id, overallType) { // id   is whatever
+    switch (overallType) { // there will probably be more than just 2
+        case 'Items':
+            break;
+        case 'Mobs':
+            break;
+    }
 }
