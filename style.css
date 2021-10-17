@@ -1275,8 +1275,20 @@ input[type=number]::-webkit-inner-spin-button {
     border: 1px solid black;
 }
 
-#makerDataArea select {
-    width: calc(100% - 80px);
+#makerDataArea span {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.makerEditorLinkedDataTable {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 100%;
+}
+
+.makerEditorLinkedData {
+    padding-left: 8px;
+    padding-bottom: 4px;
 }
 
 .clickable {

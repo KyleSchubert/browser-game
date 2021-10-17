@@ -116,11 +116,83 @@ function setMakerVisualPartTwo(img) {
     return;
 }
 
-function makerLoadTheEditor(id, overallType) { // id   is whatever
+function makerEditorFixed(text) {
+    let span = document.createElement('span');
+    span.classList = ['makerEditorFixed'];
+    span.innerHTML = text.toString();
+    return span;
+}
+
+function makerEditorLinkedData(key, value, dictionary) {
+    let div = document.createElement('div');
+    div.classList = ['makerEditorLinkedData'];
+    let span = document.createElement('span');
+    span.innerHTML = key.toString();
+    let input = document.createElement('input');
+    $(input).val(value);
+    div.append(span)
+    div.append(input)
+    return div;
+}
+
+function makerEditorLinkedDataTable(dictionary) {
+    let keys = Object.keys(dictionary);
+    let elementsToAppend = [];
+    keys.forEach(function(key) {
+        elementsToAppend.push(makerEditorLinkedData(key, dictionary[key], dictionary));
+    });
+    let div = document.createElement('div');
+    div.classList = ['makerEditorLinkedDataTable'];
+    elementsToAppend.forEach(function(element) {
+        div.append(element);
+    });
+    return div;
+}
+
+function makerLoadTheEditor(id, overallType) { // id can be an itemID or a mobID as of right now
+    let elementsToAppend = [];
+    $('#makerDataArea').empty();
     switch (overallType) { // there will probably be more than just 2
         case 'Items':
+            // Name non-changeable
+            if (knownItemNames.includes(parseInt(id))) {
+                elementsToAppend.push(makerEditorFixed(itemNames[id]));
+            }
+            else {
+                elementsToAppend.push(makerEditorFixed('Unknown Item Name'));
+            }
+            // ID non-changeable
+            elementsToAppend.push(makerEditorFixed(''.concat('ID: ', id)));
+            // item types non-changeable
+            if (Object.keys(itemsAndTheirTypes).includes(id)) {
+                elementsToAppend.push(makerEditorFixed(itemsAndTheirTypes[id]));
+                // Stats changeable:linked   table of keys and values
+                switch (itemsAndTheirTypes[id][0]) {
+                    case 'Equip':
+                        elementsToAppend.push(makerEditorLinkedDataTable(equipmentStats[id]))
+                        break;
+                    case 'Use':
+                        break;
+                    case 'Etc':
+                        break;
+                };
+            }
+            else {
+                elementsToAppend.push(makerEditorFixed('Unknown Item Types'));
+            }
+            // value in shop changeable:linked   value
+            if (Object.keys(shopWorths).includes(id)) {
+                elementsToAppend.push(makerEditorLinkedData('shopWorth', shopWorths[id], shopWorths))
+            }
+            else {
+                elementsToAppend.push(makerEditorFixed('Unset shopWorths - set manually'))
+            }
             break;
         case 'Mobs':
+            // not there yet
             break;
     }
+    elementsToAppend.forEach(function(element) {
+        $('#makerDataArea').append(element);
+    });
 }
