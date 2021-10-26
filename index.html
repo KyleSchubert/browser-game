@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="/chosen.min.css">
         <script src="jquery-3.5.1.min.js"></script>
     </head>
-    <body>
+    <body class="checkerBackground">
         <div id="superBlocker"></div>
         <div id="draggedItemHolder">
             <img src="/files/doubloon.png">
@@ -53,235 +53,203 @@
                 </div>
             </div>
         </div>
-        <div class="mainArea" id="statsArea">
-            <div class="infoColumn" id="coreStats">
-                <div class="statHolder">
-                    <span class="statName">STR
-                        <span class="textTooltip">strength is my hand hurts from leaning like this but it's fine I guess</span>
-                    </span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="strengthValue">0</span>
-                    </div>
-                    <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="strength" disabled>
-                        <i class="material-icons">arrow_upward</i>
-                    </button>
-                </div>
-                <div class="statHolder">
-                    <span class="statName">DEX</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="dexterityValue">0</span>
-                    </div>
-                    <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="dexterity" disabled>
-                        <i class="material-icons">arrow_upward</i>
-                    </button>
-                </div>
-                <div class="statHolder">
-                    <span class="statName">INT</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="intelligenceValue">0</span>
-                    </div>
-                    <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="intelligence" disabled>
-                        <i class="material-icons">arrow_upward</i>
-                    </button>
-                </div>
-                <div class="statHolder">
-                    <span class="statName">LUK</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="luckValue">0</span>
-                    </div>
-                    <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="luck" disabled>
-                        <i class="material-icons">arrow_upward</i>
-                    </button>
+        <div id="gameArea">
+            <div id="lootArea">
+                <hr id="lootBlocker">
+                <div id="lootSurface"></div>
+                <div id="mobArea"></div>
+                <div id="mobHPArea">
+                    <span id="mobHP">??? / ???</span>
                 </div>
             </div>
-            <div class="infoRow" id="subStats">
-                <div class="infoColumn">
+            <div id="someGuiButtons">
+                <div class="guiOpeningButton clickable" id="shopButtonArea" value="80001">
+                    <div class="checkerBackground"></div>
+                    <img src="/files/use-as-shop-guy.png">
+                </div>
+                <div class="guiOpeningButton clickable" id="storageButtonArea" value="80002">
+                    <div class="checkerBackground"></div>
+                    <img src="/files/use-as-storage-guy.png">
+                </div>
+            </div>
+            <div class="mainArea" id="statsArea">
+                <div class="infoColumn" id="coreStats">
                     <div class="statHolder">
-                        <span class="statName">HP</span>
+                        <span class="statName">STR
+                            <span class="textTooltip">strength is my hand hurts from leaning like this but it's fine I guess</span>
+                        </span>
                         <div class="statAmountWrapper">
-                            <span class="statAmount"  id="hpValue">50</span>
+                            <span class="statAmount" id="strengthValue">0</span>
+                        </div>
+                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="strength" disabled>
+                            <i class="material-icons">arrow_upward</i>
+                        </button>
+                    </div>
+                    <div class="statHolder">
+                        <span class="statName">DEX</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="dexterityValue">0</span>
+                        </div>
+                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="dexterity" disabled>
+                            <i class="material-icons">arrow_upward</i>
+                        </button>
+                    </div>
+                    <div class="statHolder">
+                        <span class="statName">INT</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="intelligenceValue">0</span>
+                        </div>
+                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="intelligence" disabled>
+                            <i class="material-icons">arrow_upward</i>
+                        </button>
+                    </div>
+                    <div class="statHolder">
+                        <span class="statName">LUK</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="luckValue">0</span>
+                        </div>
+                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="luck" disabled>
+                            <i class="material-icons">arrow_upward</i>
+                        </button>
+                    </div>
+                </div>
+                <div class="infoRow" id="subStats">
+                    <div class="infoColumn">
+                        <div class="statHolder">
+                            <span class="statName">HP</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount"  id="hpValue">50</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">DEF</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="defenseValue">0</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">EVA</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="evasionValue">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="infoColumn">
+                        <div class="statHolder">
+                            <span class="statName">MP</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="mpValue">30</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">PIERCE</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="pierceValue">0</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">ACC</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="accuracyValue">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="infoColumn" id="charStats">
+                    <div class="statHolder">
+                        <span class="statName">NAME</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="nameValue">-</span>
                         </div>
                     </div>
                     <div class="statHolder">
-                        <span class="statName">DEF</span>
+                        <span class="statName">CLASS</span>
                         <div class="statAmountWrapper">
-                            <span class="statAmount" id="defenseValue">0</span>
+                            <span class="statAmount" id="classValue">-</span>
                         </div>
                     </div>
                     <div class="statHolder">
-                        <span class="statName">EVA</span>
+                        <span class="statName">JOB</span>
                         <div class="statAmountWrapper">
-                            <span class="statAmount" id="evasionValue">0</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="infoColumn">
-                    <div class="statHolder">
-                        <span class="statName">MP</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="mpValue">30</span>
+                            <span class="statAmount" id="jobValue">-</span>
                         </div>
                     </div>
                     <div class="statHolder">
-                        <span class="statName">PIERCE</span>
+                        <span class="statName">LEVEL</span>
                         <div class="statAmountWrapper">
-                            <span class="statAmount" id="pierceValue">0</span>
+                            <span class="statAmount" id="levelValue">1</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="infoColumn" id="etcStats">
+                    <div class="statHolder">
+                        <span class="statName">Loot %</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="lootValue">100%</span>
                         </div>
                     </div>
                     <div class="statHolder">
-                        <span class="statName">ACC</span>
+                        <span class="statName">Gold %</span>
                         <div class="statAmountWrapper">
-                            <span class="statAmount" id="accuracyValue">0</span>
+                            <span class="statAmount" id="goldValue">100%</span>
+                        </div>
+                    </div>
+                    <div class="statHolder">
+                        <span class="statName">Rarity %</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="rarityValue">100%</span>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="infoColumn" id="charStats">
-                <div class="statHolder">
-                    <span class="statName">NAME</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="nameValue">-</span>
+                <div class="infoColumn" id="AParea">
+                    <div class="statHolder">
+                        <span class="statName">AP</span>
+                        <div class="statAmountWrapper">
+                            <span class="statAmount" id="attributePointsValue">0</span>
+                        </div>
                     </div>
                 </div>
-                <div class="statHolder">
-                    <span class="statName">CLASS</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="classValue">-</span>
-                    </div>
-                </div>
-                <div class="statHolder">
-                    <span class="statName">JOB</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="jobValue">-</span>
-                    </div>
-                </div>
-                <div class="statHolder">
-                    <span class="statName">LEVEL</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="levelValue">1</span>
-                    </div>
+                <div class="guiOpeningButton clickable" id="equipmentButtonArea" value="200">
+                    <div class="checkerBackground"></div>
+                    <img src="/files/equipmentButtonImage.png">
                 </div>
             </div>
-            <div class="infoColumn" id="etcStats">
-                <div class="statHolder">
-                    <span class="statName">Loot %</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="lootValue">100%</span>
+            <div id="inventoryArea">
+                <div id="inventoryHolder">
+                    <div id="mainInventory">
+                        <div id="moreInventoryButtonsArea">
+                            <div class="subTab clickable" id="equipTab">EQUIP</div>
+                            <div class="subTab clickable" id="useTab">USE</div>
+                            <div class="subTab clickable" id="etcTab">ETC</div>
+                            <!-- OLD DESIGN
+                            <svg class="inventoryButtonHolder">
+                                <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
+                                <text class="clickable tab-text" x="10" y="24" fill="#FFF">Equip</text>
+                            </svg>
+                            <svg class="inventoryButtonHolder">
+                                <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
+                                <text class="clickable tab-text" x="17" y="24" fill="#FFF">Use</text>
+                            </svg>
+                            <svg class="inventoryButtonHolder">
+                                <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
+                                <text class="clickable tab-text" x="17" y="24" fill="#FFF">Etc</text>
+                            </svg>
+                            -->
+                        </div>
+                        <hr id="inventoryDividerLine"/>
+                        <div id="slotsSpot">
+                            <!--This gets filled up by some script in inventory.js-->
+                        </div>
                     </div>
                 </div>
-                <div class="statHolder">
-                    <span class="statName">Gold %</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="goldValue">100%</span>
+                <div id="inventoryButtonArea">
+                    <svg class="inventoryButtonGlowHolder">
+                        <polygon class="clickable tab openInventoryButton" points="16 38, 19 40, 127 40, 130 38, 146 0, 0 0"/>
+                        <text class="clickable tab-text openInventoryButton" x="32" y="25" fill="#FFF">Inventory</text>
+                    </svg>
+                    <div class="holder">
+                        <div class="tab-outline-helper"></div>
                     </div>
-                </div>
-                <div class="statHolder">
-                    <span class="statName">Rarity %</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="rarityValue">100%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="infoColumn" id="AParea">
-                <div class="statHolder">
-                    <span class="statName">AP</span>
-                    <div class="statAmountWrapper">
-                        <span class="statAmount" id="attributePointsValue">0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="guiOpeningButton clickable" id="equipmentButtonArea" value="200">
-                <div class="checkerBackground"></div>
-                <img src="/files/equipmentButtonImage.png">
-            </div>
-        </div>
-        <div class="mainArea">
-            <div class="subArea" id="avatarArea">
-                <img id="avatar" src='https://maplestory.io/api/character/{"itemId":2000,"version":"213"},{"itemId":12000,"version":"213"},{"itemId":1005200,"version":"213"},{"itemId":1072745,"version":"213"},{"itemId":1102484,"version":"213"},{"itemId":1082544,"version":"213"},{"itemId":1042395,"version":"213"},{"itemId":1062258,"version":"213"},{"itemId":1242146,"version":"213"}/stand1/animated?flipX=true'>
-            </div>
-            <div class="subArea" id="itemArea">
-                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=dropLoot();>
-                    Drop Loot
-                </button>
-                <button class="mdl-button mdl-js-button mdl-button--raised" id="testSound" value="0">
-                    Test sound
-                </button>
-                <form action="#">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="dropCount">
-                        <label class="mdl-textfield__label" for="dropCount"># of items to drop...</label>
-                    </div>
-                </form>
-                <div id="lootArea">
-                    <hr id="lootBlocker">
-                    <div id="lootSurface"></div>
-                    <div id="mobArea"></div>
-                    <div id="mobHPArea">
-                        <span id="mobHP">??? / ???</span>
-                    </div>
-                </div>
-                <div class="subArea">
-                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=clearItems();>
-                        Clear Items
-                    </button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=spawn();>
-                        Spawn
-                    </button>
-                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=mobDie();>
-                        Kill
-                    </button>
-                    <div class="easyList">
-                        <span class="easyItem">Tino</span>
-                        <span class="easyItem">Orange Mushroom</span>
-                        <span class="easyItem">Mushmom</span>
-                        <span class="easyItem">Mutant Ribbon Pig</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="guiOpeningButton clickable" id="shopButtonArea" value="80001">
-            <div class="checkerBackground"></div>
-            <img src="/files/use-as-shop-guy.png">
-        </div>
-        <div class="guiOpeningButton clickable" id="storageButtonArea" value="80002">
-            <div class="checkerBackground"></div>
-            <img src="/files/use-as-storage-guy.png">
-        </div>
-        <div id="inventoryArea">
-            <div id="inventoryHolder">
-                <div id="mainInventory">
-                    <div id="moreInventoryButtonsArea">
-                        <div class="subTab clickable" id="equipTab">EQUIP</div>
-                        <div class="subTab clickable" id="useTab">USE</div>
-                        <div class="subTab clickable" id="etcTab">ETC</div>
-                        <!-- OLD DESIGN
-                        <svg class="inventoryButtonHolder">
-                            <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
-                            <text class="clickable tab-text" x="10" y="24" fill="#FFF">Equip</text>
-                        </svg>
-                        <svg class="inventoryButtonHolder">
-                            <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
-                            <text class="clickable tab-text" x="17" y="24" fill="#FFF">Use</text>
-                        </svg>
-                        <svg class="inventoryButtonHolder">
-                            <polygon class="clickable deprecatedSubTab" points="1 30, 1 9, 2 8, 2 7, 3 6, 4 5, 5 5, 6 4, 57 4, 58 5, 59 5, 60 6, 61 7, 61 8, 62 9, 62 30" fill="#FFFFFF"/>
-                            <text class="clickable tab-text" x="17" y="24" fill="#FFF">Etc</text>
-                        </svg>
-                        -->
-                    </div>
-                    <hr id="inventoryDividerLine"/>
-                    <div id="slotsSpot">
-                        <!--This gets filled up by some script in inventory.js-->
-                    </div>
-                </div>
-            </div>
-            <div id="inventoryButtonArea">
-                <svg class="inventoryButtonGlowHolder">
-                    <polygon class="clickable tab openInventoryButton" points="16 38, 19 40, 127 40, 130 38, 146 0, 0 0"/>
-                    <text class="clickable tab-text openInventoryButton" x="32" y="25" fill="#FFF">Inventory</text>
-                </svg>
-                <div class="holder">
-                    <div class="tab-outline-helper"></div>
                 </div>
             </div>
         </div>
@@ -329,6 +297,42 @@
                 </div>
             </div>
             <div id="makerDataArea"></div>
+        </div>
+        <div class="mainArea" id="temporaryButtons">
+            <div class="subArea" id="avatarArea">
+                <img id="avatar" src='https://maplestory.io/api/character/{"itemId":2000,"version":"213"},{"itemId":12000,"version":"213"},{"itemId":1005200,"version":"213"},{"itemId":1072745,"version":"213"},{"itemId":1102484,"version":"213"},{"itemId":1082544,"version":"213"},{"itemId":1042395,"version":"213"},{"itemId":1062258,"version":"213"},{"itemId":1242146,"version":"213"}/stand1/animated?flipX=true'>
+            </div>
+            <div class="subArea" id="itemArea">
+                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=dropLoot();>
+                    Drop Loot
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised" id="testSound" value="0">
+                    Test sound
+                </button>
+                <form action="#">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="text" id="dropCount">
+                        <label class="mdl-textfield__label" for="dropCount"># of items to drop...</label>
+                    </div>
+                </form>
+                <div class="subArea">
+                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=clearItems();>
+                        Clear Items
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=spawn();>
+                        Spawn
+                    </button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=mobDie();>
+                        Kill
+                    </button>
+                    <div class="easyList">
+                        <span class="easyItem">Tino</span>
+                        <span class="easyItem">Orange Mushroom</span>
+                        <span class="easyItem">Mushmom</span>
+                        <span class="easyItem">Mutant Ribbon Pig</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- Game Stuff -->
         <script src="js/avatar.js"></script>

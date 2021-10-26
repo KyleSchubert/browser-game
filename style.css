@@ -1,6 +1,6 @@
 :root {
     --inventory-color: rgb(255, 152, 0);
-    --inventory-holder-color: rgb(49, 49, 49);
+    --inventory-holder-color: rgb(60, 60, 60);
     --gui-standard-color: rgba(45, 45, 52, 0.83);
 }
 
@@ -11,6 +11,7 @@ body {
     flex-flow: row;
     align-items: flex-start;
     overflow: hidden;
+    background-color: black !important;
 }
 
 button, img {
@@ -119,10 +120,12 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #statsArea {
-    position: relative;
+    position: absolute;
     width: 380px;
     height: 560px;
     background-color: green;
+    top: 24px;
+    left: 16px;
 }
 
 .infoRow .infoRow, .infoRow .infoColumn {
@@ -258,16 +261,28 @@ input[type=number]::-webkit-inner-spin-button {
     height: 96px;
 }
 
+#someGuiButtons {
+    display: flex;
+    position: absolute;
+    top: 747px;
+    left: 780px;
+}
+
+#gameArea {
+    position: absolute;
+    left: calc(50% - 540px);
+}
+
 #lootArea {
-    margin-top: 8px;
-    width: 314px;
-    height: 200px;
-    background-image: url(/files/terrain.png);
+    position: relative;
+    width: 1080px;
+    height: 944px;
+    background-image: url(/files/terrainv2.png);
 }
 
 #lootBlocker {
     display: inline-block;
-    margin-top: 98px;
+    margin-top: 716px;
     border-top: 0px;
     margin-bottom: 0px;
     width: 100%;
@@ -295,13 +310,14 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #mobHPArea {
+    pointer-events: none;
     text-align: center;
-    margin-top: 22px;
+    margin-top: 28px;
 }
 
 #mobHP {
     color: white;
-    font-size: 24px;
+    font-size: 32px;
 }
 
 @keyframes dropAnimation {
@@ -900,7 +916,7 @@ input[type=number]::-webkit-inner-spin-button {
 #inventoryArea {
     position: absolute;
     top: -10px;
-    right: 100px;
+    left: 730px;
     display: flex;
     flex-shrink: 0;
     width: 280px;
@@ -1126,10 +1142,12 @@ input[type=number]::-webkit-inner-spin-button {
 
 #etcDeveloperStuff {
     position: absolute;
-    top: 600px;
+    top: 960px;
+    left: 600px;
     padding: 8px;
-    height: 200px;
+    height: 400px;
     width: 400px;
+    background-color: white;
 }
 
 .textTightContainer {
@@ -1227,7 +1245,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     position: absolute;
     padding: 8px;
-    top: 600px;
+    top: 1400px;
     left: 200px;
     background-color: rgb(214, 214, 214);
     width: 70%;
@@ -1319,4 +1337,11 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     backface-visibility: hidden;
     visibility: hidden;
+}
+
+#temporaryButtons {
+    position: absolute;
+    width: 340px;
+    top: 960px;
+    background-color: white;
 }
