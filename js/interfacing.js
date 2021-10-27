@@ -55,7 +55,7 @@ function makeDraggableItemsDraggable() {
                                 }
                                 else {
                                     $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot');
-                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible');
+                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').removeAttr('style');
                                 }
                                 equipmentLoadOne(itemsInEquipmentSlots[targetSlot-30], targetSlot-30);
                                 $('[data-slotid="' + targetSlot + '"]').removeClass('emptyEquipmentSlot');
@@ -105,7 +105,7 @@ function makeDraggableItemsDraggable() {
                                     character.equipment[equippedItemSlot-30] = {};
                                     updateCharacterDisplay();
                                     $('[data-slotid="' + pickedUpItemSlot + '"]').addClass('emptyEquipmentSlot');
-                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').css('visibility', 'visible');
+                                    $('[data-slotid="' + pickedUpItemSlot + '"] .slotRestrictionHelper').removeAttr('style');
                                     inventory.DetailedEquip[inventoryItemSlot] = itemsInEquipmentSlots[equippedItemSlot-30];
                                     inventory.Equip[inventoryItemSlot] = inventory.DetailedEquip[inventoryItemSlot].id;
                                     itemsInEquipmentSlots[equippedItemSlot-30] = 0;
