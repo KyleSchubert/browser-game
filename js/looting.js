@@ -3,8 +3,12 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
     amount = parseInt(amount); // just in case
     targetTab = itemsAndTheirTypes[itemID][0];
     targetSlot = inventory[targetTab].indexOf(0);
+    
     if (targetTab == 'Use' || targetTab == 'Etc') { // items stack in these
         if (!inventory[targetTab].includes(itemID)) { // item is not there
+            if (targetSlot == -1) {
+                return false;
+            }
             inventory.counts[targetTab][targetSlot] = inventory.counts[targetTab][targetSlot] + amount;
             inventory[targetTab][targetSlot] = itemID;
             inventoryLoadOne(targetTab, targetSlot, itemID);
@@ -16,17 +20,26 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
         }
     }
     else { // the equip tab only has 1 item per slot anyways
+        if (targetSlot == -1) {
+            return false;
+        }
         inventory[targetTab][targetSlot] = itemID;
         inventory.DetailedEquip[targetSlot] = new EquipItem(itemID);
         inventoryLoadOne(targetTab, targetSlot, itemID);
     }
     makeItemHighlighted(targetSlot, targetTab);
+    return true;
 }
 
 function lootItem() { // use   this.whatever   to get what you need   ex: this.value = itemID
     $(this).off('click');
     this.classList.remove('clickable');
-    obtainItem(this.value);
+    let success = obtainItem(this.value);
+    if (!success) {
+        this.classList.add('clickable');
+        $(this).on('click', this, lootItem);
+        return
+    }
     this.classList.add('pickupAnimation');
     this.parentElement.classList.add('pickupAnimationHelper');
     this.classList.remove('droppedItem');
@@ -42,4 +55,3 @@ function lootItem() { // use   this.whatever   to get what you need   ex: this.v
         }
     }, 1020);
 }
-

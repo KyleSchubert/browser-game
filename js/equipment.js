@@ -122,8 +122,8 @@ function canEquipToHere(desiredSlot, itemSlot) {
             case 'Armor':
                 actualType = itemsAndTheirTypes[itemID][2];
                 break;
-            case 'Two-handed Weapon':
-            case 'One-handed Weapon':
+            case 'Two-Handed Weapon':
+            case 'One-Handed Weapon':
                 actualType = 'Weapon';
                 break;
             case 'Secondary Weapon':

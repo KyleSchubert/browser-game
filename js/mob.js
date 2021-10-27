@@ -54,7 +54,23 @@ function rollDamageToMob(skill='') {
             weaponType = 'strength';
         }
         else {
-            weaponType = character.equipment[16].weaponType;
+            switch (itemsInEquipmentSlots[16].exactType) {
+                case 'One-Handed Sword':
+                case 'Gauntlet':
+                case 'Two-Handed Axe':
+                case 'Two-Handed Sword':
+                    weaponType = 'strength';
+                    break;
+                case 'Arm Cannon':
+                    weaponType = 'dexterity';
+                    break;
+                case 'Wand':
+                    weaponType = 'intelligence';
+                    break;
+                case 'Katara':
+                    weaponType = 'luck';
+                    break;
+            }
         }
         baseDamage = character.compoundedStats[weaponType];
         damage = randomIntFromInterval(baseDamage * 0.6, baseDamage * 1.2);
