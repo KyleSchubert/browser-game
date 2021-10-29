@@ -1,5 +1,4 @@
 function itemDropSetup(img, aligner) {
-    console.log(img)
     $(img).on('click', img, lootItem);
     img.classList.add('droppedItem');
     const div = document.createElement('div');

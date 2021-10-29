@@ -3,7 +3,6 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
     amount = parseInt(amount); // just in case
     targetTab = itemsAndTheirTypes[itemID][0];
     targetSlot = inventory[targetTab].indexOf(0);
-    
     if (targetTab == 'Use' || targetTab == 'Etc') { // items stack in these
         if (!inventory[targetTab].includes(itemID)) { // item is not there
             if (targetSlot == -1) {

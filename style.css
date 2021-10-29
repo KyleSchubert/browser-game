@@ -911,7 +911,7 @@ input[type=number]::-webkit-inner-spin-button {
 #inventoryArea {
     position: absolute;
     top: -10px;
-    left: 730px;
+    left: 790px;
     display: flex;
     flex-shrink: 0;
     width: 280px;
@@ -1074,7 +1074,6 @@ input[type=number]::-webkit-inner-spin-button {
 
 #inventoryHolder {
     position: absolute;
-    z-index: 4;
     top: -390px;
     width: 100%;
     height: 400px;
