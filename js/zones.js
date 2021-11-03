@@ -21,7 +21,7 @@ function loadPortals() {
         $(portal).css('left', portalData.l);
         $(portal).css('top', portalData.t);
         $(portal).on('click', portal, changeZones);
-        $('#gameArea').append(portal);
+        $('#lootArea').append(portal);
     });
 }
 
