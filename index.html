@@ -72,146 +72,157 @@
                     <img src="/files/use-as-storage-guy.png">
                 </div>
             </div>
-            <div class="mainArea" id="statsArea">
-                <div class="infoColumn" id="coreStats">
-                    <div class="statHolder">
-                        <span class="statName">STR
-                            <span class="textTooltip">strength is my hand hurts from leaning like this but it's fine I guess</span>
-                        </span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="strengthValue">0</span>
+            <div id="statsArea">
+                <div class="mainArea" id="statsEntireHolder">
+                    <div class="infoColumn" id="coreStats">
+                        <div class="statHolder">
+                            <span class="statName">STR
+                                <span class="textTooltip">strength is my hand hurts from leaning like this but it's fine I guess</span>
+                            </span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="strengthValue">0</span>
+                            </div>
+                            <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="strength" disabled>
+                                <i class="material-icons">arrow_upward</i>
+                            </button>
                         </div>
-                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="strength" disabled>
-                            <i class="material-icons">arrow_upward</i>
-                        </button>
+                        <div class="statHolder">
+                            <span class="statName">DEX</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="dexterityValue">0</span>
+                            </div>
+                            <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="dexterity" disabled>
+                                <i class="material-icons">arrow_upward</i>
+                            </button>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">INT</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="intelligenceValue">0</span>
+                            </div>
+                            <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="intelligence" disabled>
+                                <i class="material-icons">arrow_upward</i>
+                            </button>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">LUK</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="luckValue">0</span>
+                            </div>
+                            <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="luck" disabled>
+                                <i class="material-icons">arrow_upward</i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="statHolder">
-                        <span class="statName">DEX</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="dexterityValue">0</span>
+                    <div class="infoRow" id="subStats">
+                        <div class="infoColumn">
+                            <div class="statHolder">
+                                <span class="statName">HP</span>
+                                <div class="statAmountWrapper">
+                                    <span class="statAmount"  id="hpValue">50</span>
+                                </div>
+                            </div>
+                            <div class="statHolder">
+                                <span class="statName">DEF</span>
+                                <div class="statAmountWrapper">
+                                    <span class="statAmount" id="defenseValue">0</span>
+                                </div>
+                            </div>
+                            <div class="statHolder">
+                                <span class="statName">EVA</span>
+                                <div class="statAmountWrapper">
+                                    <span class="statAmount" id="evasionValue">0</span>
+                                </div>
+                            </div>
                         </div>
-                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="dexterity" disabled>
-                            <i class="material-icons">arrow_upward</i>
-                        </button>
+                        <div class="infoColumn">
+                            <div class="statHolder">
+                                <span class="statName">MP</span>
+                                <div class="statAmountWrapper">
+                                    <span class="statAmount" id="mpValue">30</span>
+                                </div>
+                            </div>
+                            <div class="statHolder">
+                                <span class="statName">PIERCE</span>
+                                <div class="statAmountWrapper">
+                                    <span class="statAmount" id="pierceValue">0</span>
+                                </div>
+                            </div>
+                            <div class="statHolder">
+                                <span class="statName">ACC</span>
+                                <div class="statAmountWrapper">
+                                    <span class="statAmount" id="accuracyValue">0</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="statHolder">
-                        <span class="statName">INT</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="intelligenceValue">0</span>
+                    <div class="infoColumn" id="charStats">
+                        <div class="statHolder">
+                            <span class="statName">NAME</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="nameValue">-</span>
+                            </div>
                         </div>
-                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="intelligence" disabled>
-                            <i class="material-icons">arrow_upward</i>
-                        </button>
+                        <div class="statHolder">
+                            <span class="statName">CLASS</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="classValue">-</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">JOB</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="jobValue">-</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">LEVEL</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="levelValue">1</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="statHolder">
-                        <span class="statName">LUK</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="luckValue">0</span>
+                    <div class="infoColumn" id="etcStats">
+                        <div class="statHolder">
+                            <span class="statName">Loot %</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="lootValue">100%</span>
+                            </div>
                         </div>
-                        <button class="statButton mdl-button mdl-js-button mdl-button--fab" stat="luck" disabled>
-                            <i class="material-icons">arrow_upward</i>
-                        </button>
+                        <div class="statHolder">
+                            <span class="statName">Gold %</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="goldValue">100%</span>
+                            </div>
+                        </div>
+                        <div class="statHolder">
+                            <span class="statName">Rarity %</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="rarityValue">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="infoColumn" id="AParea">
+                        <div class="statHolder">
+                            <span class="statName">AP</span>
+                            <div class="statAmountWrapper">
+                                <span class="statAmount" id="attributePointsValue">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="guiOpeningButton clickable" id="equipmentButtonArea" value="200">
+                        <div class="checkerBackground"></div>
+                        <img src="/files/equipmentButtonImage.png">
                     </div>
                 </div>
-                <div class="infoRow" id="subStats">
-                    <div class="infoColumn">
-                        <div class="statHolder">
-                            <span class="statName">HP</span>
-                            <div class="statAmountWrapper">
-                                <span class="statAmount"  id="hpValue">50</span>
-                            </div>
-                        </div>
-                        <div class="statHolder">
-                            <span class="statName">DEF</span>
-                            <div class="statAmountWrapper">
-                                <span class="statAmount" id="defenseValue">0</span>
-                            </div>
-                        </div>
-                        <div class="statHolder">
-                            <span class="statName">EVA</span>
-                            <div class="statAmountWrapper">
-                                <span class="statAmount" id="evasionValue">0</span>
-                            </div>
-                        </div>
+                <div id="statsButtonArea">
+                    <svg class="inventoryButtonGlowHolder">
+                        <polygon class="clickable tab openStatsButton" points="16 38, 19 40, 127 40, 130 38, 146 0, 0 0"/>
+                        <text class="clickable tab-text openStatsButton" x="29" y="25" fill="#FFF">CHARACTER</text>
+                    </svg>
+                    <div class="holder">
+                        <div class="tab-outline-helper"></div>
                     </div>
-                    <div class="infoColumn">
-                        <div class="statHolder">
-                            <span class="statName">MP</span>
-                            <div class="statAmountWrapper">
-                                <span class="statAmount" id="mpValue">30</span>
-                            </div>
-                        </div>
-                        <div class="statHolder">
-                            <span class="statName">PIERCE</span>
-                            <div class="statAmountWrapper">
-                                <span class="statAmount" id="pierceValue">0</span>
-                            </div>
-                        </div>
-                        <div class="statHolder">
-                            <span class="statName">ACC</span>
-                            <div class="statAmountWrapper">
-                                <span class="statAmount" id="accuracyValue">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="infoColumn" id="charStats">
-                    <div class="statHolder">
-                        <span class="statName">NAME</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="nameValue">-</span>
-                        </div>
-                    </div>
-                    <div class="statHolder">
-                        <span class="statName">CLASS</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="classValue">-</span>
-                        </div>
-                    </div>
-                    <div class="statHolder">
-                        <span class="statName">JOB</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="jobValue">-</span>
-                        </div>
-                    </div>
-                    <div class="statHolder">
-                        <span class="statName">LEVEL</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="levelValue">1</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="infoColumn" id="etcStats">
-                    <div class="statHolder">
-                        <span class="statName">Loot %</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="lootValue">100%</span>
-                        </div>
-                    </div>
-                    <div class="statHolder">
-                        <span class="statName">Gold %</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="goldValue">100%</span>
-                        </div>
-                    </div>
-                    <div class="statHolder">
-                        <span class="statName">Rarity %</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="rarityValue">100%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="infoColumn" id="AParea">
-                    <div class="statHolder">
-                        <span class="statName">AP</span>
-                        <div class="statAmountWrapper">
-                            <span class="statAmount" id="attributePointsValue">0</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="guiOpeningButton clickable" id="equipmentButtonArea" value="200">
-                    <div class="checkerBackground"></div>
-                    <img src="/files/equipmentButtonImage.png">
                 </div>
             </div>
             <div id="inventoryArea">

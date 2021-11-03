@@ -19,7 +19,6 @@ $('.openInventoryButton').click(function() {
             $('#inventoryArea').removeClass('inventory-closing');
         });
     }
-    // SMILE TIME
 });
 
 // setting the dimensions of the maininventory so I don't have to remember as much

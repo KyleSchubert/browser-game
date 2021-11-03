@@ -93,3 +93,28 @@ $(document).ready(function() {
     updateCharacterDisplay();
     regeneration();
 });
+
+// some animations for opening and closing with the big button
+$('.openStatsButton').click(function() {
+    if (!$('#statsArea').hasClass('stats-open')) {
+        // START OPENING ANIMATION
+        $('#statsArea').addClass('stats-opening');
+        // ANIMATION DONE
+            console.log('FART1')
+        $('.stats-opening').on('animationend webkitAnimationEnd oAnimationEnd', function() {
+            console.log('FART')
+            $('#statsArea').addClass('stats-open');
+            $('#statsArea').removeClass('stats-opening');
+        });
+    }
+    else {
+        // START closing animation
+        $('#statsArea').addClass('stats-closing');
+        $('#statsArea').removeClass('stats-open');
+        // animation done
+        $('.stats-closing').on('animationend webkitAnimationEnd oAnimationEnd', function() {
+            $('#statsArea').removeClass('stats-open'); // safety first! (rare case)
+            $('#statsArea').removeClass('stats-closing');
+        });
+    }
+});
