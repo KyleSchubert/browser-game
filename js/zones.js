@@ -17,6 +17,7 @@ function loadPortals() {
         portal.src = "/files/portal.gif";
         portal.value = portalData.dest;
         portal.classList = ['portal clickable'];
+        portal.setAttribute('draggable', 'false')
         $(portal).css('left', portalData.l);
         $(portal).css('top', portalData.t);
         $(portal).on('click', portal, changeZones);

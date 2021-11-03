@@ -8,7 +8,7 @@ function getMob(fromList=false) {
         }
     }
     else {
-        mob = knownMobs[Math.floor(Math.random() * knownMobs.length)];
+        mob = zoneMobs[currentZone][Math.floor(Math.random()*zoneMobs[currentZone].length)];
     }
     return mob;
 }
@@ -106,6 +106,14 @@ function mobDie(origin='') {
     }
 }
 
+MAX_MOBS = 1;
+$(document).ready(function() {
+    setInterval(function() {
+        if ($('.mob').length < MAX_MOBS) {
+            console.log("Spawning a mob");
+            spawn(getMob());
+        }}, 14000);
+})
 
 $(document).on('transitionend webkitTransitionEnd oTransitionEnd', '.mob', function(event) { // part of the mob death effect
     $(event.currentTarget).remove();
