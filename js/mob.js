@@ -92,8 +92,8 @@ function mobDie(origin='') {
         target.css('transition-duration', mobDeathDuration[mobName].toString() + 'ms');
         target.addClass('mobDying');
 
-        mobDropAmount = Math.ceil(Math.random() * 6); // temporary example
-        dropLoot(mobDropAmount);
+        mobDropAmount = Math.ceil(Math.random() * 3); // temporary example
+        dropLoot(mobName.toLowerCase(), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
         experienceAmount = Math.ceil(Math.random() * 6); // temporary example
@@ -108,6 +108,7 @@ function mobDie(origin='') {
 
 MAX_MOBS = 1;
 $(document).ready(function() {
+    spawn(getMob())
     setInterval(function() {
         if ($('.mob').length < MAX_MOBS) {
             console.log("Spawning a mob");

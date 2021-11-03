@@ -58,7 +58,7 @@ function setupImage(url, itemID) {
     return finishedImage;
 }
 
-function dropLoot(dropCount=$('#dropCount').val()) {
+function dropLoot(mob, dropCount=$('#dropCount').val()) {
     const aligner = document.createElement('div');
     aligner.classList = ['dropAligner'];
     aligner.style.width = ''.concat(dropCount*32, 'px');
@@ -72,7 +72,9 @@ function dropLoot(dropCount=$('#dropCount').val()) {
     }
     aligner.style.marginLeft = ''.concat((lootArea.offsetWidth - dropCount*32)/2, 'px');
     for (let i = 0; i < dropCount; i++) {
-        id = validItemIDs[Math.floor((Math.random() * validItemIDs.length))]; // FOR TESTING
+        let pool = mobDropPools[mob][Math.floor(Math.random() * mobDropPools[mob].length)];
+        let choices = dropPoolDefinitions[pool];
+        id = choices[Math.floor((Math.random() * choices.length))]; // FOR TESTING
         itemImageSetup(id, itemDropSetup, aligner);
         memorizeItemType(id);
     }

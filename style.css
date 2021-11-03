@@ -35,6 +35,7 @@ button, img {
     left: calc(50% - 320px);
     top: calc(50% - 400px);
     pointer-events: none;
+    user-select: none;
 }
 
 #guiHolder div {
@@ -307,6 +308,7 @@ input[type=number]::-webkit-inner-spin-button {
 @media only screen and (min-width: 1080px) {
     #gameArea {
         position: absolute;
+        user-select: none;
         left: calc(50% - 540px);
     }
 }
@@ -314,6 +316,7 @@ input[type=number]::-webkit-inner-spin-button {
 @media only screen and (max-width: 1079px) {
     #gameArea {
         position: absolute;
+        user-select: none;
     }
 }
 

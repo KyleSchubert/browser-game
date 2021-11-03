@@ -329,3 +329,13 @@ function equipmentItemHolderSetup(slot, img) {
     });
     return itemHolder;
 }
+
+function getEquipmentByLevel(min, max) {
+    let theseItems = [];
+    Object.keys(equipmentStats).forEach(function(id) {
+        if (min < equipmentStats[id].reqLevelEquip && equipmentStats[id].reqLevelEquip < max) {
+            theseItems.push(id);
+        };
+    })
+    return theseItems;
+}
