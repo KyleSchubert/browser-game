@@ -1,6 +1,6 @@
 var zoneConnections = {
-    1: [{l: 0, t: 0, dest: 2}],
-    2: [{l: 200, t: 200, dest: 1}, {l: 500, t: 300, dest: 3}]
+    1: [{l: 962, t: 630, dest: 2}],
+    2: [{l: 38, t: 162, dest: 1}, {l: 940, t: 214, dest: 3}]
 };
 
 var zoneMobs = {
