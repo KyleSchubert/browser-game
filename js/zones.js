@@ -1,12 +1,6 @@
-/* Diagram of zoneConnections:
-portal_1        portal_4
-portal_2        portal_5
-portal_3        portal_6
-*/
-
 var zoneConnections = {
-    1: {'portal_6': 2},
-    2: {'portal_3': 1, 'portal_5': 3}
+    1: [{l: 0, t: 0, dest: 2}],
+    2: [{l: 200, t: 200, dest: 1}, {l: 500, t: 300, dest: 3}]
 };
 
 var zoneMobs = {
@@ -14,5 +8,40 @@ var zoneMobs = {
     2: ['tino']
 };
 
-//TODO: move everything out of the way of the play area and make it bigger
-//      Also, put the stats area horizontal below the play area
+var currentZone = 1;
+
+function loadPortals() {
+    $('.portal').remove();
+    zoneConnections[currentZone].forEach(function(portalData) {
+        let portal = new Image();
+        portal.src = "/files/portal.gif";
+        portal.value = portalData.dest;
+        portal.classList = ['portal clickable'];
+        $(portal).css('left', portalData.l);
+        $(portal).css('top', portalData.t);
+        $(portal).on('click', portal, changeZones);
+        $('#gameArea').append(portal);
+    });
+}
+
+function canEnterThisZone() {
+    return true
+}
+
+function changeZones() {
+    $(this).off('click');
+    this.classList.remove('clickable');
+    let success = canEnterThisZone(this.value);
+    if (!success) {
+        this.classList.add('clickable');
+        $(this).on('click', this, changeZones);
+        return
+    }
+    // fade out, load, then fade in
+    currentZone = this.value;
+    loadPortals()
+}
+
+$(document).ready(function() {
+    loadPortals();
+});
