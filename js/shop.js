@@ -172,7 +172,7 @@ function checkIfWeKnowTheItemName(id) { // every item for the shop and drops goe
 }
 
 function getUrlForItemName(itemID) { //
-    url = 'https://maplestory.io/api/GMS/215/item/'.concat(itemID).concat('/name');
+    url = 'https://maplestory.io/api/GMS/217/item/'.concat(itemID).concat('/name');
     return url;
 }
 
