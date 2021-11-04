@@ -38,10 +38,27 @@ function changeZones() {
         $(this).on('click', this, changeZones);
         return
     }
-    // fade out, load, then fade in
+    $('#superBlocker').css('background', 'rgba(0,0,0,0)');
+    $('#superBlocker').css('visibility', 'visible');
+    $('#superBlocker').css('pointer-events', 'all');
+    $('#superBlocker').addClass('fadeToBlack');
+    $('#superBlocker').css('background', 'rgba(0,0,0,1)');
     currentZone = this.value;
-    loadPortals()
 }
+
+$('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()
+    if ($('#superBlocker').hasClass('fadeToBlack')) { 
+        loadPortals()
+        $('#superBlocker').removeClass('fadeToBlack');
+        $('#superBlocker').addClass('unfadeToBlack');
+    }
+    else if ($('#superBlocker').hasClass('unfadeToBlack')) {
+        $('#superBlocker').css('visibility', 'hidden');
+        $('#superBlocker').css('pointer-events', 'none');
+        $('#superBlocker').css('background', '');
+        $('#superBlocker').removeClass('unfadeToBlack');
+    }
+});
 
 $(document).ready(function() {
     loadPortals();
