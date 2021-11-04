@@ -1,11 +1,12 @@
 function itemDropSetup(img, aligner) {
-    $(img).on('click', img, lootItem);
+    /*$(img).on('click', img, lootItem);
     img.classList.add('droppedItem');
     const div = document.createElement('div');
     div.classList = ['itemAnimationHelper'];
     document.getElementById('lootSurface').appendChild(aligner);
     $('.dropAligner').last().append(div);
-    $('.itemAnimationHelper').last().append(img);
+    $('.itemAnimationHelper').last().append(img);*/
+    return
 }
 
 function itemImageSetup(itemID, callback, slot=999999) {
