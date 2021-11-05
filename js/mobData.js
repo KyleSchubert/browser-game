@@ -12,7 +12,7 @@ var mobDropPools = {
 };
 
 var dropPoolDefinitions = {
-    'sub10Gear': getEquipmentByLevel(0, 9),
+    'sub10Gear': getEquipmentByLevel(1, 9),
     '10Gear': getEquipmentByLevel(10, 18),
     '20Gear': getEquipmentByLevel(18, 29),
     '30Gear': getEquipmentByLevel(30, 39),

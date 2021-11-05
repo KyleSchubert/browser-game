@@ -193,7 +193,7 @@ function processInventoryImages(img, slot) {
 }
 
 
-const inventoryStatPairs = {'strength': 'STR', 'dexterity': 'DEX', 'intelligence': 'INT', 'luck': 'LUK', 'magicAttack': 'MAGIC ATTACK', 'physicalAttack': 'PHYSICAL ATTACK', 'maxHP': 'MaxHP', 'maxMP': 'MaxMP', 'bossDamageMultiplier': 'BOSS DAMAGE MULTIPLIER', 'evasion': 'Evasion', 'defense': 'Defense', 'accuracy': 'Accuracy', 'pierce': 'Pierce'};
+const inventoryStatPairs = {'strength': 'STR', 'dexterity': 'DEX', 'intelligence': 'INT', 'luck': 'LUK', 'magicAttack': 'MAGIC ATTACK', 'physicalAttack': 'PHYSICAL ATTACK', 'maxHP': 'MaxHP', 'maxMP': 'MaxMP', 'hp': 'MaxHP', 'mp': 'MaxMP', 'bossDamageMultiplier': 'BOSS DAMAGE MULTIPLIER', 'evasion': 'Evasion', 'defense': 'Defense', 'accuracy': 'Accuracy', 'pierce': 'Pierce'};
 
 function itemHolderSetup(tabName, slot, img, equipItem) {
     const itemID = inventory[tabName][slot];
