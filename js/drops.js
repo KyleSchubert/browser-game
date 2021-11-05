@@ -59,7 +59,7 @@ function setupImage(url, itemID) {
     return finishedImage;
 }
 
-function dropLoot(mob, dropCount=$('#dropCount').val(), unknown=false) {
+function dropLoot(mob, dropCount=$('#dropCount').val(), unknown=false, justGetThem=false) {
     const aligner = document.createElement('div');
     aligner.classList = ['dropAligner'];
     aligner.style.width = ''.concat(dropCount*32, 'px');
@@ -72,22 +72,32 @@ function dropLoot(mob, dropCount=$('#dropCount').val(), unknown=false) {
         aligner.style.zIndex = 1;
     }
     aligner.style.marginLeft = ''.concat((lootArea.offsetWidth - dropCount*32)/2, 'px');
-    for (let i = 0; i < dropCount; i++) {
-        let choices = [];
-        if (unknown) {
-            choices = getUnknownItems();
-            if (choices.length == 0) {
-                choices = [4000001];
-            };
-        }
-        else {
-            let pool = mobDropPools[mob][Math.floor(Math.random() * mobDropPools[mob].length)];
-            choices = dropPoolDefinitions[pool];
-        }
-        let id = choices[Math.floor((Math.random() * choices.length))];
-        itemImageSetup(id, itemDropSetup, aligner);
-        memorizeItemType(id);
-    }
+    if (justGetThem) {
+		let stuff = getUnknownItems()
+		for (let i = 0; i < stuff.length; i++) {
+			let id = (stuff[i]).toString();
+			itemImageSetup(id, itemDropSetup, aligner);
+			memorizeItemType(id);
+		}
+	}
+	else {
+		for (let i = 0; i < dropCount; i++) {
+			let choices = [];
+			if (unknown) {
+				choices = getUnknownItems();
+				if (choices.length == 0) {
+					choices = [4000001];
+				};
+			}
+			else {
+				let pool = mobDropPools[mob][Math.floor(Math.random() * mobDropPools[mob].length)];
+				choices = dropPoolDefinitions[pool];
+			}
+			let id = choices[Math.floor((Math.random() * choices.length))];
+			itemImageSetup(id, itemDropSetup, aligner);
+			memorizeItemType(id);
+		}
+	}
 }
 
 
@@ -170,6 +180,6 @@ function clearItems() {
 }
 
 function getItemURL(id) {
-    url = 'https://maplestory.io/api/GMS/210.1.1/item/'.concat(id);
+    url = 'https://maplestory.io/api/GMS/217/item/'.concat(id);
     return url;
 }
