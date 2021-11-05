@@ -301,7 +301,7 @@ input[type=number]::-webkit-inner-spin-button {
 #someGuiButtons {
     display: flex;
     position: absolute;
-    top: 747px;
+    top: 800px;
     left: 780px;
 }
 
@@ -777,7 +777,6 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #shopButtonArea {
-    top: 50px;
     margin:2px;
     display: flex;
     justify-content: center;
@@ -788,7 +787,6 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #storageButtonArea {
-    top: 50px;
     margin:2px;
     display: flex;
     justify-content: center;
@@ -1254,6 +1252,7 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 20px;
     padding-bottom: 36px;
     pointer-events: none;
+    white-space: nowrap;
 }
 
 .tooltipName {

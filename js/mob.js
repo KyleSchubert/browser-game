@@ -56,18 +56,29 @@ function rollDamageToMob(skill='') {
         else {
             switch (itemsInEquipmentSlots[16].exactType) {
                 case 'One-Handed Sword':
-                case 'Gauntlet':
-                case 'Two-Handed Axe':
+                case 'One-Handed Axe':
+                case 'One-Handed Blunt Weapon':
                 case 'Two-Handed Sword':
+                case 'Two-Handed Axe':
+                case 'Two-Handed Blunt':
                     weaponType = 'strength';
                     break;
-                case 'Arm Cannon':
+                case 'Bow':
+                case 'Gun':
+                case 'Spear':
+                case 'Pole Arm':
                     weaponType = 'dexterity';
                     break;
                 case 'Wand':
+                case 'Staff':
+                case 'Scepter':
+                case 'Arm Cannon':
                     weaponType = 'intelligence';
                     break;
                 case 'Katara':
+                case 'Claw':
+                case 'Gauntlet':
+                case 'Dagger':
                     weaponType = 'luck';
                     break;
             }
