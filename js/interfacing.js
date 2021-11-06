@@ -22,7 +22,7 @@ function makeDraggableItemsDraggable() {
             },
             stop: function(event) {
                 $('#draggedItemHolder').css('visibility', 'hidden');
-                $(this).css('visibility', 'visible');
+                $(this).css('visibility', '');
                 isSomethingBeingDragged = false;
                 $(this).css('pointer-events', 'auto');
                 if (isSellBoxReady) { // THEY MUST BE TRYING TO SELL THE ITEM
@@ -114,6 +114,10 @@ function makeDraggableItemsDraggable() {
                                     inventory.Equip[inventoryItemSlot] = inventory.DetailedEquip[inventoryItemSlot].id;
                                     itemsInEquipmentSlots[equippedItemSlot-30] = 0;
                                     inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot]);
+                                    if (equipmentThatShowsUp.includes(equippedItemSlot-30)) {
+                                        equipmentLatestChange = equippedItemSlot-30;
+                                        loadAvatar();
+                                    }
                                 }
                             }
                             else {
