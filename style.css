@@ -311,7 +311,31 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     position: absolute;
     top: 800px;
-    left: 780px;
+    left: 40px;
+}
+
+#gainTextStream {
+    display: flex;
+    position: absolute;
+    top: 790px;
+    left: 640px;
+    pointer-events: none;
+    width: 432px;
+    height: 120px;
+    color: white;
+    flex-direction: column;
+    overflow-y: hidden;
+    align-items: end;
+    justify-content: end;
+}
+
+.fadeToGone {
+    animation: 5000ms linear transparentFade;
+}
+
+@keyframes transparentFade {
+    70% {opacity: 1;}
+    100% {opacity: 0;}
 }
 
 @media only screen and (min-width: 1080px) {

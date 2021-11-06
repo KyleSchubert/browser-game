@@ -27,6 +27,7 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
         inventoryLoadOne(targetTab, targetSlot, itemID);
     }
     makeItemHighlighted(targetSlot, targetTab);
+    gainTextStreamAdd('You have gained an item in the ' + targetTab + ' tab (' + itemNames[itemID] + ')')
     return true;
 }
 

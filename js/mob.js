@@ -109,11 +109,11 @@ function mobDie(origin='') {
 
         experienceAmount = Math.ceil(Math.random() * 6); // temporary example
         character.gainExperience(experienceAmount);
-        console.log('gained experience from killing the mob: ' + experienceAmount.toString());
+        gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
 
         doubloonsAmount = Math.ceil(Math.random() * 12); // temporary example
         updateDoubloons(doubloonsAmount);
-        console.log('gained doubloons from killing the mob: ' + doubloonsAmount.toString());
+        gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
     }
 }
 
@@ -128,5 +128,16 @@ $(document).ready(function() {
 })
 
 $(document).on('transitionend webkitTransitionEnd oTransitionEnd', '.mob', function(event) { // part of the mob death effect
+    $(event.currentTarget).remove();
+});
+
+function gainTextStreamAdd(text) {
+    let div = document.createElement('div');
+    div.innerText = text;
+    div.classList = ['fadeToGone'];
+    $('#gainTextStream').append(div);
+}
+
+$(document).on('animationend webkitAnimationEnd oAnimationEnd', '.fadeToGone', function(event) { 
     $(event.currentTarget).remove();
 });

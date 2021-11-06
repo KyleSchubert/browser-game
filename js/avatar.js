@@ -15,7 +15,7 @@ function constructAvatarURL(state='stand1') {
             finishedURL = finishedURL.concat('%7B%22itemId%22%3A', itemsInEquipmentSlots[i].id, ',%22version%22%3A%22213%22%7D,');
         };
     })
-    return finishedURL.concat('/', state, '/animated');
+    return finishedURL.concat('/', state, '/animated?showEars=false&showLefEars=false&resize=1&flipX=false');
 };
 
 $(document).ready(function() {
