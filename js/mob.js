@@ -132,6 +132,7 @@ $(document).on('transitionend webkitTransitionEnd oTransitionEnd', '.mob', funct
 });
 
 function gainTextStreamAdd(text) {
+    console.log(text)
     let div = document.createElement('div');
     div.innerText = text;
     div.classList = ['fadeToGone'];

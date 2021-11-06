@@ -329,6 +329,10 @@ input[type=number]::-webkit-inner-spin-button {
     justify-content: end;
 }
 
+#gainTextStream div {
+    text-align: right;
+}
+
 .fadeToGone {
     animation: 5000ms linear transparentFade;
 }

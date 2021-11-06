@@ -76,7 +76,7 @@ const slotRestrictions = {
     'Sub Weapon': [19],
     'Belt': [21],
     'Bottom': [22],
-    'Gloves': [23],
+    'Glove': [23],
     'Cape': [24],
     'Shoes': [27]
 };
@@ -97,7 +97,7 @@ const slotText = {
     'Sub Weapon': 'Sub Weapon',
     'Belt': 'Belt',
     'Bottom': 'Bottom',
-    'Gloves': 'Gloves',
+    'Glove': 'Gloves',
     'Cape': 'Cape',
     'Shoes': 'Shoes'
 };
