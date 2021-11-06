@@ -94,6 +94,10 @@ function makeDraggableItemsDraggable() {
                                             inventory.Equip[inventoryItemSlot] = 0;
                                             equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30);
                                         }
+                                        if (equipmentThatShowsUp.includes(equippedItemSlot-30)) {
+                                            equipmentLatestChange = equippedItemSlot-30;
+                                            loadAvatar();
+                                        }
                                     }
                                     else {
                                         $(this).css('left', '0px');

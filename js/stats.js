@@ -100,9 +100,7 @@ $('.openStatsButton').click(function() {
         // START OPENING ANIMATION
         $('#statsArea').addClass('stats-opening');
         // ANIMATION DONE
-            console.log('FART1')
         $('.stats-opening').on('animationend webkitAnimationEnd oAnimationEnd', function() {
-            console.log('FART')
             $('#statsArea').addClass('stats-open');
             $('#statsArea').removeClass('stats-opening');
         });

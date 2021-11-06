@@ -293,9 +293,18 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 #avatarArea {
+    position: absolute;
     display: flex;
-    align-items: center;
-    height: 96px;
+    align-items: start;
+    height: 196px;
+    width: 140px;
+    top: 702px;
+    left: 50px;
+    transform: scaleX(-1);
+}
+
+#avatar {
+    background: rgba(0,0,0, 0.5);
 }
 
 #someGuiButtons {

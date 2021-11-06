@@ -37,7 +37,7 @@ NUM_OF_SLOTS = ROWS_OF_SLOTS*COLS_OF_SLOTS;
 
 
 var inventory = {
-    Equip: [1113095, 1112434, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148],
+    Equip: [1113095, 1112434, 0, 1113095, 1342111, 0, 0, 0, 0, 1412148, 0, 0, 0, 0, 0, 1003629, 1003686, 1004808],
     Use: [2000019, 0, 0, 0, 0, 2000019, 0, 0, 0, 0, 0, 2046319],
     Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4000001],
     DetailedEquip: [],
@@ -68,7 +68,7 @@ $(document).ready(function() {
     inventoryTabs = document.getElementById('moreInventoryButtonsArea').getElementsByClassName('subTab');
     inventoryTabs[0].classList.add('subTabFocused');
     $(inventoryTabs).on('click', inventoryTabs, switchTabs);
-    inventory.DetailedEquip = [new EquipItem(1113095), new EquipItem(1112434), 0, new EquipItem(1113095), new EquipItem(1342111), 0, 0, 0, 0, new EquipItem(1412148)];
+    inventory.DetailedEquip = [new EquipItem(1113095), new EquipItem(1112434), 0, new EquipItem(1113095), new EquipItem(1342111), 0, 0, 0, 0, new EquipItem(1412148), 0, 0, 0, 0, 0, new EquipItem(1003629), new EquipItem(1003686), new EquipItem(1004808)];
     _ = inventory.DetailedEquip.length;
     inventory.DetailedEquip.length = NUM_OF_SLOTS;
     inventory.DetailedEquip.fill(0, _, NUM_OF_SLOTS);

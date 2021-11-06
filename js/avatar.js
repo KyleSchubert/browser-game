@@ -1,24 +1,32 @@
-gearSlotOrder = ['hat', 'boots', 'cape', 'gloves', 'top', 'bottom', 'weapon'];
+var equipmentLatestChange = 0;
+const equipmentThatShowsUp = [2, 7, 12, 13, 16, 17, 19, 22, 23, 24, 27];
+var lastAvatarHeight = 68;
+var previousHatHeight = 0;
+
 function loadAvatar() {
-    document.getElementById('avatar').src=constructAvatarURL();
+    console.log('activated')
+    $('#avatar').attr('src', constructAvatarURL())
 };
 
 function constructAvatarURL(state='stand1') {
-    finishedURL = 'https://maplestory.io/api/character/%7B%22itemId%22:2000,%22version%22:%22213%22%7D,%7B%22itemId%22:12000,%22version%22:%22213%22%7D,';
-    for (let i = 0; i < gearSlotOrder.length; i++) {
-        currentElement = document.getElementById(gearSlotOrder[i]);
-        if (currentElement.value.length != 0) {
-            finishedURL = finishedURL.concat('%7B%22itemId%22:', currentElement.value, ',%22version%22:%22213%22%7D,');
-        }
-    }
-    return finishedURL.concat('/', state, '/animated?flipX=true');
+    finishedURL = 'https://maplestory.io/api/character/%7B%22itemId%22%3A2000,%22version%22%3A%22213%22%7D,%7B%22itemId%22%3A12000,%22version%22%3A%22213%22%7D,%7B%22itemId%22%3A20100%2C%22animationName%22%3A%22default%22%2C%22version%22%3A%22213%22%7D,';
+    equipmentThatShowsUp.forEach(function(i) {
+        if (itemsInEquipmentSlots[i] != 0) {
+            finishedURL = finishedURL.concat('%7B%22itemId%22%3A', itemsInEquipmentSlots[i].id, ',%22version%22%3A%22213%22%7D,');
+        };
+    })
+    return finishedURL.concat('/', state, '/animated');
 };
 
-baseGear = [1005200, 1072745, 1102484, 1082544, 1042395, 1062258, 1242146];
-function loadBase() {
-    for (let i = 0; i < gearSlotOrder.length; i++) {
-        currentElement = document.getElementById(gearSlotOrder[i]);
-        currentElement.parentNode.classList.add('is-dirty');
-        currentElement.value = baseGear[i];
-    };
-};
+$(document).ready(function() {
+    $('#avatar').on('load', function(event) {
+        console.log(''.concat('THE HEIGHT IS NOW: ', $(this).height()));
+        if (equipmentLatestChange == 2) { // hat changed
+            previousHatHeight -= lastAvatarHeight - $(this).height();
+            let shift = previousHatHeight;
+            let newValue = 702 - shift;
+            $('#avatarArea').css('top', ''.concat(newValue, 'px'));
+        }
+        lastAvatarHeight = $(this).height();
+    });
+})
