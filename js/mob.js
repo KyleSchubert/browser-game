@@ -20,8 +20,7 @@ function spawn(mob=getMob(true)) {
 function mobGifSetup(name) { // name in any case
     name = name.toLowerCase();
     gif = '/mob/alive/' + name + '.gif';
-    const img = new Image();
-
+    let img = new Image();
     img.classList = ['mob clickable'];
     img.src = gif;
     img.value = name;
@@ -29,7 +28,10 @@ function mobGifSetup(name) { // name in any case
     img.setAttribute('hp', Math.ceil(Math.random() * 34) + 90); // temporary example for HP
     img.setAttribute('maxHP', $(img).attr('hp')); // temporary example for maxHP
     $('#mobHP').text(''.concat($(img).attr('hp'), ' / ', $(img).attr('maxHP')));
-
+    $(img).on('load', () => {
+        $(img).css('left', '-=' + img.width/2);
+        $(img).off('load');
+    })
     $(img).click(function() {// MOBS TAKE DAMAGE ON CLICK
         newHP = $(this).attr('hp') - rollDamageToMob();
         if (newHP < 0) {
@@ -128,8 +130,16 @@ $(document).ready(function() {
 })
 
 $(document).on('transitionend webkitTransitionEnd oTransitionEnd', '.mob', function(event) { // part of the mob death effect
-    $(event.currentTarget).remove();
+    if ($(event.currentTarget).hasClass('mobDying')) {
+        $(event.currentTarget).remove();
+    }
 });
+
+$(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', function(event) { // part of the mob death effect
+    $(event.currentTarget).removeClass('mobMoving');
+    if (!$(event.currentTarget).hasClass('mobDying'))
+        $(event.currentTarget).attr('src', '/mob/alive/' + $(event.currentTarget).val() + '.gif');
+})
 
 function gainTextStreamAdd(text) {
     console.log(text)
@@ -142,3 +152,35 @@ function gainTextStreamAdd(text) {
 $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.fadeToGone', function(event) { 
     $(event.currentTarget).remove();
 });
+
+function mobMove(index) {
+    setTimeout(() => {
+        let mob = $('.mob:eq(' + index + ')');
+        $(mob).on('load', () => {
+            let movingLeft = Boolean(randomIntFromInterval(0, 1));
+            let distance = mobMoveDuration[mob.val()] * randomIntFromInterval(1, 6) * .05;
+            let final = 0;
+            let duration = distance / .05;
+            console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
+            if (movingLeft) { 
+                final = parseInt(mob.css('left'))-distance;
+            }
+            else {
+                final = parseInt(mob.css('left'))+distance;
+            }
+            mob.css('animation-duration', duration + 'ms');
+            mob.css('--currentLeft', mob.css('left'));
+            mob.css('--finalLeft',  final + 'px');
+            mob.addClass('mobMoving');
+            if (movingLeft) { 
+                mob.css('transform', 'scaleX(1)');
+            }
+            else {
+                mob.css('transform', 'scaleX(-1)');
+            }
+            mob.css('left', final + 'px');
+            mob.off('load');
+        })
+        mob.attr('src', '/mob/move/' + mob.val() + '.gif');
+    }, Math.random()*1000);
+}
