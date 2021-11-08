@@ -16,6 +16,7 @@ function getMob(fromList=false) {
 function spawn(mob=getMob(true)) {
     let madeMob = mobGifSetup(mob);
     mobMove(madeMob);
+    someAnimate(madeMob, 'alive');
     $('#mobArea').append(madeMob);
 }
 
@@ -140,6 +141,12 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.fadeToGone', f
     $(event.currentTarget).remove();
 });
 
+$(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', function(event) { // part of the mob death effect
+    mobSetAnimation(event.currentTarget, 'alive');
+    $(event.currentTarget).removeClass('mobMoving');
+    mobMove(event.currentTarget);
+})
+
 function mobMove(mob) {
     mob = $(mob);
     setTimeout(() => {
@@ -172,8 +179,9 @@ function mobMove(mob) {
 function mobSetAnimation(mob, status) {
     mob = $(mob);
     sprites = '/mob/' + status + '/' + mob.val() + '.png';
-    mob.attr('status', status)
     mob.css('background-image', 'url(' + sprites + ')');
+    mob.attr('status', status)
+    mob.css('background-position-x', '0px')
     console.log(mob)
     console.log(mob.val())
     console.log(mobDimensions[mob.val()])
@@ -183,7 +191,7 @@ function mobSetAnimation(mob, status) {
     //mob.css('left', '-=' + mobDimensions[name]['alive'][0]/2)
 }
 
-function someAnimate(mob, frame=0) {
+function someAnimate(mob, lastStatus, frame=0) {
     mob = $(mob);
     let status = mob.attr('status');
     let durationSource = [];
@@ -197,9 +205,9 @@ function someAnimate(mob, frame=0) {
     else if (status == 'move') {
         durationSource = mobMoveFrameDurations[mob.val()];
     }
-    if (frame >= durationSource.length) {
+    if (frame >= durationSource.length || status != lastStatus) {
         if (mob.hasClass('mobDying')) {
-            $(mob).remove();
+            mob.remove();
         }
         if (mob.attr('queued')) {
             status = mob.attr('queued');
@@ -207,8 +215,8 @@ function someAnimate(mob, frame=0) {
         mob.css('background-position-x', '0px')
         frame = 0;
     }
-    console.log(durationSource)
+    //console.log(durationSource)
     setTimeout(() => {
-        someAnimate(mob, frame+1)
+        someAnimate(mob, status, frame+1)
     }, durationSource[frame]);
 }
