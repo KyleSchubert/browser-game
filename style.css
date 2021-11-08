@@ -385,6 +385,13 @@ input[type=number]::-webkit-inner-spin-button {
     width: 100%;
 }
 
+#testing {
+    background-image: url("/mob/move/orange mushroom.png");
+    width: 65px;
+    height: 76px;
+    background-position-x: 0px;
+}
+
 @keyframes mobMove {
     0% {left: var(--currentLeft);}
     100% {left: var(--finalLeft);}
@@ -396,7 +403,6 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .mob {
-    left: 540px;
     position: absolute;
     pointer-events: all;
     bottom: 0px;
