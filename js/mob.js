@@ -26,7 +26,7 @@ function mobGifSetup(name) { // name in any case
     div = $(div);
     div.val(name);
     mobSetAnimation(div, 'alive');
-    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + 'px')
+    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-20, 20) + 'px' )
     div.addClass('mob clickable');
     div.attr('draggable', false);
     div.attr('hp', Math.ceil(Math.random() * 34) + 90); // temporary example for HP
@@ -150,29 +150,9 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', fu
 function mobMove(mob) {
     mob = $(mob);
     setTimeout(() => {
-        mobSetAnimation(mob, 'move');
-        let movingLeft = Boolean(randomIntFromInterval(0, 1));
-        let distance = mobMoveDuration[mob.val()] * randomIntFromInterval(1, 6) * .05;
-        let final = 0;
-        let duration = distance / .05;
-        console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
-        if (movingLeft) { 
-            final = parseInt(mob.css('left'))-distance;
+        if (!mob.hasClass('mobDying')) {
+            mobSetAnimation(mob, 'move');
         }
-        else {
-            final = parseInt(mob.css('left'))+distance;
-        }
-        mob.css('animation-duration', duration + 'ms');
-        mob.css('--currentLeft', mob.css('left'));
-        mob.css('--finalLeft',  final + 'px');
-        mob.addClass('mobMoving');
-        if (movingLeft) { 
-            mob.css('transform', 'scaleX(1)');
-        }
-        else {
-            mob.css('transform', 'scaleX(-1)');
-        }
-        mob.css('left', final + 'px');
     }, randomIntFromInterval(4217, 10203));
 }
 
@@ -182,10 +162,6 @@ function mobSetAnimation(mob, status) {
     mob.css('background-image', 'url(' + sprites + ')');
     mob.attr('status', status)
     mob.css('background-position-x', '0px')
-    console.log(mob)
-    console.log(mob.val())
-    console.log(mobDimensions[mob.val()])
-    console.log(status)
     mob.css('width', mobDimensions[mob.val()][status][0] + 'px')
     mob.css('height', mobDimensions[mob.val()][status][1] + 'px')
     //mob.css('left', '-=' + mobDimensions[name]['alive'][0]/2)
@@ -206,16 +182,37 @@ function someAnimate(mob, lastStatus, frame=0) {
         durationSource = mobMoveFrameDurations[mob.val()];
     }
     if (frame >= durationSource.length || status != lastStatus) {
-        if (mob.hasClass('mobDying')) {
+        if (frame >= durationSource.length && mob.hasClass('mobDying')) {
             mob.remove();
-        }
-        if (mob.attr('queued')) {
-            status = mob.attr('queued');
+            return
         }
         mob.css('background-position-x', '0px')
         frame = 0;
+        if (status == 'move' && status != lastStatus) {
+            let movingLeft = Boolean(randomIntFromInterval(0, 1));
+            let distance = mobMoveDuration[mob.val()] * randomIntFromInterval(1, 6) * .05;
+            let final = 0;
+            let duration = distance / .05;
+            console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
+            if (movingLeft) { 
+                final = parseInt(mob.css('left'))-distance;
+            }
+            else {
+                final = parseInt(mob.css('left'))+distance;
+            }
+            mob.css('animation-duration', duration + 'ms');
+            mob.css('--currentLeft', mob.css('left'));
+            mob.css('--finalLeft',  final + 'px');
+            mob.addClass('mobMoving');
+            if (movingLeft) { 
+                mob.css('transform', 'scaleX(1)');
+            }
+            else {
+                mob.css('transform', 'scaleX(-1)');
+            }
+            mob.css('left', final + 'px');
+        }
     }
-    //console.log(durationSource)
     setTimeout(() => {
         someAnimate(mob, status, frame+1)
     }, durationSource[frame]);

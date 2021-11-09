@@ -1,9 +1,9 @@
 /* eslint-disable */
 var knownMobs = ['tino', 'orange mushroom', 'mushmom', 'mutant ribbon pig'];
 
-// found using   https://ezgif.com/maker     (these are in milliseconds)
+// found using   http://gifduration.konstochvanligasaker.se/     (these are in milliseconds)
 var mobDeathDuration = {'tino': 1560, 'orange mushroom': 660, 'mushmom': 1100, 'mutant ribbon pig': 2160};
-var mobMoveDuration = {'tino': 850, 'orange mushroom': 480, 'mushmom': 1200, 'mutant ribbon pig': 960};
+var mobMoveDuration = {'tino': 750, 'orange mushroom': 480, 'mushmom': 1200, 'mutant ribbon pig': 960};
 
 var mobAliveFrameDurations = {'mushmom': [250], 'mutant ribbon pig': [180, 180, 180, 180, 180, 180], 'orange mushroom': [180, 180], 'tino': [210, 210, 210, 210]};
 var mobDeadFrameDurations = {'mushmom': [200, 150, 150, 150, 150, 300], 'mutant ribbon pig': [120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120], 'orange mushroom': [180, 180, 300], 'tino': [120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120]};
