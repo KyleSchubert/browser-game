@@ -381,7 +381,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: relative;
     pointer-events: none;
     align-items: flex-end;
-    height: 50px;
+    height: 47px;
     width: 100%;
 }
 
