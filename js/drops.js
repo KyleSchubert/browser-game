@@ -59,7 +59,7 @@ function setupImage(url, itemID) {
     return finishedImage;
 }
 
-function dropLoot(mob, dropCount=$('#dropCount').val(), unknown=false, justGetThem=false) {
+function dropLoot(mob, mobLeft=540, dropCount=$('#dropCount').val(), unknown=false, justGetThem=false) {
     const aligner = document.createElement('div');
     aligner.classList = ['dropAligner'];
     aligner.style.width = ''.concat(dropCount*32, 'px');
@@ -71,7 +71,7 @@ function dropLoot(mob, dropCount=$('#dropCount').val(), unknown=false, justGetTh
     else {
         aligner.style.zIndex = 1;
     }
-    aligner.style.marginLeft = ''.concat((lootArea.offsetWidth - dropCount*32)/2, 'px');
+    aligner.style.marginLeft = ''.concat(parseInt(mobLeft) - dropCount*32/2 + 16, 'px');
     if (justGetThem) {
 		let stuff = getUnknownItems()
 		for (let i = 0; i < stuff.length; i++) {

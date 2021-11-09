@@ -106,7 +106,7 @@ function mobDie(origin='') {
         target.addClass('mobDying');
 
         mobDropAmount = Math.ceil(Math.random() * 3); // temporary example
-        dropLoot(mobName.toLowerCase(), mobDropAmount);
+        dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
         experienceAmount = Math.ceil(Math.random() * 6); // temporary example
