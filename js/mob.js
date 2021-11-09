@@ -158,8 +158,10 @@ function mobMove(mob) {
 
 function mobSetAnimation(mob, status) {
     mob = $(mob);
-    sprites = '/mob/' + status + '/' + mob.val() + '.png';
+    sprites = '/mob/' + status + '/' + mob.val().replaceAll(' ', '%20') + '.png';
     mob.css('background-image', 'url(' + sprites + ')');
+    
+    console.log(mob.css('background-image'))
     mob.attr('status', status)
     mob.css('background-position-x', '0px')
     mob.css('width', mobDimensions[mob.val()][status][0] + 'px')
