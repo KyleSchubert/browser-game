@@ -20,6 +20,12 @@ function spawn(mob=getMob(true)) {
     $('#mobArea').append(madeMob);
 }
 
+function spawnOneOfEach() {
+    knownMobs.forEach((mob) => {
+        spawn(mob);
+    });
+}
+
 function mobGifSetup(name) { // name in any case
     name = name.toLowerCase();
     let div = document.createElement('div');
@@ -102,7 +108,7 @@ function mobDie(origin='') {
         target.css('pointer-events', 'none');
         let mobName = target.val();
         mobSetAnimation(target, 'dead')
-        target.css('transition-duration', mobDeathDuration[mobName].toString() + 'ms');
+        target.css('transition-duration', mobFrameDurations[mobName]['dead'].reduce((partial_sum, a) => partial_sum + a, 0).toString() + 'ms');
         target.addClass('mobDying');
 
         mobDropAmount = Math.ceil(Math.random() * 3); // temporary example
@@ -160,8 +166,6 @@ function mobSetAnimation(mob, status) {
     mob = $(mob);
     sprites = '/mob/' + status + '/' + mob.val().replaceAll(' ', '%20') + '.png';
     mob.css('background-image', 'url(' + sprites + ')');
-    
-    console.log(mob.css('background-image'))
     mob.attr('status', status)
     mob.css('background-position-x', '0px')
     mob.css('width', mobDimensions[mob.val()][status][0] + 'px')
@@ -172,17 +176,8 @@ function mobSetAnimation(mob, status) {
 function someAnimate(mob, lastStatus, frame=0) {
     mob = $(mob);
     let status = mob.attr('status');
-    let durationSource = [];
+    let durationSource = mobFrameDurations[mob.val()][status];
     mob.css('background-position-x', '-=' + mob.width());
-    if (status == 'alive') {
-        durationSource = mobAliveFrameDurations[mob.val()];
-    }
-    else if (status == 'dead') {
-        durationSource = mobDeadFrameDurations[mob.val()];
-    }
-    else if (status == 'move') {
-        durationSource = mobMoveFrameDurations[mob.val()];
-    }
     if (frame >= durationSource.length || status != lastStatus) {
         if (frame >= durationSource.length && mob.hasClass('mobDying')) {
             mob.remove();
@@ -192,7 +187,7 @@ function someAnimate(mob, lastStatus, frame=0) {
         frame = 0;
         if (status == 'move' && status != lastStatus) {
             let movingLeft = Boolean(randomIntFromInterval(0, 1));
-            let distance = mobMoveDuration[mob.val()] * randomIntFromInterval(1, 6) * .05;
+            let distance = mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, 6) * .05;
             let final = 0;
             let duration = distance / .05;
             console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
