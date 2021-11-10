@@ -60,6 +60,7 @@ function mobGifSetup(name) { // name in any case
         let theirBlackPart = theirHpBar.children('.hpBarBlackPart');
         theirBlackPart.css('width', width);
         if (newHP <= 0) {
+            theirHpBar.css('visibility', 'hidden');
             mobDie(event.currentTarget);
         }
         theirHpBar.attr('hp', newHP);
