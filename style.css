@@ -301,10 +301,7 @@ input[type=number]::-webkit-inner-spin-button {
     top: 702px;
     left: 50px;
     transform: scaleX(-1);
-}
-
-#avatar {
-    background: rgba(0,0,0, 0.5);
+    pointer-events: none;
 }
 
 #someGuiButtons {
@@ -385,13 +382,6 @@ input[type=number]::-webkit-inner-spin-button {
     width: 100%;
 }
 
-#testing {
-    background-image: url("/mob/move/orange mushroom.png");
-    width: 65px;
-    height: 76px;
-    background-position-x: 0px;
-}
-
 @keyframes mobMove {
     0% {left: var(--currentLeft);}
     100% {left: var(--finalLeft);}
@@ -404,9 +394,40 @@ input[type=number]::-webkit-inner-spin-button {
 
 .mob {
     position: absolute;
+    display: flex;
     pointer-events: all;
     bottom: 0px;
     opacity: 1;
+    place-content: center;
+}
+
+.hpBar {
+    position: absolute;
+    top: -24px;
+    visibility: hidden;
+}
+
+.hpBarRedPart {
+    position: absolute;
+    height: 4px;
+    background-color: red;
+    bottom: 8px;
+}
+
+.hpBarBlackPart {
+    position: absolute;
+    height: 7px;
+    background-color: black;
+    bottom: 6px;
+}
+
+.hpFasterFade {
+    animation: 3000ms linear hpFade;
+}
+
+@keyframes hpFade {
+    60% {opacity: 1;}
+    100% {opacity: 0;}
 }
 
 .mobDying {

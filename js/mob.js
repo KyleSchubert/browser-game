@@ -35,20 +35,47 @@ function mobGifSetup(name) { // name in any case
     div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-20, 20) + 'px' )
     div.addClass('mob clickable');
     div.attr('draggable', false);
-    div.attr('hp', Math.ceil(Math.random() * 34) + 90); // temporary example for HP
-    div.attr('maxHP', $(div).attr('hp')); // temporary example for maxHP
-    $('#mobHP').text(''.concat(div.attr('hp'), ' / ', div.attr('maxHP')));
+    let hpBar = document.createElement('div');
+    hpBar = $(hpBar);
+    hpBar.addClass('hpBar');
+    hpBar.attr('hp', Math.ceil(Math.random() * 34) + 90); // temporary example for HP
+    hpBar.attr('maxHP', $(hpBar).attr('hp')); // temporary example for maxHP
+    $('#mobHP').text(''.concat(hpBar.attr('hp'), ' / ', hpBar.attr('maxHP')));
     div.on('click', (event) => {// MOBS TAKE DAMAGE ON CLICK
-        newHP = $(event.currentTarget).attr('hp') - rollDamageToMob();
+        let theirHpBar = $(event.currentTarget).children();
+        theirHpBar.css('visibility', 'visible');
+        newHP = theirHpBar.attr('hp') - rollDamageToMob();
         if (newHP < 0) {
             newHP = 0;
         }
-        $('#mobHP').text(''.concat(newHP, ' / ', $(event.currentTarget).attr('maxHP')));
+        $('#mobHP').text(''.concat(newHP, ' / ', theirHpBar.attr('maxHP')));
+        let width = (1 - newHP / theirHpBar.attr('maxHP')) * 67;
+        let theirRedPart = theirHpBar.children('.hpBarRedPart');
+        if (theirRedPart.hasClass('hpFasterFade')) {
+            theirRedPart.removeClass('hpFasterFade');
+            theirRedPart.width(); // stupid garbage necessary code says these people:  https://www.charistheo.io/blog/2021/02/restart-a-css-animation-with-javascript/
+        }
+        theirRedPart.css('width', width + 4 - parseInt(theirRedPart.css('right')) + 'px');
+        theirRedPart.addClass('hpFasterFade');
+        let theirBlackPart = theirHpBar.children('.hpBarBlackPart');
+        theirBlackPart.css('width', width);
         if (newHP <= 0) {
             mobDie(event.currentTarget);
         }
-        $(event.currentTarget).attr('hp', newHP);
+        theirHpBar.attr('hp', newHP);
     });
+    let greenPart = new Image();
+    greenPart.src = 'files/hpBar.png';
+    let blackPart = document.createElement('div');
+    blackPart.classList = ['hpBarBlackPart'];
+    $(blackPart).css('right', '4px');
+    let redPart = document.createElement('div');
+    redPart.classList = ['hpBarRedPart'];
+    $(redPart).css('right', '4px');
+    hpBar.append(blackPart);
+    hpBar.append(redPart);
+    hpBar.append(greenPart);
+    div.append(hpBar);
     return div;
 }
 
@@ -99,7 +126,7 @@ function rollDamageToMob(skill='') {
 
 function mobDie(origin='') {
     if (!origin) {
-        target = $('#mobArea div:not(.mobDying)').last();
+        target = $('#mobArea .mob:not(.mobDying)').last();
     }
     else {
         target = $(origin); // it will be activated by clicking the mob so that should catch it
@@ -147,10 +174,17 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.fadeToGone', f
     $(event.currentTarget).remove();
 });
 
+$(document).on('animationend webkitAnimationEnd oAnimationEnd', '.hpFasterFade', function(event) { 
+    $(event.currentTarget).css('right', '+=' + parseInt($(event.currentTarget).css('width')));
+    $(event.currentTarget).css('width', 0);
+});
+
 $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', function(event) { // part of the mob death effect
-    mobSetAnimation(event.currentTarget, 'alive');
-    $(event.currentTarget).removeClass('mobMoving');
-    mobMove(event.currentTarget);
+    if ($(event.target).hasClass('mob')) {
+        mobSetAnimation(event.target, 'alive');
+        $(event.target).removeClass('mobMoving');
+        mobMove(event.target);
+    }
 })
 
 function mobMove(mob) {
@@ -177,6 +211,9 @@ function someAnimate(mob, lastStatus, frame=0) {
     mob = $(mob);
     let status = mob.attr('status');
     let durationSource = mobFrameDurations[mob.val()][status];
+    if (durationSource.length == 1) {
+        durationSource = [300];
+    }
     mob.css('background-position-x', '-=' + mob.width());
     if (frame >= durationSource.length || status != lastStatus) {
         if (frame >= durationSource.length && mob.hasClass('mobDying')) {
@@ -203,9 +240,11 @@ function someAnimate(mob, lastStatus, frame=0) {
             mob.addClass('mobMoving');
             if (movingLeft) { 
                 mob.css('transform', 'scaleX(1)');
+                mob.children().first().css('transform', 'scaleX(1)');
             }
             else {
                 mob.css('transform', 'scaleX(-1)');
+                mob.children().first().css('transform', 'scaleX(-1)');
             }
             mob.css('left', final + 'px');
         }
