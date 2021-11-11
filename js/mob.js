@@ -225,9 +225,21 @@ function someAnimate(mob, lastStatus, frame=0) {
         frame = 0;
         if (status == 'move' && status != lastStatus) {
             let movingLeft = Boolean(randomIntFromInterval(0, 1));
-            let distance = mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, 6) * .05;
+            let currentLeft = parseInt(mob.css('left'));
+            if (!movingLeft) {
+                currentLeft = 1080 - currentLeft - parseInt(mob.css('width'));
+            }
+            let upperLimit = 6;
+            if (Math.floor(currentLeft / (mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20)) < upperLimit) {
+                upperLimit = Math.floor(currentLeft / (mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20));
+            }
+            if (upperLimit <= 1) {
+                movingLeft = !movingLeft;
+                upperLimit = 6;
+            } 
+            let distance = mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, upperLimit) / 20;
             let final = 0;
-            let duration = distance / .05;
+            let duration = distance * 20;
             console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
             if (movingLeft) { 
                 final = parseInt(mob.css('left'))-distance;
