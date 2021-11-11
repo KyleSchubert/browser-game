@@ -45,7 +45,7 @@ function mobGifSetup(name) { // name in any case
         let theirHpBar = $(event.currentTarget).children();
         theirHpBar.css('visibility', 'visible');
         let damageRoll = rollDamageToMob();
-        damageNumbers(damageRoll, $(event.currentTarget).offset().left, $(event.currentTarget).offset().top - 60);
+        damageNumbers(damageRoll, $(event.currentTarget).offset().left + parseInt($(event.currentTarget).css('width')) / 2, $(event.currentTarget).offset().top - 60);
         newHP = theirHpBar.attr('hp') - damageRoll;
         if (newHP < 0) {
             newHP = 0;
@@ -313,7 +313,7 @@ function damageNumbers(number, left, top) {
         }
         div.append(img);
     }
-    let finalWidth = lastWidth + 60;
+    let finalWidth = lastWidth + leftChange;
     $(div).css('left', left - finalWidth / 2 + 'px');
     $(div).css('--finalTop', top - 20 + 'px');
     $(div).css('top', top + 'px');
