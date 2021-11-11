@@ -32,7 +32,7 @@ function mobGifSetup(name) { // name in any case
     div = $(div);
     div.val(name);
     mobSetAnimation(div, 'alive');
-    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-20, 20) + 'px' )
+    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-300, 300) + 'px' )
     div.addClass('mob clickable');
     div.attr('draggable', false);
     let hpBar = document.createElement('div');
@@ -44,7 +44,9 @@ function mobGifSetup(name) { // name in any case
     div.on('click', (event) => {// MOBS TAKE DAMAGE ON CLICK
         let theirHpBar = $(event.currentTarget).children();
         theirHpBar.css('visibility', 'visible');
-        newHP = theirHpBar.attr('hp') - rollDamageToMob();
+        let damageRoll = rollDamageToMob();
+        damageNumbers(damageRoll, $(event.currentTarget).offset().left, $(event.currentTarget).offset().top - 60);
+        newHP = theirHpBar.attr('hp') - damageRoll;
         if (newHP < 0) {
             newHP = 0;
         }
@@ -139,27 +141,39 @@ function mobDie(origin='') {
         target.css('transition-duration', mobFrameDurations[mobName]['dead'].reduce((partial_sum, a) => partial_sum + a, 0).toString() + 'ms');
         target.addClass('mobDying');
 
-        mobDropAmount = Math.ceil(Math.random() * 3); // temporary example
+        mobDropAmount = Math.ceil(Math.random()); // temporary example
         dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
-        experienceAmount = Math.ceil(Math.random() * 6); // temporary example
+        experienceAmount = Math.ceil(Math.random() * 600); // temporary example
         character.gainExperience(experienceAmount);
         gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
 
-        doubloonsAmount = Math.ceil(Math.random() * 12); // temporary example
+        doubloonsAmount = Math.ceil(Math.random() * 1200); // temporary example
         updateDoubloons(doubloonsAmount);
         gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
     }
 }
 
-MAX_MOBS = 1;
+MAX_MOBS = 10;
 $(document).ready( () => {
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
     spawn(getMob())
     setInterval(() => {
         if ($('.mob').length < MAX_MOBS) {
-            console.log("Spawning a mob");
-            spawn(getMob());
+            console.log("Respawning mobs");
+            let amountToSpawn = (MAX_MOBS-$('.mob').length);
+            for (i=0; i<amountToSpawn; i++) {
+                spawn(getMob());
+            }
         }}, 14000);
 })
 
@@ -266,3 +280,46 @@ function someAnimate(mob, lastStatus, frame=0) {
         someAnimate(mob, status, frame+1)
     }, durationSource[frame]);
 }
+
+const damageNumberLefts = {0: 12, 1: 8, 2: 11, 3: 11, 4: 12, 5: 11, 6: 12, 7: 11, 8: 12, 9: 12};
+function damageNumbers(number, left, top) {
+    let div = document.createElement('div');
+    div.classList = ['damageNumberHolder'];
+    number = String(number);
+    let leftChange = -4;
+    let lastWidth = 0;
+    for (i=0; i<number.length; i++) {
+        let img = new Image();
+        img.src = '/files/hit/' + number.at(i) + '.png';
+        if (i == 0) {
+            $(img).css('top', '-8px');
+            $(img).css('width', Math.round(img.width * 7/6) + 'px');
+            $(img).css('height', Math.round(img.height * 7/6) + 'px');
+            lastWidth = parseInt($(img).css('width'));
+            $(img).css('left', '-6px');
+        }
+        else if (i % 2 == 0) {
+            if (i % 4 == 0) {
+                $(img).css('top', '-3px');
+            }
+            else {
+                $(img).css('top', '-4px');
+            }
+        }
+        if (i != 0) {
+            leftChange += lastWidth - damageNumberLefts[number.at(i-1)];
+            $(img).css('left', leftChange + 'px');
+            lastWidth = img.width;
+        }
+        div.append(img);
+    }
+    let finalWidth = lastWidth + 60;
+    $(div).css('left', left - finalWidth / 2 + 'px');
+    $(div).css('--finalTop', top - 20 + 'px');
+    $(div).css('top', top + 'px');
+    $('#lootArea').append(div);
+}
+
+$(document).on('animationend webkitAnimationEnd oAnimationEnd', '.damageNumberHolder', function(event) { 
+    $(event.currentTarget).remove();
+});

@@ -339,6 +339,12 @@ input[type=number]::-webkit-inner-spin-button {
     100% {opacity: 0;}
 }
 
+@keyframes risingTransparentFade {
+    50% {opacity: 1;}
+    99% {top: var(--finalTop);}
+    100% {opacity: 0;}
+}
+
 @media only screen and (min-width: 1080px) {
     #gameArea {
         position: absolute;
@@ -355,6 +361,15 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .portal {
+    position: absolute;
+}
+
+.damageNumberHolder {
+    position: absolute;
+    animation: 920ms linear risingTransparentFade;
+}
+
+.damageNumberHolder img {
     position: absolute;
 }
 
@@ -431,6 +446,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .mobDying {
+    pointer-events: none;
     transition-property: opacity;
     opacity: 0;
 }
