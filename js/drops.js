@@ -11,7 +11,7 @@ function itemDropSetup(img, aligner) {
 
 function itemImageSetup(itemID, callback, slot=999999) {
     if (knownItemImages.includes(itemID)) {
-        url = '/item/'.concat(itemID).concat('/icon.png');
+        url = './item/'.concat(itemID).concat('/icon.png');
         img = setupImage(url, itemID);
         if (slot != 999999) {
             callback(img, slot);
@@ -22,7 +22,7 @@ function itemImageSetup(itemID, callback, slot=999999) {
     }
     else {
         $.ajax({
-            url: '/item/'.concat(itemID).concat('/icon.png'),
+            url: './item/'.concat(itemID).concat('/icon.png'),
             type: 'HEAD',
             error: function() {
                 img = getItemURL(itemID).concat('/icon');
@@ -36,7 +36,7 @@ function itemImageSetup(itemID, callback, slot=999999) {
                 }
             },
             success: function() {
-                img = '/item/'.concat(itemID).concat('/icon.png');
+                img = './item/'.concat(itemID).concat('/icon.png');
                 knownItemImages.push(itemID);
                 img = setupImage(img, itemID);
                 if (slot != 999999) {

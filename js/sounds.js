@@ -21,7 +21,7 @@ async function getFile(filepath) {
 }
 
 async function loadFile(filePath) {
-    filePath = '/files/sounds/' + filePath;
+    filePath = './files/sounds/' + filePath;
     const track = await getFile(filePath);
     return track;
 }

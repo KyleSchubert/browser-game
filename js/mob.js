@@ -68,7 +68,7 @@ function mobGifSetup(name) { // name in any case
         theirHpBar.attr('hp', newHP);
     });
     let greenPart = new Image();
-    greenPart.src = 'files/hpBar.png';
+    greenPart.src = './files/hpBar.png';
     let blackPart = document.createElement('div');
     blackPart.classList = ['hpBarBlackPart'];
     $(blackPart).css('right', '4px');
@@ -213,7 +213,7 @@ function mobMove(mob) {
 
 function mobSetAnimation(mob, status) {
     mob = $(mob);
-    sprites = '/mob/' + status + '/' + mob.val().replaceAll(' ', '%20') + '.png';
+    sprites = './mob/' + status + '/' + mob.val().replaceAll(' ', '%20') + '.png';
     mob.css('background-image', 'url(' + sprites + ')');
     mob.attr('status', status)
     mob.css('background-position-x', '0px')
@@ -290,7 +290,7 @@ function damageNumbers(number, left, top) {
     let lastWidth = 0;
     for (i=0; i<number.length; i++) {
         let img = new Image();
-        img.src = '/files/hit/' + number.at(i) + '.png';
+        img.src = './files/hit/' + number.at(i) + '.png';
         if (i == 0) {
             $(img).css('top', '-8px');
             $(img).css('width', Math.round(img.width * 7/6) + 'px');

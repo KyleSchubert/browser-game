@@ -353,7 +353,7 @@ var previousHighlightedImage = new Image();
 function makeSlotHighlighted(slot) {
     const img = new Image();
     img.classList = ['highlightedSlot'];
-    img.src = '/files/newitemYELLOW.gif';
+    img.src = './files/newitemYELLOW.gif';
     img.setAttribute('draggable', false);
     previousHighlightedImage = img;
     $('.slot')[slot].append(img);

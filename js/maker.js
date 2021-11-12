@@ -87,11 +87,11 @@ function chosenLoadNextOptions(e, parameters) {
     }
     else if (targetSelectArea == 3) { // there is no fourth dropdown select thing. just gotta set the image
         // NOW we can set the makerVisual
-        $('#makerVisual img').attr('src' );
+        $('#makerVisual img').attr('src');
         console.log(parameters);
         if (chosenInitialCategory == 'Mobs') {
             name = parameters.selected.toLowerCase();
-            $('#makerVisual img').attr('src', '/mob/alive/' + name + '.gif');
+            $('#makerVisual img').attr('src', './mob/alive/' + name + '.gif');
             makerLoadTheEditor(name, 'Mobs');
         }
         else if (chosenInitialCategory == 'Items') {

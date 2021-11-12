@@ -14,7 +14,7 @@ function loadPortals() {
     $('.portal').remove();
     zoneConnections[currentZone].forEach(function(portalData) {
         let portal = new Image();
-        portal.src = "/files/portal.gif";
+        portal.src = "./files/portal.gif";
         portal.value = portalData.dest;
         portal.classList = ['portal clickable'];
         portal.setAttribute('draggable', 'false')
