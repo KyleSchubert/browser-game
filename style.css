@@ -377,7 +377,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: relative;
     width: 1080px;
     height: 944px;
-    background-image: url(/files/terrainv2.png);
+    background-image: url(./files/terrainv2.png);
 }
 
 #lootBlocker {
@@ -1034,7 +1034,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .sellArea {
     right: 24px;
-    background-image: url(/files/sell_background.png);
+    background-image: url(./files/sell_background.png);
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -1139,7 +1139,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .slot {
     position: relative;
-    background-image: url("/files/slotSTOLEN.png");
+    background-image: url("./files/slotSTOLEN.png");
     width: 47px;
     height: 47px;
     vertical-align: middle;
@@ -1148,7 +1148,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .equipmentSlot {
     position: relative;
-    background-image: url("/files/equipslot.png");
+    background-image: url("./files/equipslot.png");
     width: 50px;
     height: 50px;
     vertical-align: middle;
