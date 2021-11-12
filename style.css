@@ -1034,7 +1034,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .sellArea {
     right: 24px;
-    background-image: url(./files/sell_background.png);
+    background-image: url("./files/sell_background.png");
     background-repeat: no-repeat;
     background-position: center;
 }
