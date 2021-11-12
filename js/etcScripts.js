@@ -118,25 +118,14 @@ function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// https://stackoverflow.com/questions/10240110/how-do-you-cache-an-image-in-javascript#answer-10240297
+// me
 function preloadImages(array) {
-    if (!preloadImages.list) {
-        preloadImages.list = [];
-    }
-    var list = preloadImages.list;
-    for (var i = 0; i < array.length; i++) {
-        var img = new Image();
-        img.onload = function() {
-            var index = list.indexOf(this);
-            if (index !== -1) {
-                // remove image from the array once it's loaded
-                // for memory consumption reasons
-                list.splice(index, 1);
-            }
-        }
-        list.push(img);
-        img.src = array[i];
-    }
+    array.forEach((data) => {
+        let img = new Image();
+        img.src = data;
+        img.classList = ['preloading'];
+        $('body').append(img);
+    })
 }
 
 $(document).ready(function() {

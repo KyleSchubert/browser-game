@@ -1503,3 +1503,10 @@ input[type=number]::-webkit-inner-spin-button {
     top: 960px;
     background-color: white;
 }
+
+.preloading {
+    position: absolute;
+    pointer-events: none;
+    visibility: hidden;
+    z-index: -99999;
+}
