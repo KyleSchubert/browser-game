@@ -451,17 +451,6 @@ input[type=number]::-webkit-inner-spin-button {
     opacity: 0;
 }
 
-#mobHPArea {
-    pointer-events: none;
-    text-align: center;
-    margin-top: 28px;
-}
-
-#mobHP {
-    color: white;
-    font-size: 32px;
-}
-
 @keyframes dropAnimation {
     1% {
     transform: translateY(-2.54px) rotate(14.4deg);

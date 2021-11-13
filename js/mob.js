@@ -38,9 +38,13 @@ function mobGifSetup(name) { // name in any case
     let hpBar = document.createElement('div');
     hpBar = $(hpBar);
     hpBar.addClass('hpBar');
-    hpBar.attr('hp', Math.ceil(Math.random() * 34) + 90); // temporary example for HP
+    if (bossMobs.includes(name)) {
+        hpBar.attr('hp', bossData[name]['hp']);
+    }
+    else {
+        hpBar.attr('hp', mobLevelToHp[mobLevels[name]]);
+    }
     hpBar.attr('maxHP', $(hpBar).attr('hp')); // temporary example for maxHP
-    $('#mobHP').text(''.concat(hpBar.attr('hp'), ' / ', hpBar.attr('maxHP')));
     div.on('click', (event) => {// MOBS TAKE DAMAGE ON CLICK
         let theirHpBar = $(event.currentTarget).children();
         theirHpBar.css('visibility', 'visible');
@@ -50,7 +54,6 @@ function mobGifSetup(name) { // name in any case
         if (newHP < 0) {
             newHP = 0;
         }
-        $('#mobHP').text(''.concat(newHP, ' / ', theirHpBar.attr('maxHP')));
         let width = (1 - newHP / theirHpBar.attr('maxHP')) * 67;
         let theirRedPart = theirHpBar.children('.hpBarRedPart');
         if (theirRedPart.hasClass('hpFasterFade')) {
@@ -145,11 +148,16 @@ function mobDie(origin='') {
         dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
-        experienceAmount = Math.ceil(Math.random() * 600); // temporary example
+        if (bossMobs.includes(mobName)) {
+            experienceAmount = bossData[mobName]['exp'];
+        }
+        else {
+            experienceAmount = mobLevelToExp[mobLevels[mobName]];
+        }
         character.gainExperience(experienceAmount);
         gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
 
-        doubloonsAmount = Math.ceil(Math.random() * 1200); // temporary example
+        doubloonsAmount = 30 + mobLevelToExp[mobLevels[mobName]]; // TEMPORARY EXAMPLE
         updateDoubloons(doubloonsAmount);
         gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
     }
