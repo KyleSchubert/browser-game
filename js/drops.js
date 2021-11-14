@@ -134,7 +134,7 @@ function memorizeItemType(itemID) {
     }
 }
 
-// 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp'
+// 'strength', 'dexterity', 'intelligence', 'luck', 'hp', 'mp', 'physicalAttack', 'magicAttack', 'bossDamageMultiplier'
 function memorizeEquipmentStats(itemID, stats) {
     if (typeof equipmentStats[itemID] == 'undefined') {
         const usedStats = Object.keys(stats);

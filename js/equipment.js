@@ -333,12 +333,45 @@ function equipmentItemHolderSetup(slot, img) {
     return itemHolder;
 }
 
-function getEquipmentByLevel(min, max) {
-    let theseItems = [];
-    Object.keys(equipmentStats).forEach(function(id) {
-        if (min <= equipmentStats[id].reqLevelEquip && equipmentStats[id].reqLevelEquip <= max) {
-            theseItems.push(id);
-        };
+const STAT_POWER_VALUES = {'strength': 1, 'dexterity': 1, 'intelligence': 1, 'luck': 1, 'hp': 0.05, 'mp': 0.02, 'physicalAttack': 0.5, 'magicAttack': 0.5, 'bossDamageMultiplier': 3};
+function calculateEquipmentPower(itemID) {
+    let power = 0;
+    let statsToCheck = getUsedStats(equipmentStats[itemID]);
+    if (statsToCheck.includes('physicalAttack') && statsToCheck.includes('magicAttack')) {
+        if (equipmentStats[itemID]['physicalAttack'] > equipmentStats[itemID]['magicAttack']) {
+            removeItemOnce(statsToCheck, 'magicAttack');
+        }
+        else {
+            removeItemOnce(statsToCheck, 'physicalAttack');
+        }
+    }
+    statsToCheck.forEach((stat) => {
+        power += STAT_POWER_VALUES[stat] * equipmentStats[itemID][stat];
     })
-    return theseItems;
+    return power;
+}
+
+function getEquipmentByLevel(min, max, theseItems=Object.keys(equipmentStats)) {
+    return theseItems.filter((itemID) => min <= equipmentStats[itemID].reqLevelEquip && equipmentStats[itemID].reqLevelEquip <= max);
+}
+
+function getEquipmentByString(string, theseItems=Object.keys(equipmentStats)) {
+    return theseItems.filter((itemID) => itemNames[itemID].includes(string));
+}
+
+function getEquipmentByPower(min, max, theseItems=Object.keys(equipmentStats)) {
+    if (max == 0) {
+        return theseItems.filter((itemID) => equipmentStats[itemID].length == 1)
+    }
+    else {
+        return theseItems.filter((itemID) => between(calculateEquipmentPower(itemID), min, max));
+    }
+}
+
+function getEquipmentByExactTypes(exactTypes, theseItems=Object.keys(equipmentStats)) {
+    return theseItems.filter((itemID) => exactTypes.includes(itemsAndTheirTypes[itemID][2]));
+}
+
+function getEquipmentByExcludingExactTypes(exactTypes, theseItems=Object.keys(equipmentStats)) {
+    return theseItems.filter((itemID) => !exactTypes.includes(itemsAndTheirTypes[itemID][2]));
 }
