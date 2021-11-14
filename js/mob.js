@@ -35,6 +35,17 @@ function mobGifSetup(name) { // name in any case
     div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-300, 300) + 'px' )
     div.addClass('mob clickable');
     div.attr('draggable', false);
+    let nameAndLevelText = document.createElement('div');
+    nameAndLevelText = $(nameAndLevelText);
+    nameAndLevelText.addClass('nameAndLevelText');
+    let nameText = document.createElement('div');
+    nameText.innerHTML = mobNames[name];
+    nameText.classList = ['mobNameText'];
+    let levelText = document.createElement('div');
+    levelText.innerHTML = 'Lv. ' + mobLevels[name];
+    levelText.classList = ['mobLevelText'];
+    nameAndLevelText.append(levelText);
+    nameAndLevelText.append(nameText);
     let hpBar = document.createElement('div');
     hpBar = $(hpBar);
     hpBar.addClass('hpBar');
@@ -43,10 +54,12 @@ function mobGifSetup(name) { // name in any case
     }
     else {
         hpBar.attr('hp', mobLevelToHp[mobLevels[name]]);
+        div.append(nameAndLevelText);
     }
     hpBar.attr('maxHP', $(hpBar).attr('hp')); // temporary example for maxHP
     div.on('click', (event) => {// MOBS TAKE DAMAGE ON CLICK
-        let theirHpBar = $(event.currentTarget).children();
+        let theirHpBar = $(event.currentTarget).find('.hpBar');
+        let theirNameAndLevelText = $(event.currentTarget).find('.nameAndLevelText');
         theirHpBar.css('visibility', 'visible');
         let damageRoll = rollDamageToMob();
         damageNumbers(damageRoll, parseInt($(event.currentTarget).css('left')) + parseInt($(event.currentTarget).css('width')) / 2, $(event.currentTarget).offset().top - 60);
@@ -66,7 +79,11 @@ function mobGifSetup(name) { // name in any case
         theirBlackPart.css('width', width);
         if (newHP <= 0) {
             theirHpBar.css('visibility', 'hidden');
+            theirNameAndLevelText.css('visibility', 'hidden');
             mobDie(event.currentTarget);
+        }
+        else {
+            theirNameAndLevelText.css('visibility', 'visible');
         }
         theirHpBar.attr('hp', newHP);
     });
@@ -275,11 +292,13 @@ function someAnimate(mob, lastStatus, frame=0) {
             mob.addClass('mobMoving');
             if (movingLeft) { 
                 mob.css('transform', 'scaleX(1)');
-                mob.children().first().css('transform', 'scaleX(1)');
+                mob.find('.hpBar').css('transform', 'scaleX(1)');
+                mob.find('.nameAndLevelText').css('transform', 'scaleX(1)');
             }
             else {
                 mob.css('transform', 'scaleX(-1)');
-                mob.children().first().css('transform', 'scaleX(-1)');
+                mob.find('.hpBar').css('transform', 'scaleX(-1)');
+                mob.find('.nameAndLevelText').css('transform', 'scaleX(-1)');
             }
             mob.css('left', final + 'px');
         }

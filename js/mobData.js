@@ -37,7 +37,8 @@ var mobDropPools = {
     'royal guard pepe': ['20Gear'],
     'helmet pepe': ['20Gear'],
     'pepe': ['20Gear'],
-    'white yeti and king pepe': ['30Gear']
+    'white yeti and king pepe': ['30Gear'],
+    'mutant ribbon pig': ['110Gear']
 };
 
 var dropPoolDefinitions = {
@@ -65,5 +66,6 @@ var mobLevels = {
     'royal guard pepe': 23,
     'helmet pepe': 25,
     'pepe': 28,
-    'white yeti and king pepe': 30
+    'white yeti and king pepe': 30,
+    'mutant ribbon pig': 115
 };

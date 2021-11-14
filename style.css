@@ -456,6 +456,38 @@ input[type=number]::-webkit-inner-spin-button {
     100% {opacity: 0;}
 }
 
+.nameAndLevelText {
+    position: absolute;
+    display: flex;
+    bottom: -34px;
+    height: 30px;
+    width: 120px;
+    place-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+.nameAndLevelText div {
+    background-color: rgb(26, 26, 26);
+    border-radius: 3px;
+    opacity: .72;
+    color: white;
+    white-space: nowrap;
+}
+
+.mobNameText {
+    border: 3px solid rgb(26, 26, 26);
+    line-height: 12px;
+}
+
+.mobLevelText {
+    border: 1px solid rgb(26, 26, 26);
+    margin-right: 2px;
+    text-align: center;
+    line-height: 10px;
+    font-size: 10px;
+}
+
 .mobDying {
     pointer-events: none;
     transition-property: opacity;
