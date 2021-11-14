@@ -3,11 +3,11 @@ var leveledUp = false;
 var character = {
     info: {
         name: '-',
-        attributePoints: 10,
+        attributePoints: 0,
         class: '-',
         job: '-',
-        level: 15,
-        experience: 10,
+        level: 1,
+        experience: 0,
         loot: 100,
         gold: 100,
         rarity: 100,
@@ -51,6 +51,8 @@ var character = {
                 leveledUp = true;
             }
             if (leveledUp) {
+                prepareLevelUpAnimation();
+                playSound(sounds[9]);
                 updateCharacterDisplay();
             }
         }
@@ -70,6 +72,27 @@ function updateCharacterDisplay() {
     else {
         $('.statButton').attr('disabled', 'disabled');
     }
+}
+
+const levelUpGifTimings = [500, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90];
+function genericSpritesheetAnimation(animation, frame, timings) {
+    animation = $(animation);
+    if (frame > 0) {
+        animation.css('background-position-x', '-=' + animation.width());
+    }
+    if (frame >= timings.length) {
+        animation.remove();
+    }
+    setTimeout(() => {
+        genericSpritesheetAnimation(animation, frame+1, timings)
+    }, timings[frame]);
+}
+
+function prepareLevelUpAnimation() {
+    let div = document.createElement('div');
+    div.classList = ['levelUpGif'];
+    $('#mobArea').append(div);
+    genericSpritesheetAnimation(div, 0, levelUpGifTimings);
 }
 
 var canAllocateAP = false;

@@ -21,10 +21,23 @@ var bossData = {
 
 
 var mobDropPools = {
-   'tino': ['sub10Gear'],
-   'orange mushroom': ['10Gear'],
-   'mushmom': ['30Gear'],
-   'mutant ribbon pig': ['110Gear'] 
+    'tino': ['sub10Gear'],
+    'potted sprout': ['sub10Gear'],
+    'pig': ['sub10Gear'],
+    'ghost stump': ['sub10Gear'],
+    'mano': ['10Gear'],
+    'orange mushroom': ['10Gear'],
+    'water thief monster': ['10Gear'],
+    'crying blue mushroom': ['10Gear'],
+    'zombie mushroom': ['10Gear'],
+    'mushmom': ['20Gear'],
+    'stone golem': ['10Gear', '20Gear'],
+    'yeti': ['20Gear'],
+    'jr pepe': ['20Gear'],
+    'royal guard pepe': ['20Gear'],
+    'helmet pepe': ['20Gear'],
+    'pepe': ['20Gear'],
+    'white yeti and king pepe': ['30Gear']
 };
 
 var dropPoolDefinitions = {

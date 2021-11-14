@@ -3,8 +3,8 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
 
-const UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300];
-const allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3'];
+const UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300, 240744];
+const allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3', 'levelup.mp3'];
 
 var sounds = [];
 
