@@ -192,10 +192,10 @@ function sellProcess(fastSell=false) {
         itemBeingSold = fastSell;
         itemBeingSoldId = $(itemBeingSold).find('.item:eq(1)').val();
         itemBeingSoldCount = $(itemBeingSold).find('.itemCount').html();
-        transferAmount = itemBeingSoldCount;
         if (!itemBeingSoldCount) {
             itemBeingSoldCount = 1;
         }
+        transferAmount = itemBeingSoldCount;
     }
     $(itemBeingSold).css('pointer-events', 'none');
     $(itemBeingSold).css('visibility', 'hidden');
@@ -305,16 +305,19 @@ function transferIt(buying, fastSell=false) { // id is only necessary for sellin
         id = itemBeingSoldId;
         value = 1;
     }
-    if (storageIsOpen) {
+    if (storageIsOpen && !fastSell) {
         value = value*transferAmount;
     }
     else {
+        console.log(id)
         if (!(id in shopWorths)) {
             value = value*transferAmount;
         }
         else {
             value = value*shopWorths[id]*transferAmount;
         }
+        console.log(value)
+        console.log(shopWorths[id])
     }
     updateDoubloons(value); // when buying the value should be negative
     if (fastSell) {

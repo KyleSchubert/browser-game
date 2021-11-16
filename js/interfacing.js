@@ -209,12 +209,12 @@ function prepareSellBox(event, yes) {
 }
 
 function activateFastSell() {
-    $('#slotsSpot .item').on('click', function(e) {
+    $('#slotsSpot .item:not(.fastSellReady)').on('click', function(e) {
         if (e.shiftKey) {
-            console.log('WInner');
             sellProcess(e.currentTarget.parentElement);
         } 
     });
+    $('#slotsSpot .item:not(.fastSellReady)').addClass('fastSellReady');
 }
 
 function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED THING AGAIN
@@ -454,3 +454,10 @@ function dialogProceed() {
     closeSmallDialogBox();
 }
 
+$(document).keydown(function(event) {
+    if (event.key === 'z') { // ONLY used to  pick up  currentHoveredDropItem
+        if (currentHoveredDropItem) {
+            lootItem(currentHoveredDropItem);
+        }
+    }  
+});

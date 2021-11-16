@@ -31,20 +31,34 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
     return true;
 }
 
-function lootItem() { // use   this.whatever   to get what you need   ex: this.value = itemID
-    $(this).off('click');
-    this.classList.remove('clickable');
-    let success = obtainItem(this.value);
+function lootItem(target) { // use   this.whatever   to get what you need   ex: this.value = itemID
+    $(target).off('click');
+    currentHoveredDropItem = '';
+    target.classList.remove('clickable');
+    let success = obtainItem(target.value);
     if (!success) {
-        this.classList.add('clickable');
-        $(this).on('click', this, lootItem);
+        target.classList.add('clickable');
+        $(target).on('click mouseenter mouseleave', (event) => {
+            if (event.type == 'click') {
+                lootItem(event.currentTarget)
+            }
+            else {
+                if (event.type == 'mouseenter') {
+                    currentHoveredDropItem = event.currentTarget;
+                }
+                else {
+                    currentHoveredDropItem = '';
+                }
+            }
+        });
+        currentHoveredDropItem = target;
         return
     }
-    this.classList.add('pickupAnimation');
-    this.parentElement.classList.add('pickupAnimationHelper');
-    this.classList.remove('droppedItem');
-    this.parentElement.classList.remove('itemAnimationHelper');
-    const _ = this; // I dont know any better way
+    target.classList.add('pickupAnimation');
+    target.parentElement.classList.add('pickupAnimationHelper');
+    target.classList.remove('droppedItem');
+    target.parentElement.classList.remove('itemAnimationHelper');
+    const _ = target; // I dont know any better way
     playSound(sounds[0]); // pickup.wav
     window.setTimeout(function() {
         remainingItems = _.parentElement.parentElement.value;

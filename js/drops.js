@@ -1,5 +1,19 @@
+var currentHoveredDropItem = '';
+
 function itemDropSetup(img, aligner) {
-    $(img).on('click', img, lootItem);
+    $(img).on('click mouseenter mouseleave', (event) => {
+        if (event.type == 'click') {
+            lootItem(event.currentTarget)
+        }
+        else {
+            if (event.type == 'mouseenter') {
+                currentHoveredDropItem = event.currentTarget;
+            }
+            else {
+                currentHoveredDropItem = '';
+            }
+        }
+    });
     img.classList.add('droppedItem');
     const div = document.createElement('div');
     div.classList = ['itemAnimationHelper'];
