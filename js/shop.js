@@ -1,9 +1,11 @@
 shopInventories = {
+    0 : [],
     80001: [1113095, 1342111, 1282036, 1282027, 2870008, 2870021, 2000019, 2046319, 4000001, 4000012],
     80002: []
 };
 
 shopStocks = {
+    0 : {},
     80001: {
         4000001: 1140
     },
@@ -185,16 +187,36 @@ function deleteItem(slotNumber) {
 
 var sellingItemId = 0;
 var weAreCurrentlySelling = false;
-function sellProcess() {
+function sellProcess(fastSell=false) {
+    if (fastSell) {
+        itemBeingSold = fastSell;
+        itemBeingSoldId = $(itemBeingSold).find('.item:eq(1)').val();
+        itemBeingSoldCount = $(itemBeingSold).find('.itemCount').html();
+        transferAmount = itemBeingSoldCount;
+        if (!itemBeingSoldCount) {
+            itemBeingSoldCount = 1;
+        }
+    }
     $(itemBeingSold).css('pointer-events', 'none');
     $(itemBeingSold).css('visibility', 'hidden');
     sellingItemId = itemBeingSoldId; // ez fix or maybe this is just the brainiac solution?
-    weAreCurrentlySelling = true;
-    dialogTrigger('shop');
+    if (!fastSell) {
+        weAreCurrentlySelling = true;
+        dialogTrigger('shop');
+    }
+    else {
+        transferIt(false, true);
+        secondPartOfSellProcess(true);
+    }
 }
 
-function secondPartOfSellProcess() {
-    soldAmount = shopGetTransferAmount();
+function secondPartOfSellProcess(fastSell=false) {
+    if (fastSell) {
+        soldAmount = itemBeingSoldCount;
+    }
+    else {
+        soldAmount = shopGetTransferAmount();
+    }
     remaining = itemBeingSoldCount-soldAmount;
     tab = inventory.getter();
     counts = inventory.countsGetter();
@@ -212,7 +234,7 @@ function secondPartOfSellProcess() {
     }
 
     weAreCurrentlySelling = false;
-    createItemCard(itemBeingSoldId, true, soldAmount);
+    createItemCard(itemBeingSoldId, true, soldAmount, 0);
     removeSellingTip();
 }
 
@@ -233,6 +255,7 @@ function shopGetItemId() {
 }
 
 function getShop() {
+    console.log($('.selectedThing:eq(0) img:eq(1)'))
     return $('.selectedThing:eq(0) img:eq(1)').val();
 }
 
@@ -254,8 +277,10 @@ function shopSetStock(amount, target='.selectedThing:eq(0)') { // target should 
     }
 }
 
-function transferIt(buying) { // id is only necessary for selling because it can be easily gotten when buying
-    transferAmount = shopGetTransferAmount();
+function transferIt(buying, fastSell=false) { // id is only necessary for selling because it can be easily gotten when buying
+    if (!fastSell) {
+        transferAmount = shopGetTransferAmount();
+    }
     if (buying) {
         id = shopGetItemId();
         obtainItem(id, transferAmount);
@@ -292,6 +317,9 @@ function transferIt(buying) { // id is only necessary for selling because it can
         }
     }
     updateDoubloons(value); // when buying the value should be negative
+    if (fastSell) {
+        playSound(sounds[2]);
+    }
     // temporary v v v
     console.log(id);
     console.log(value);

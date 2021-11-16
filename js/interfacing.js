@@ -208,6 +208,15 @@ function prepareSellBox(event, yes) {
     }
 }
 
+function activateFastSell() {
+    $('#slotsSpot .item').on('click', function(e) {
+        if (e.shiftKey) {
+            console.log('WInner');
+            sellProcess(e.currentTarget.parentElement);
+        } 
+    });
+}
+
 function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED THING AGAIN
     $(node).mousedown(function(event) {
         if ($('.selectedThing')[0]) {

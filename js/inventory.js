@@ -131,6 +131,7 @@ function inventoryLoad() {
         }
     }
     makeDraggableItemsDraggable();
+    activateFastSell();
     $('.slot').mousemove(function(event) {
         if (isSomethingBeingDragged) { // someone wants to swap items
             prepareToSwapItems(event, 1);
@@ -155,6 +156,7 @@ function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false, equipItem=
             itemImageSetup(itemID, secondPartOfInventoryLoadOne, data);
         }
         makeDraggableItemsDraggable();
+        activateFastSell();
 
         target = $('.slot:eq(' + slot + ')');
         target.mousemove(function(event) {

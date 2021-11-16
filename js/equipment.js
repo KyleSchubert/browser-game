@@ -210,6 +210,7 @@ function equipmentLoad() {
     });
     updateCharacterDisplay();
     makeDraggableItemsDraggable();
+    activateFastSell();
     $('.equipmentSlot').mousemove(function(event) {
         if (isSomethingBeingDragged) { // someone wants to swap items
             prepareToSwapItems(event, 1);
@@ -233,6 +234,7 @@ function equipmentLoadOne(theItem, slot) {
 
     updateCharacterDisplay();
     makeDraggableItemsDraggable();
+    activateFastSell();
 
     target = $('.equipmentSlot:eq(' + slot + ')');
     target.mousemove(function(event) {
