@@ -12,6 +12,9 @@ function makeDraggableItemsDraggable() {
     $(function() {
         $('.draggableItem').draggable({
             start: function(event) {
+                if (event.shiftKey) {
+                    return false;
+                }
                 playSound(sounds[8]); // DragStart.mp3
                 $(event.currentTarget).css('visibility', 'hidden');
                 $('#draggedItemHolder').css('visibility', 'visible');
@@ -209,12 +212,12 @@ function prepareSellBox(event, yes) {
 }
 
 function activateFastSell() {
-    $('#slotsSpot .item:not(.fastSellReady)').on('click', function(e) {
+    $('#slotsSpot .draggableItem:not(.fastSellReady)').on('mousedown', function(e) {
         if (e.shiftKey) {
-            sellProcess(e.currentTarget.parentElement);
+            sellProcess(e.currentTarget);
         } 
     });
-    $('#slotsSpot .item:not(.fastSellReady)').addClass('fastSellReady');
+    $('#slotsSpot .draggableItem:not(.fastSellReady)').addClass('fastSellReady');
 }
 
 function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED THING AGAIN
