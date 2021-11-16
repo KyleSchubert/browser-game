@@ -131,18 +131,3 @@ function preloadImages(array) {
 $(document).ready(function() {
     preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png"]);
 });
-
-
-// https://stackoverflow.com/questions/6454198/check-if-a-value-is-within-a-range-of-numbers#answer-6454237
-function between(x, min, max) {
-    return x >= min && x <= max;
-}
-
-// https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array#answer-5767357
-function removeItemOnce(arr, value) {
-    var index = arr.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    return arr;
-  }

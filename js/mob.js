@@ -279,7 +279,7 @@ function someAnimate(mob, lastStatus, frame=0) {
             let distance = mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, upperLimit) / 20;
             let final = 0;
             let duration = distance * 20;
-            console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
+            //console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
             if (movingLeft) { 
                 final = parseInt(mob.css('left'))-distance;
             }

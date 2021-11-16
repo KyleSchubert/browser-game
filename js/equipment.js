@@ -351,6 +351,20 @@ function calculateEquipmentPower(itemID) {
     return power;
 }
 
+// https://stackoverflow.com/questions/6454198/check-if-a-value-is-within-a-range-of-numbers#answer-6454237
+function between(x, min, max) {
+    return x >= min && x <= max;
+}
+
+// https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array#answer-5767357
+function removeItemOnce(arr, value) {
+    var index = arr.indexOf(value);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+    return arr;
+  }
+
 function getEquipmentByLevel(min, max, theseItems=Object.keys(equipmentStats)) {
     return theseItems.filter((itemID) => min <= equipmentStats[itemID].reqLevelEquip && equipmentStats[itemID].reqLevelEquip <= max);
 }
@@ -374,4 +388,15 @@ function getEquipmentByExactTypes(exactTypes, theseItems=Object.keys(equipmentSt
 
 function getEquipmentByExcludingExactTypes(exactTypes, theseItems=Object.keys(equipmentStats)) {
     return theseItems.filter((itemID) => !exactTypes.includes(itemsAndTheirTypes[itemID][2]));
+}
+
+const unusualGear = ['Belt', 'Earrings', 'Ring', 'Pendant', 'Face Accessory', 'Eye Decoration', 'Medal', 'Badge', 'Emblem', 'Cape', 'Shoulder Accessory'];
+const nonWeapon = ['Belt', 'Earrings', 'Ring', 'Pendant', 'Face Accessory', 'Eye Decoration', 'Medal', 'Badge', 'Emblem', 'Cape', 'Shoulder Accessory', 'Hat', 'Top', 'Bottom', 'Overall', 'Shoes', 'Glove'];
+
+function checkPowerLevels(arr) {
+    let result = [];
+    arr.forEach((id) => {
+        result.push(calculateEquipmentPower(id));
+    })
+    return result.sort((a, b) => a - b);
 }

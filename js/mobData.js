@@ -21,11 +21,11 @@ var bossData = {
 
 
 var mobDropPools = {
-    'tino': ['sub10Gear'],
-    'potted sprout': ['sub10Gear'],
-    'pig': ['sub10Gear'],
-    'ghost stump': ['sub10Gear'],
-    'mano': ['10Gear'],
+    'tino': ['preStarterWeapons'],
+    'potted sprout': ['preStarterWeapons'],
+    'pig': ['starterWeapons'],
+    'ghost stump': ['starterWeapons'],
+    'mano': ['starterWeapons', '10Gear'],
     'orange mushroom': ['10Gear'],
     'water thief monster': ['10Gear'],
     'crying blue mushroom': ['10Gear'],
@@ -42,10 +42,11 @@ var mobDropPools = {
 };
 
 var dropPoolDefinitions = {
-    'sub10Gear': getEquipmentByLevel(1, 9),
-    '10Gear': getEquipmentByLevel(10, 18),
-    '20Gear': getEquipmentByLevel(18, 29),
-    '30Gear': getEquipmentByLevel(30, 39),
+    'preStarterWeapons': getEquipmentByPower(5, 22, getEquipmentByExcludingExactTypes(nonWeapon, getEquipmentByLevel(0, 5))),
+    'starterWeapons': getEquipmentByPower(10, 30, getEquipmentByExcludingExactTypes(nonWeapon, getEquipmentByLevel(10, 10))),
+    '10Gear': getEquipmentByPower(1, 40, getEquipmentByExcludingExactTypes(unusualGear, getEquipmentByLevel(10, 19))),
+    '20Gear': getEquipmentByPower(1, 40, getEquipmentByExcludingExactTypes(unusualGear, getEquipmentByLevel(20, 29))),
+    '30Gear': getEquipmentByPower(1, 40, getEquipmentByExcludingExactTypes(unusualGear, getEquipmentByLevel(30, 39))),
     '110Gear': getEquipmentByLevel(110, 119)
 };
 
