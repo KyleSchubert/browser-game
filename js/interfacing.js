@@ -301,7 +301,7 @@ function dialogPrepareText(reason) {
                 dialogSubReason = 'deposit';
                 text.push('Would you like to deposit');
                 itemName = itemNames[itemBeingSoldId].toString();
-                itemPrice = shopWorths[itemBeingSoldId].toString();
+                itemPrice = '1';
             }
             else {
                 dialogSubReason = 'withdraw';

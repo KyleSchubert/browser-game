@@ -53,10 +53,12 @@ function shopLoad(id, isStorage=false) {
     if (isStorage) {
         $('.shopMerchantImage')[0].src = './files/use-as-storage-guy.png';
         $('.sellArea:eq(0)').css('background-image', 'url(./files/storage_background.png)');
+        $('.sellArea:eq(0)').css('content-visibility', 'hidden');
         storageIsOpen = true;
     }
     else {
         $('.shopMerchantImage')[0].src = './files/use-as-shop-guy.png';
+        $('.sellArea:eq(0)').css('content-visibility', '');
         $('.sellArea:eq(0)').css('background-image', 'url(./files/sell_background.png)');
         storageIsOpen = false;
     }
