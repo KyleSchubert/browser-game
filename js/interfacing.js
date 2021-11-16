@@ -212,7 +212,7 @@ function prepareSellBox(event, yes) {
 }
 
 function activateFastSell() {
-    $('#slotsSpot .draggableItem:not(.fastSellReady)').on('mousedown', function(e) {
+    $('#slotsSpot .draggableItem:not(.fastSellReady)').on('mouseover', function(e) {
         if (e.shiftKey) {
             sellProcess(e.currentTarget);
         } 
