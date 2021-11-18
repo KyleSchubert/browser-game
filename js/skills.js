@@ -1,4 +1,3 @@
-
 const testTimings = [90,90,90,90];
 function testFart() {
     let div = document.createElement('div');
@@ -33,8 +32,6 @@ function hitTestFart(left, top, reason) {
 
 const marginToAccountFor = parseInt($('#lootBlocker').css('margin-top'));
 function checkHit(left, right, bottom, top, leftOffset) {
-    console.log(top)
-    console.log(bottom)
     gotHit = [];
     let groupID = randomIntFromInterval(0, 1000000);
     $('.mob').each((i) => {
@@ -42,9 +39,6 @@ function checkHit(left, right, bottom, top, leftOffset) {
             let pos = $('.mob:eq(' + i + ')').position();
             console.log(pos['top'])
             if ((between(pos['left'], left - leftOffset, right - leftOffset) || between(pos['left'] + parseInt($('.mob:eq(' + i + ')').css('width')), left - leftOffset, right - leftOffset)) && (between(pos['top'] + marginToAccountFor, top, bottom) || (between(pos['top'] + parseInt($('.mob:eq(' + i + ')').css('height')) + marginToAccountFor, top, bottom)))) {
-                console.log(pos['top'] + marginToAccountFor)
-                console.log(top)
-                console.log(bottom)
                 gotHit.push($('.mob:eq(' + i + ')'));
                 $('.mob:eq(' + i + ')').trigger('click');
                 hitTestFart(pos['left'] + parseInt($('.mob:eq(' + i + ')').css('width')) / 2, pos['top'] + parseInt($('.mob:eq(' + i + ')').css('height')) / 2 + marginToAccountFor, groupID)

@@ -1,11 +1,23 @@
 var zoneConnections = {
     1: [{l: 962, t: 630, dest: 2}],
-    2: [{l: 38, t: 162, dest: 1}, {l: 940, t: 214, dest: 3}]
+    2: [{l: 38, t: 162, dest: 1}, {l: 940, t: 214, dest: 3}],
+    3: [{l: 78, t: 162, dest: 2}, {l: 600, t: 265, dest: 4}],
+    4: [{l: 78, t: 162, dest: 3}, {l: 600, t: 265, dest: 5}],
+    5: [{l: 78, t: 162, dest: 4}, {l: 600, t: 265, dest: 6}],
+    6: [{l: 78, t: 162, dest: 5}, {l: 600, t: 265, dest: 7}],
+    7: [{l: 78, t: 162, dest: 6}, {l: 600, t: 265, dest: 8}],
+    8: [{l: 78, t: 162, dest: 7}, {l: 600, t: 265, dest: 9}]
 };
 
 var zoneMobs = {
     1: ['tino'],
-    2: ['tino']
+    2: ['potted sprout'],
+    3: ['pig'],
+    4: ['ghost stump'],
+    5: ['mano'],
+    6: ['orange mushroom'],
+    7: ['water thief monster'],
+    8: ['crying blue mushroom']
 };
 
 var currentZone = 1;
@@ -47,6 +59,7 @@ function changeZones() {
 }
 
 $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()
+    $('.mob').remove();
     if ($('#superBlocker').hasClass('fadeToBlack')) { 
         loadPortals()
         $('#superBlocker').removeClass('fadeToBlack');
