@@ -3,8 +3,8 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
 
-const UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300, 240744];
-const allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3', 'levelup.mp3'];
+const UNIQUELENGTHS = [60769, 12538, 56424, 46393, 8777, 18808, 7523, 21315, 16300, 240744, 47642, 36967];
+const allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3', 'levelup.mp3', '61001000hit.mp3', '61001000use.mp3'];
 
 var sounds = [];
 
@@ -44,7 +44,16 @@ function playTrack(audioBuffer) {
     return trackSource;
 }
 
-function playSound(buf) {
+var reasons = [];
+function playSound(buf, reason='') {
+    if (reason != '') {
+        if (reasons.includes(reason)) {
+            return;
+        }
+        else {
+            reasons.push(reason)
+        }
+    }
     const source = audioCtx.createBufferSource();
     source.buffer = buf;
     source.connect(gainNode);
@@ -52,6 +61,9 @@ function playSound(buf) {
         if (this.stop) this.stop(); if (this.disconnect) this.disconnect();
     };
     source.start(0);
+    setTimeout(() => {
+        removeItemOnce(reasons, reason);
+    }, 100);
 }
 
 sounds.length = allSoundFiles.length;

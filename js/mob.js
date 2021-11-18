@@ -32,7 +32,7 @@ function mobGifSetup(name) { // name in any case
     div = $(div);
     div.val(name);
     mobSetAnimation(div, 'alive');
-    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-300, 300) + 'px' )
+    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-400, 400) + 'px' )
     div.addClass('mob clickable');
     div.attr('draggable', false);
     let nameAndLevelText = document.createElement('div');
@@ -155,6 +155,7 @@ function mobDie(origin='') {
         target = $(origin); // it will be activated by clicking the mob so that should catch it
     }
     if (target.length > 0 || target.is('img')) {
+        target.off('click');
         target.css('pointer-events', 'none');
         let mobName = target.val();
         mobSetAnimation(target, 'dead')
@@ -180,8 +181,18 @@ function mobDie(origin='') {
     }
 }
 
-MAX_MOBS = 10;
+MAX_MOBS = 20;
 $(document).ready( () => {
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
+    spawn(getMob())
     spawn(getMob())
     spawn(getMob())
     spawn(getMob())
@@ -199,7 +210,7 @@ $(document).ready( () => {
             for (i=0; i<amountToSpawn; i++) {
                 spawn(getMob());
             }
-        }}, 14000);
+        }}, 8000);
 })
 
 function gainTextStreamAdd(text) {

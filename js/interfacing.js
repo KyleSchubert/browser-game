@@ -463,4 +463,7 @@ $(document).keydown(function(event) {
             lootItem(currentHoveredDropItem);
         }
     }  
+    else if (event.key === 'x') { // TESTING
+        testFart();
+    }
 });
