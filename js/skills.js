@@ -7,12 +7,12 @@ function testFart() {
     div.css('width', '283px');
     div.css('height', '167px');
     div.css('position', 'absolute');
-    div.css('left', SQUAREposX - parseInt(div.css('width')) / 2 + 14);
+    div.css('left', SQUAREposX - parseInt(div.css('width')) / 2 + 14 - $('#gameArea').position()['left']);
     div.css('top', SQUAREposY - parseInt(div.css('height')) / 2 + 14);
     $('#gameArea').append(div)
     playSound(sounds[allSoundFiles.indexOf('61001000use.mp3')])
     let bounds = div[0].getBoundingClientRect();
-    checkHit(bounds['left'], bounds['right'], bounds['bottom'], bounds['top']);
+    checkHit(bounds['left'], bounds['right'], bounds['bottom'], bounds['top'], $('#gameArea').position()['left']);
     genericSpritesheetAnimation(div, 0, testTimings);
 }
 
@@ -32,13 +32,19 @@ function hitTestFart(left, top, reason) {
 }
 
 const marginToAccountFor = parseInt($('#lootBlocker').css('margin-top'));
-function checkHit(left, right, bottom, top) {
+function checkHit(left, right, bottom, top, leftOffset) {
+    console.log(top)
+    console.log(bottom)
     gotHit = [];
     let groupID = randomIntFromInterval(0, 1000000);
     $('.mob').each((i) => {
         if (!$('.mob:eq(' + i + ')').hasClass('mobDying')) {
             let pos = $('.mob:eq(' + i + ')').position();
-            if (between(pos['left'], left, right) && between(pos['top'] + marginToAccountFor, top, bottom)) {
+            console.log(pos['top'])
+            if ((between(pos['left'], left - leftOffset, right - leftOffset) || between(pos['left'] + parseInt($('.mob:eq(' + i + ')').css('width')), left - leftOffset, right - leftOffset)) && (between(pos['top'] + marginToAccountFor, top, bottom) || (between(pos['top'] + parseInt($('.mob:eq(' + i + ')').css('height')) + marginToAccountFor, top, bottom)))) {
+                console.log(pos['top'] + marginToAccountFor)
+                console.log(top)
+                console.log(bottom)
                 gotHit.push($('.mob:eq(' + i + ')'));
                 $('.mob:eq(' + i + ')').trigger('click');
                 hitTestFart(pos['left'] + parseInt($('.mob:eq(' + i + ')').css('width')) / 2, pos['top'] + parseInt($('.mob:eq(' + i + ')').css('height')) / 2 + marginToAccountFor, groupID)

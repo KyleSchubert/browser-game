@@ -82,6 +82,7 @@ function genericSpritesheetAnimation(animation, frame, timings) {
     }
     if (frame >= timings.length) {
         animation.remove();
+        return
     }
     setTimeout(() => {
         genericSpritesheetAnimation(animation, frame+1, timings)
