@@ -31,19 +31,31 @@ function hitTestFart(left, top, reason) {
 }
 
 const marginToAccountFor = parseInt($('#lootBlocker').css('margin-top'));
+var data = {};
 function checkHit(left, right, bottom, top, leftOffset) {
-    gotHit = [];
-    let groupID = randomIntFromInterval(0, 1000000);
-    $('.mob').each((i) => {
-        if (!$('.mob:eq(' + i + ')').hasClass('mobDying')) {
-            let pos = $('.mob:eq(' + i + ')').position();
-            console.log(pos['top'])
-            if ((between(pos['left'], left - leftOffset, right - leftOffset) || between(pos['left'] + parseInt($('.mob:eq(' + i + ')').css('width')), left - leftOffset, right - leftOffset)) && (between(pos['top'] + marginToAccountFor, top, bottom) || (between(pos['top'] + parseInt($('.mob:eq(' + i + ')').css('height')) + marginToAccountFor, top, bottom)))) {
-                gotHit.push($('.mob:eq(' + i + ')'));
-                $('.mob:eq(' + i + ')').trigger('click');
-                hitTestFart(pos['left'] + parseInt($('.mob:eq(' + i + ')').css('width')) / 2, pos['top'] + parseInt($('.mob:eq(' + i + ')').css('height')) / 2 + marginToAccountFor, groupID)
-            }
+    data['left'] = left;
+    data['right'] = right;
+    data['bottom'] = bottom;
+    data['top'] = top;
+    data['leftOffset'] = leftOffset;
+    Array.from(document.getElementsByClassName('mob')).forEach((element) => {
+        if (!element.classList.contains('mobDying')) {
+            hitCheckObserver.observe(element);
         }
     });
-    genericSpritesheetAnimation($('[group="' + groupID.toString() + '"]'), 0, testTimings2);
 }
+
+const hitCheckObserver = new IntersectionObserver((entries) => {
+    let groupID = randomIntFromInterval(0, 1000000);
+    let trueLeft = data['left'];
+    let trueRight = data['right'];
+    for (const entry of entries) {
+        const bounds = entry.boundingClientRect;
+        if ((between(bounds['left'], trueLeft, trueRight) || between(bounds['right'], trueLeft, trueRight)) && (between(bounds['top'], data['top'], data['bottom']) || between(bounds['bottom'], data['top'], data['bottom']))) {
+            entry.target.click();
+            hitTestFart(bounds['left']-data['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2, groupID);
+        }
+    }
+    genericSpritesheetAnimation($('[group="' + groupID.toString() + '"]'), 0, testTimings2);
+    hitCheckObserver.disconnect();
+});

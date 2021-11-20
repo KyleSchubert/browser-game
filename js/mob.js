@@ -62,7 +62,7 @@ function mobGifSetup(name) { // name in any case
         let theirNameAndLevelText = $(event.currentTarget).find('.nameAndLevelText');
         theirHpBar.css('visibility', 'visible');
         let damageRoll = rollDamageToMob();
-        damageNumbers(damageRoll, parseInt($(event.currentTarget).css('left')) + parseInt($(event.currentTarget).css('width')) / 2, $(event.currentTarget).offset().top - 60);
+        damageNumbers(damageRoll, parseInt($(event.currentTarget).css('left')) + parseInt($(event.currentTarget).css('width')) / 2, parseInt($(event.currentTarget).css('height')) + marginToAccountFor - 60);
         newHP = theirHpBar.attr('hp') - damageRoll;
         if (newHP < 0) {
             newHP = 0;
@@ -181,7 +181,7 @@ function mobDie(origin='') {
     }
 }
 
-MAX_MOBS = 20;
+MAX_MOBS = 200;
 $(document).ready( () => {
     spawn(getMob())
     spawn(getMob())
