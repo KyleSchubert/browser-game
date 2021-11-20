@@ -22,6 +22,7 @@ $('body').keydown(function(e) {
             guiIDs.forEach(guiClose);
             if (somethingWasClosed) {
                 playSound(sounds[5]);
+                doubloonsHaveToBeUpdatedNow = false;
                 somethingWasClosed = false;
                 somethingIsOpen = false;
                 $('#guiHolder').css('top', 'calc(50% - 400px)');
@@ -108,6 +109,7 @@ function silentToggleVisibility(node) {
 
 function guiClose(target) { // all of them
     if ($(target).css('visibility') == 'visible') {
+        doubloonsHaveToBeUpdatedNow = false;
         storageIsOpen = false;
         somethingWasClosed = true;
         $(target).css('visibility', 'hidden');

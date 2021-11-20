@@ -49,7 +49,9 @@ function preloadTheShop() {
 }
 
 var storageIsOpen = false;
+var doubloonsHaveToBeUpdatedNow = false;
 function shopLoad(id, isStorage=false) {
+    doubloonsHaveToBeUpdatedNow = true;
     if (isStorage) {
         $('.shopMerchantImage')[0].src = './files/use-as-storage-guy.png';
         $('.sellArea:eq(0)').css('background-image', 'url(./files/storage_background.png)');
@@ -360,5 +362,7 @@ function shopMaxAffordNumber() { // this will only be used for when they're buyi
 var doubloons = 0;
 function updateDoubloons(value=0) {
     doubloons = Number(doubloons) + value;
-    document.getElementsByClassName('amountOfDoubloons')[0].innerHTML = numberWithCommas(doubloons);
+    if (doubloonsHaveToBeUpdatedNow) {
+        document.getElementsByClassName('amountOfDoubloons')[0].innerHTML = numberWithCommas(doubloons);
+    }
 }
