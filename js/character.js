@@ -84,6 +84,7 @@ function genericSpritesheetAnimation(animation, frame, timings) {
         animation.remove();
         return
     }
+    console.log('triggered')
     setTimeout(() => {
         genericSpritesheetAnimation(animation, frame+1, timings)
     }, timings[frame]);

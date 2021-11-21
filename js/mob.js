@@ -15,8 +15,8 @@ function getMob(fromList=false) {
 
 function spawn(mob=getMob(true)) {
     let madeMob = mobGifSetup(mob);
-    mobMove(madeMob);
-    someAnimate(madeMob, 'alive');
+    //mobMove(madeMob);
+    //someAnimate(madeMob, 'alive');
     $('#mobArea').append(madeMob);
 }
 
@@ -163,7 +163,7 @@ function mobDie(origin='') {
         target.addClass('mobDying');
 
         mobDropAmount = Math.ceil(Math.random()); // temporary example
-        dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
+        //dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
         if (bossMobs.includes(mobName)) {
@@ -210,7 +210,9 @@ $(document).ready( () => {
             for (i=0; i<amountToSpawn; i++) {
                 spawn(getMob());
             }
-        }}, 8000);
+            
+            someAnimate('', 'alive')
+        }}, 2000);
 })
 
 function gainTextStreamAdd(text) {
@@ -234,13 +236,14 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', fu
     if ($(event.target).hasClass('mob')) {
         mobSetAnimation(event.target, 'alive');
         $(event.target).removeClass('mobMoving');
-        mobMove(event.target);
+        //mobMove(event.target);
     }
 })
 
 function mobMove(mob) {
     mob = $(mob);
     setTimeout(() => {
+        console.log('move FIRS')
         if (!mob.hasClass('mobDying')) {
             mobSetAnimation(mob, 'move');
         }
@@ -259,7 +262,13 @@ function mobSetAnimation(mob, status) {
 }
 
 function someAnimate(mob, lastStatus, frame=0) {
-    mob = $(mob);
+    console.log('FIRING')
+    if ($('.mob').length == 0) {
+        mob = $(mob);
+    }
+    else {
+        mob = $('.mob');
+    }
     let status = mob.attr('status');
     let durationSource = mobFrameDurations[mob.val()][status];
     if (durationSource.length == 1) {
@@ -328,7 +337,7 @@ function damageNumbers(number, left, top) {
     let lastWidth = 0;
     for (i=0; i<number.length; i++) {
         let img = new Image();
-        img.src = './files/hit/' + number.at(i) + '.png';
+        img.src = './files/hit/' + number[i] + '.png';
         if (i == 0) {
             $(img).css('top', '-8px');
             $(img).css('width', Math.round(img.width * 7/6) + 'px');
