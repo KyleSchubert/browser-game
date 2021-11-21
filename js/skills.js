@@ -21,16 +21,15 @@ function testFart() {
 const testTimings2 = [90,90,90,90,90,90];
 function hitTestFart(left, top, reason) {
     let div = document.createElement('div');
-    div = $(div);
-    div.css('background-image', 'url(./skills/hit/61001000.png)')
-    div.css('width', '187px');
-    div.css('height', '131px');
-    div.css('position', 'absolute');
-    div.css('left', left - 187 / 2 + 14);
-    div.css('top', top - 131 / 2 + 14);
-    div.attr('group', reason)
-    $('#gameArea').append(div)
-    playSound(sounds[allSoundFiles.indexOf('61001000hit.mp3')], reason)
+    div.style.backgroundImage = 'url(./skills/hit/61001000.png)';
+    div.style.width = '187px';
+    div.style.height = '131px';
+    div.style.position = 'absolute';
+    div.style.left = (left - 187 / 2 + 14) + 'px';
+    div.style.top = (top - 131 / 2 + 14) + 'px';
+    div.setAttribute('group', reason);
+    //document.getElementById('gameArea').appendChild(div);
+    return div;
 }
 
 const marginToAccountFor = parseInt($('#lootBlocker').css('margin-top'));
@@ -49,16 +48,21 @@ function checkHit(left, right, bottom, top, leftOffset) {
 }
 
 const hitCheckObserver = new IntersectionObserver((entries) => {
-    let groupID = randomIntFromInterval(0, 1000000);
+    //let groupID = randomIntFromInterval(0, 1000000);
     let trueLeft = skillHitData['left'];
     let trueRight = skillHitData['right'];
+    let poggersGroup = document.createElement('div');
     for (const entry of entries) {
         const bounds = entry.boundingClientRect;
         if ((between(bounds['left'], trueLeft, trueRight) || between(bounds['right'], trueLeft, trueRight)) && (between(bounds['top'], skillHitData['top'], skillHitData['bottom']) || between(bounds['bottom'], skillHitData['top'], skillHitData['bottom']))) {
-            entry.target.click();
-            hitTestFart(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2, groupID);
+            //entry.target.click();
+            poggersGroup.appendChild(hitTestFart(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
         }
     }
-    genericSpritesheetAnimation($('[group="' + groupID.toString() + '"]'), 0, testTimings2);
+    if (poggersGroup.hasChildNodes()) {
+        playSound(sounds[allSoundFiles.indexOf('61001000hit.mp3')]);
+        document.getElementById('gameArea').appendChild(poggersGroup);
+        genericSpritesheetAnimation(poggersGroup.children, 0, testTimings2);
+    }
     hitCheckObserver.disconnect();
 });
