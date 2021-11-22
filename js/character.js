@@ -75,26 +75,31 @@ function updateCharacterDisplay() {
 }
 
 const levelUpGifTimings = [500, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90];
-function genericSpritesheetAnimation(animation, frame, timings) {
-    animation = $(animation);
-    if (frame > 0) {
-        animation.css('background-position-x', '-=' + animation.width());
-    }
+function genericSpritesheetAnimation(animations, frame, timings) {
+    console.log(animations)
     if (frame >= timings.length) {
-        animation.remove();
-        return
+        Array.from(animations).forEach((animation) => {animation.remove();});
+        return;
     }
-    console.log('triggered')
+    Array.from(animations).forEach((animation) => {
+        if (frame == 0) {
+            animation.style.backgroundPositionX = '0px';
+        }
+        if (frame > 0) {
+            animation.style.backgroundPositionX = parseInt(animation.style.backgroundPositionX) - parseInt(animation.style.width) + 'px';
+        }
+    });
     setTimeout(() => {
-        genericSpritesheetAnimation(animation, frame+1, timings)
+        genericSpritesheetAnimation(animations, frame+1, timings)
     }, timings[frame]);
 }
 
 function prepareLevelUpAnimation() {
     let div = document.createElement('div');
+    div.style.width = '904px';
     div.classList = ['levelUpGif'];
-    $('#mobArea').append(div);
-    genericSpritesheetAnimation(div, 0, levelUpGifTimings);
+    document.getElementById('mobArea').appendChild(div);
+    genericSpritesheetAnimation([div], 0, levelUpGifTimings);
 }
 
 var canAllocateAP = false;

@@ -104,7 +104,7 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
     theirRedPart.style.width = width + 4 - parseInt(theirRedPart.style.right) + 'px'; // maybe needs improvement
     theirRedPart.classList.add('hpFasterFade');
     theirBlackPart = theirHpBar.firstChild; // maybe needs improvement
-    theirBlackPart.style.width = width; // maybe needs improvement
+    theirBlackPart.style.width = width + 'px'; // maybe needs improvement
     if (newHP <= 0) {
         theirHpBar.style.visibility = 'hidden';
         theirNameAndLevelText.style.visibility = 'hidden';

@@ -1,21 +1,23 @@
 const testTimings = [90,90,90,90];
 function testFart() {
     let div = document.createElement('div');
-    div = $(div);
-    div.css('background-image', 'url(./skills/effect/61001000.png)')
-    div.css('width', '283px');
-    div.css('height', '167px');
-    div.css('position', 'absolute');
-    div.css('left', SQUAREposX - parseInt(div.css('width')) / 2 + 14 - $('#gameArea').position()['left']);
-    div.css('top', SQUAREposY - parseInt(div.css('height')) / 2 + 14);
-    $('#gameArea').append(div)
-    playSound(sounds[allSoundFiles.indexOf('61001000use.mp3')])
-    const leftBound = SQUAREposX - parseInt(div.css('width')) / 2 + 14 -400;
-    const rightBound = SQUAREposX + parseInt(div.css('width')) / 2 + 14 + 400;
-    const topBound = SQUAREposY - parseInt(div.css('height')) / 2 + 14;
-    const bottomBound = SQUAREposY + parseInt(div.css('height')) / 2 + 14;
-    checkHit(leftBound, rightBound, bottomBound, topBound, $('#gameArea').position()['left']);
-    genericSpritesheetAnimation(div, 0, testTimings);
+    div.style.backgroundImage = 'url(./skills/effect/61001000.png)';
+    div.style.width = '283px';
+    let width = parseInt(div.style.width) / 2 + 14;
+    div.style.height = '167px';
+    let height = parseInt(div.style.height) / 2 + 14;
+    div.style.position = 'absolute';
+    div.style.left = SQUAREposX - width - $('#gameArea').position()['left'] + 'px';
+    div.style.top = SQUAREposY - height + 'px';
+    let gameArea = document.getElementById('gameArea');
+    gameArea.appendChild(div);
+    playSound(sounds[allSoundFiles.indexOf('61001000use.mp3')]);
+    const leftBound = SQUAREposX - width - 400;
+    const rightBound = SQUAREposX + width + 400;
+    const topBound = SQUAREposY - height;
+    const bottomBound = SQUAREposY + height;
+    checkHit(leftBound, rightBound, bottomBound, topBound, gameArea.offsetLeft);
+    genericSpritesheetAnimation([div], 0, testTimings);
 }
 
 const testTimings2 = [90,90,90,90,90,90];

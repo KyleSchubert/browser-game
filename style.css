@@ -309,7 +309,6 @@ input[type=number]::-webkit-inner-spin-button {
     pointer-events: none;
     left: -278px;
     top: -590px;
-    width: 904px;
     height: 904px;
     background-image: url('./files/levelup.png');
     background-position-x: 0px;
