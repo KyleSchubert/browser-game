@@ -75,10 +75,14 @@ function updateCharacterDisplay() {
 }
 
 const levelUpGifTimings = [500, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90];
-function genericSpritesheetAnimation(animations, frame, timings) {
-    console.log(animations)
+function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhenDone=false) {
     if (frame >= timings.length) {
-        Array.from(animations).forEach((animation) => {animation.remove();});
+        if (deleteGroupWhenDone) {
+            animations[0].parentElement.remove();
+        }
+        else {
+            animations[0].remove();
+        }
         return;
     }
     Array.from(animations).forEach((animation) => {
@@ -90,7 +94,7 @@ function genericSpritesheetAnimation(animations, frame, timings) {
         }
     });
     setTimeout(() => {
-        genericSpritesheetAnimation(animations, frame+1, timings)
+        genericSpritesheetAnimation(animations, frame+1, timings, deleteGroupWhenDone)
     }, timings[frame]);
 }
 

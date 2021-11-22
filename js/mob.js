@@ -188,11 +188,11 @@ function mobDie(origin='') {
             experienceAmount = mobLevelToExp[mobLevels[mobName]];
         }
         character.gainExperience(experienceAmount);
-        //gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
+        gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
 
         doubloonsAmount = randomIntFromInterval(28, 32) + mobLevelToExp[mobLevels[mobName]]; // TEMPORARY EXAMPLE
         updateDoubloons(doubloonsAmount);
-        //gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
+        gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
     }
 }
 

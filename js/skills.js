@@ -62,7 +62,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
     if (poggersGroup.hasChildNodes()) {
         playSound(sounds[allSoundFiles.indexOf('61001000hit.mp3')]);
         document.getElementById('gameArea').appendChild(poggersGroup);
-        genericSpritesheetAnimation(poggersGroup.children, 0, testTimings2);
+        genericSpritesheetAnimation(poggersGroup.children, 0, testTimings2, deleteGroupWhenDone=true);
     }
     hitCheckObserver.disconnect();
 });
