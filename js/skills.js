@@ -28,7 +28,6 @@ function hitTestFart(left, top, reason) {
     div.style.left = (left - 187 / 2 + 14) + 'px';
     div.style.top = (top - 131 / 2 + 14) + 'px';
     div.setAttribute('group', reason);
-    //document.getElementById('gameArea').appendChild(div);
     return div;
 }
 
@@ -48,14 +47,13 @@ function checkHit(left, right, bottom, top, leftOffset) {
 }
 
 const hitCheckObserver = new IntersectionObserver((entries) => {
-    //let groupID = randomIntFromInterval(0, 1000000);
     let trueLeft = skillHitData['left'];
     let trueRight = skillHitData['right'];
     let poggersGroup = document.createElement('div');
     for (const entry of entries) {
         const bounds = entry.boundingClientRect;
         if ((between(bounds['left'], trueLeft, trueRight) || between(bounds['right'], trueLeft, trueRight)) && (between(bounds['top'], skillHitData['top'], skillHitData['bottom']) || between(bounds['bottom'], skillHitData['top'], skillHitData['bottom']))) {
-            //entry.target.click();
+            mobDamageEvent(entry.target, 61001000, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]);
             poggersGroup.appendChild(hitTestFart(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
         }
     }

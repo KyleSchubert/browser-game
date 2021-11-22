@@ -58,34 +58,7 @@ function mobGifSetup(name) { // name in any case
     }
     hpBar.attr('maxHP', $(hpBar).attr('hp')); // temporary example for maxHP
     div.on('click', (event) => {// MOBS TAKE DAMAGE ON CLICK
-        let theirHpBar = $(event.currentTarget).find('.hpBar');
-        let theirNameAndLevelText = $(event.currentTarget).find('.nameAndLevelText');
-        theirHpBar.css('visibility', 'visible');
-        let damageRoll = rollDamageToMob();
-        damageNumbers(damageRoll, parseInt($(event.currentTarget).css('left')) + parseInt($(event.currentTarget).css('width')) / 2, parseInt($(event.currentTarget).css('height')) + marginToAccountFor - 60);
-        newHP = theirHpBar.attr('hp') - damageRoll;
-        if (newHP < 0) {
-            newHP = 0;
-        }
-        let width = (1 - newHP / theirHpBar.attr('maxHP')) * 67;
-        let theirRedPart = theirHpBar.children('.hpBarRedPart');
-        if (theirRedPart.hasClass('hpFasterFade')) {
-            theirRedPart.removeClass('hpFasterFade');
-            theirRedPart.width(); // stupid garbage necessary code says these people:  https://www.charistheo.io/blog/2021/02/restart-a-css-animation-with-javascript/
-        }
-        theirRedPart.css('width', width + 4 - parseInt(theirRedPart.css('right')) + 'px');
-        theirRedPart.addClass('hpFasterFade');
-        let theirBlackPart = theirHpBar.children('.hpBarBlackPart');
-        theirBlackPart.css('width', width);
-        if (newHP <= 0) {
-            theirHpBar.css('visibility', 'hidden');
-            theirNameAndLevelText.css('visibility', 'hidden');
-            mobDie(event.currentTarget);
-        }
-        else {
-            theirNameAndLevelText.css('visibility', 'visible');
-        }
-        theirHpBar.attr('hp', newHP);
+        mobDamageEvent(event.currentTarget);
     });
     let greenPart = new Image();
     greenPart.src = './files/hpBar.png';
@@ -102,9 +75,51 @@ function mobGifSetup(name) { // name in any case
     return div;
 }
 
-function rollDamageToMob(skill='') {
+function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
+    let damageRoll = 1;
+    if (skill == 0) { // default attack AKA click
+        damageRoll = rollDamageToMob(skill);
+        damageNumbers(damageRoll, parseInt($(event).css('left')) + parseInt($(event).css('width')) / 2, parseInt($(event).css('height')) + marginToAccountFor - 60);
+    }
+    else {
+        damageRoll = rollDamageToMob(skill=0); // temporarily the same thing as default attack
+        damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - 60);
+    }
+    let theirNameAndLevelText = event.firstChild;
+    let theirHpBar = event.lastChild;
+    theirHpBar.style.visibility = 'visible';
+    newHP = theirHpBar.getAttribute('hp') - damageRoll; // maybe needs improvement
+    if (newHP < 0) {
+        newHP = 0;
+    }
+    let width = (1 - newHP / theirHpBar.getAttribute('maxHP')) * 67; // maybe needs improvement
+    let theirRedPart = theirHpBar.children[1];
+    if (theirRedPart.classList.contains('hpFasterFade')) {
+        theirRedPart.classList.remove('hpFasterFade');
+        theirRedPart.style.animation = 'none';
+        setTimeout(() => {
+            theirRedPart.style.animation = '';
+        }, 1);
+    }
+    theirRedPart.style.width = width + 4 - parseInt(theirRedPart.style.right) + 'px'; // maybe needs improvement
+    theirRedPart.classList.add('hpFasterFade');
+    theirBlackPart = theirHpBar.firstChild; // maybe needs improvement
+    theirBlackPart.style.width = width; // maybe needs improvement
+    if (newHP <= 0) {
+        theirHpBar.style.visibility = 'hidden';
+        theirNameAndLevelText.style.visibility = 'hidden';
+        mobDie(event);
+    }
+    else {
+        theirNameAndLevelText.style.visibility = 'visible';
+    }
+    theirHpBar.setAttribute('hp', newHP);
+    return 
+}
+
+function rollDamageToMob(skill=0) {
     let damage = 0;
-    if (skill) {
+    if (skill != 0) {
         // do something
     }
     else {
@@ -173,11 +188,11 @@ function mobDie(origin='') {
             experienceAmount = mobLevelToExp[mobLevels[mobName]];
         }
         character.gainExperience(experienceAmount);
-        gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
+        //gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
 
         doubloonsAmount = randomIntFromInterval(28, 32) + mobLevelToExp[mobLevels[mobName]]; // TEMPORARY EXAMPLE
         updateDoubloons(doubloonsAmount);
-        gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
+        //gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
     }
 }
 
