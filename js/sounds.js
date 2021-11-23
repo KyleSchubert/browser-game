@@ -51,7 +51,7 @@ function playSound(buf, reason='') {
             return;
         }
         else {
-            reasons.push(reason)
+            reasons.push(reason);
         }
     }
     const source = audioCtx.createBufferSource();

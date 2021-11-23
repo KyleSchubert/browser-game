@@ -1,10 +1,13 @@
 module.exports = {
     'env': {
         'browser': true,
-        'es2021': true
+        'es2021': true,
+        "commonjs": true,
+        "es6": true,
+        "jquery": true
     },
     'extends': [
-        'google'
+        'eslint:recommended'
     ],
     'parserOptions': {
         'ecmaVersion': 13
@@ -15,14 +18,8 @@ module.exports = {
             4,
             {'SwitchCase': 1}
         ],
-        'max-len': [
-            'error',
-            170
-        ],
-        'no-unused-vars': [
-            'error',
-            {'vars': 'local', 'args': 'after-used'}
-        ],
+        'max-len': "off",
+        'no-unused-vars': "off",
         'comma-dangle': [
             'error',
             'never'
@@ -30,7 +27,11 @@ module.exports = {
         'brace-style': [
             'error',
             'stroustrup'
+        ],
+        'no-undef': "off",
+        'semi': [
+            2, 
+            "always"
         ]
-
     }
 };

@@ -27,7 +27,7 @@ function obtainItem(itemID, amount=1) { // in goes the item on the page that has
         inventoryLoadOne(targetTab, targetSlot, itemID);
     }
     makeItemHighlighted(targetSlot, targetTab);
-    gainTextStreamAdd('You have gained an item in the ' + targetTab + ' tab (' + itemNames[itemID] + ')')
+    gainTextStreamAdd('You have gained an item in the ' + targetTab + ' tab (' + itemNames[itemID] + ')');
     return true;
 }
 
@@ -40,7 +40,7 @@ function lootItem(target) { // use   this.whatever   to get what you need   ex: 
         target.classList.add('clickable');
         $(target).on('click mouseenter mouseleave', (event) => {
             if (event.type == 'click') {
-                lootItem(event.currentTarget)
+                lootItem(event.currentTarget);
             }
             else {
                 if (event.type == 'mouseenter') {
@@ -52,7 +52,7 @@ function lootItem(target) { // use   this.whatever   to get what you need   ex: 
             }
         });
         currentHoveredDropItem = target;
-        return
+        return;
     }
     target.classList.add('pickupAnimation');
     target.parentElement.classList.add('pickupAnimationHelper');

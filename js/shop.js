@@ -259,7 +259,7 @@ function shopGetItemId() {
 }
 
 function getShop() {
-    console.log($('.selectedThing').eq(0).find('img').eq(1))
+    console.log($('.selectedThing').eq(0).find('img').eq(1));
     return $('.selectedThing').eq(0).find('img').eq(1).val();
 }
 
@@ -313,15 +313,15 @@ function transferIt(buying, fastSell=false) { // id is only necessary for sellin
         value = value*transferAmount;
     }
     else {
-        console.log(id)
+        console.log(id);
         if (!(id in shopWorths)) {
             value = value*transferAmount;
         }
         else {
             value = value*shopWorths[id]*transferAmount;
         }
-        console.log(value)
-        console.log(shopWorths[id])
+        console.log(value);
+        console.log(shopWorths[id]);
     }
     updateDoubloons(value); // when buying the value should be negative
     if (fastSell) {

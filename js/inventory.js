@@ -293,7 +293,7 @@ function itemHolderSetup(tabName, slot, img, equipItem) {
 $(() => {
     for (let i = 0; i < ROWS_OF_SLOTS; i++) {
         $('#slotsSpot').append('<tr class="row"><td class="slot"></td><td class="slot"></td><td class="slot"></td><td class="slot"></td><td class="slot"></td></tr>');
-    };
+    }
 
     for (let slot = 0; slot < NUM_OF_SLOTS; slot++) {
         $('.slot').eq(slot).attr('data-slotID', slot);

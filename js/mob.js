@@ -32,7 +32,7 @@ function mobGifSetup(name) { // name in any case
     div = $(div);
     div.val(name);
     mobSetAnimation(div, 'alive');
-    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-400, 400) + 'px' )
+    div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-400, 400) + 'px' );
     div.addClass('mob clickable');
     div.attr('draggable', false);
     let nameAndLevelText = document.createElement('div');
@@ -112,7 +112,7 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
         theirNameAndLevelText.style.visibility = 'visible';
     }
     theirHpBar.setAttribute('hp', newHP);
-    return 
+    return; 
 }
 
 function rollDamageToMob(skill=0) {
@@ -171,7 +171,7 @@ function mobDie(origin='') {
         target.off('click');
         target.css('pointer-events', 'none');
         let mobName = target.val();
-        mobSetAnimation(target, 'dead')
+        mobSetAnimation(target, 'dead');
         target.css('transition-duration', mobFrameDurations[mobName]['dead'].reduce((partial_sum, a) => partial_sum + a, 0).toString() + 'ms');
         target.addClass('mobDying');
 
@@ -196,26 +196,26 @@ function mobDie(origin='') {
 
 MAX_MOBS = 200;
 $(() => {
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
-    spawn(getMob())
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
+    spawn(getMob());
     setInterval(() => {
         if ($('.mob').length < MAX_MOBS) {
             console.log("Respawning mobs");
@@ -223,13 +223,13 @@ $(() => {
             for (i=0; i<amountToSpawn; i++) {
                 spawn(getMob());
             }
-            
-            someAnimate('', 'alive')
-        }}, 2000);
-})
+            someAnimate('', 'alive');
+        }
+    }, 2000);
+});
 
 function gainTextStreamAdd(text) {
-    console.log(text)
+    console.log(text);
     let div = document.createElement('div');
     div.innerText = text;
     div.classList = ['fadeToGone'];
@@ -251,12 +251,12 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', fu
         $(event.target).removeClass('mobMoving');
         //mobMove(event.target);
     }
-})
+});
 
 function mobMove(mob) {
     mob = $(mob);
     setTimeout(() => {
-        console.log('move FIRS')
+        console.log('move FIRS');
         if (!mob.hasClass('mobDying')) {
             mobSetAnimation(mob, 'move');
         }
@@ -267,10 +267,10 @@ function mobSetAnimation(mob, status) {
     mob = $(mob);
     sprites = './mob/' + status + '/' + mob.val().replaceAll(' ', '%20') + '.png';
     mob.css('background-image', 'url(' + sprites + ')');
-    mob.attr('status', status)
-    mob.css('background-position-x', '0px')
-    mob.css('width', mobDimensions[mob.val()][status][0] + 'px')
-    mob.css('height', mobDimensions[mob.val()][status][1] + 'px')
+    mob.attr('status', status);
+    mob.css('background-position-x', '0px');
+    mob.css('width', mobDimensions[mob.val()][status][0] + 'px');
+    mob.css('height', mobDimensions[mob.val()][status][1] + 'px');
     //mob.css('left', '-=' + mobDimensions[name]['alive'][0]/2)
 }
 
@@ -290,9 +290,9 @@ function someAnimate(mob, lastStatus, frame=0) {
     if (frame >= durationSource.length || status != lastStatus) {
         if (frame >= durationSource.length && mob.hasClass('mobDying')) {
             mob.remove();
-            return
+            return;
         }
-        mob.css('background-position-x', '0px')
+        mob.css('background-position-x', '0px');
         frame = 0;
         if (status == 'move' && status != lastStatus) {
             let movingLeft = Boolean(randomIntFromInterval(0, 1));

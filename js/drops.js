@@ -3,7 +3,7 @@ var currentHoveredDropItem = '';
 function itemDropSetup(img, aligner) {
     $(img).on('click mouseenter mouseleave', (event) => {
         if (event.type == 'click') {
-            lootItem(event.currentTarget)
+            lootItem(event.currentTarget);
         }
         else {
             if (event.type == 'mouseenter') {
@@ -20,7 +20,7 @@ function itemDropSetup(img, aligner) {
     document.getElementById('lootSurface').appendChild(aligner);
     $('.dropAligner').last().append(div);
     $('.itemAnimationHelper').last().append(img);
-    return
+    return;
 }
 
 function itemImageSetup(itemID, callback, slot=999999) {
@@ -87,31 +87,31 @@ function dropLoot(mob, mobLeft=540, dropCount=$('#dropCount').val(), unknown=fal
     }
     aligner.style.marginLeft = ''.concat(parseInt(mobLeft) - dropCount*32/2 + 16, 'px');
     if (justGetThem) {
-		let stuff = getUnknownItems()
-		for (let i = 0; i < stuff.length; i++) {
-			let id = (stuff[i]).toString();
-			itemImageSetup(id, itemDropSetup, aligner);
-			memorizeItemType(id);
-		}
-	}
-	else {
-		for (let i = 0; i < dropCount; i++) {
-			let choices = [];
-			if (unknown) {
-				choices = getUnknownItems();
-				if (choices.length == 0) {
-					choices = [4000001];
-				};
-			}
-			else {
-				let pool = mobDropPools[mob][Math.floor(Math.random() * mobDropPools[mob].length)];
-				choices = dropPoolDefinitions[pool];
-			}
-			let id = choices[Math.floor((Math.random() * choices.length))];
-			itemImageSetup(id, itemDropSetup, aligner);
-			memorizeItemType(id);
-		}
-	}
+        let stuff = getUnknownItems();
+        for (let i = 0; i < stuff.length; i++) {
+            let id = (stuff[i]).toString();
+            itemImageSetup(id, itemDropSetup, aligner);
+            memorizeItemType(id);
+        }
+    }
+    else {
+        for (let i = 0; i < dropCount; i++) {
+            let choices = [];
+            if (unknown) {
+                choices = getUnknownItems();
+                if (choices.length == 0) {
+                    choices = [4000001];
+                }
+            }
+            else {
+                let pool = mobDropPools[mob][Math.floor(Math.random() * mobDropPools[mob].length)];
+                choices = dropPoolDefinitions[pool];
+            }
+            let id = choices[Math.floor((Math.random() * choices.length))];
+            itemImageSetup(id, itemDropSetup, aligner);
+            memorizeItemType(id);
+        }
+    }
 }
 
 

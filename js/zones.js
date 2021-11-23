@@ -29,7 +29,7 @@ function loadPortals() {
         portal.src = "./files/portal.gif";
         portal.value = portalData.dest;
         portal.classList = ['portal clickable'];
-        portal.setAttribute('draggable', 'false')
+        portal.setAttribute('draggable', 'false');
         $(portal).css('left', portalData.l);
         $(portal).css('top', portalData.t);
         $(portal).on('click', portal, changeZones);
@@ -38,7 +38,7 @@ function loadPortals() {
 }
 
 function canEnterThisZone() {
-    return true
+    return true;
 }
 
 function changeZones() {
@@ -48,7 +48,7 @@ function changeZones() {
     if (!success) {
         this.classList.add('clickable');
         $(this).on('click', this, changeZones);
-        return
+        return;
     }
     $('#superBlocker').css('background', 'rgba(0,0,0,0)');
     $('#superBlocker').css('visibility', 'visible');
@@ -61,7 +61,7 @@ function changeZones() {
 $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()
     $('.mob').remove();
     if ($('#superBlocker').hasClass('fadeToBlack')) { 
-        loadPortals()
+        loadPortals();
         $('#superBlocker').removeClass('fadeToBlack');
         $('#superBlocker').addClass('unfadeToBlack');
     }

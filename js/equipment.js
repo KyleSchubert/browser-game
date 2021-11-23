@@ -96,7 +96,6 @@ const slotText = {
     'Shoulder Accessory': 'Shoulder',
     'Sub Weapon': 'Sub Weapon',
     'Belt': 'Belt',
-    'Bottom': 'Bottom',
     'Glove': 'Gloves',
     'Cape': 'Cape',
     'Shoes': 'Shoes'
@@ -148,7 +147,7 @@ function canEquipToHere(desiredSlot, itemSlot) {
 $(() => {
     for (let i = 0; i < 6; i++) {
         $('#equipmentSlotsArea').append('<tr class="row"><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td></tr>');
-    };
+    }
 
     for (var slot = 0; slot < 30; slot++) {
         $('.equipmentSlot').eq(slot).attr('data-slotID', 30+slot);
@@ -165,7 +164,7 @@ $(() => {
         });
     });
 
-    for (var slot = 0; slot < 30; slot++) {
+    for (let slot = 0; slot < 30; slot++) {
         $('.equipmentSlot').eq(slot).addClass('emptyEquipmentSlot');
     }
 
@@ -349,7 +348,7 @@ function calculateEquipmentPower(itemID) {
     }
     statsToCheck.forEach((stat) => {
         power += STAT_POWER_VALUES[stat] * equipmentStats[itemID][stat];
-    })
+    });
     return power;
 }
 
@@ -362,10 +361,10 @@ function between(x, min, max) {
 function removeItemOnce(arr, value) {
     var index = arr.indexOf(value);
     if (index > -1) {
-      arr.splice(index, 1);
+        arr.splice(index, 1);
     }
     return arr;
-  }
+}
 
 function getEquipmentByLevel(min, max, theseItems=Object.keys(equipmentStats)) {
     return theseItems.filter((itemID) => min <= equipmentStats[itemID].reqLevelEquip && equipmentStats[itemID].reqLevelEquip <= max);
@@ -377,7 +376,7 @@ function getEquipmentByString(string, theseItems=Object.keys(equipmentStats)) {
 
 function getEquipmentByPower(min, max, theseItems=Object.keys(equipmentStats)) {
     if (max == 0) {
-        return theseItems.filter((itemID) => equipmentStats[itemID].length == 1)
+        return theseItems.filter((itemID) => equipmentStats[itemID].length == 1);
     }
     else {
         return theseItems.filter((itemID) => between(calculateEquipmentPower(itemID), min, max));
@@ -399,6 +398,6 @@ function checkPowerLevels(arr) {
     let result = [];
     arr.forEach((id) => {
         result.push(calculateEquipmentPower(id));
-    })
+    });
     return result.sort((a, b) => a - b);
 }

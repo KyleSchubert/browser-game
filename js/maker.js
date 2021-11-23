@@ -13,8 +13,6 @@ var chosenTopSelected = {};
 var chosenMiddleOneSelected = {};
 var chosenMiddleTwoSelected = {};
 function chosenLoadNextOptions(e, parameters) {
-    // e:             S.Event {type: 'change', timeStamp: 1633569743205, jQuery3510884989591754421: true, isTrigger: 3, namespace: '', …}
-    // parameters:    {selected: 'Items'}
     targetSelectArea = parseInt(e.currentTarget.getAttribute('data-index')) + 1;
     let optionsToAdd = [];
     let target = {};
@@ -90,7 +88,7 @@ function chosenLoadNextOptions(e, parameters) {
         $('#makerVisual img').attr('src');
         console.log(parameters);
         if (chosenInitialCategory == 'Mobs') {
-            name = parameters.selected.toLowerCase();
+            let name = parameters.selected.toLowerCase();
             $('#makerVisual img').attr('src', './mob/alive/' + name + '.gif');
             makerLoadTheEditor(name, 'Mobs');
         }
@@ -130,8 +128,8 @@ function makerEditorLinkedData(key, value, dictionary) {
     span.innerHTML = key.toString();
     let input = document.createElement('input');
     $(input).val(value);
-    div.append(span)
-    div.append(input)
+    div.append(span);
+    div.append(input);
     return div;
 }
 
@@ -169,23 +167,23 @@ function makerLoadTheEditor(id, overallType) { // id can be an itemID or a mobID
                 // Stats changeable:linked   table of keys and values
                 switch (itemsAndTheirTypes[id][0]) {
                     case 'Equip':
-                        elementsToAppend.push(makerEditorLinkedDataTable(equipmentStats[id]))
+                        elementsToAppend.push(makerEditorLinkedDataTable(equipmentStats[id]));
                         break;
                     case 'Use':
                         break;
                     case 'Etc':
                         break;
-                };
+                }
             }
             else {
                 elementsToAppend.push(makerEditorFixed('Unknown Item Types'));
             }
             // value in shop changeable:linked   value
             if (Object.keys(shopWorths).includes(id)) {
-                elementsToAppend.push(makerEditorLinkedData('shopWorth', shopWorths[id], shopWorths))
+                elementsToAppend.push(makerEditorLinkedData('shopWorth', shopWorths[id], shopWorths));
             }
             else {
-                elementsToAppend.push(makerEditorFixed('Unset shopWorths - set manually'))
+                elementsToAppend.push(makerEditorFixed('Unset shopWorths - set manually'));
             }
             break;
         case 'Mobs':
