@@ -12,8 +12,8 @@ function testFart() {
     let gameArea = document.getElementById('gameArea');
     gameArea.appendChild(div);
     playSound(sounds[allSoundFiles.indexOf('61001000use.mp3')]);
-    const leftBound = SQUAREposX - width - 400;
-    const rightBound = SQUAREposX + width + 400;
+    const leftBound = SQUAREposX - width;
+    const rightBound = SQUAREposX + width;
     const topBound = SQUAREposY - height;
     const bottomBound = SQUAREposY + height;
     checkHit(leftBound, rightBound, bottomBound, topBound, 0);
@@ -48,15 +48,21 @@ function checkHit(left, right, bottom, top, leftOffset) {
     });
 }
 
+var skillHitLimit = 8;
 const hitCheckObserver = new IntersectionObserver((entries) => {
     let trueLeft = skillHitData['left'];
     let trueRight = skillHitData['right'];
     let poggersGroup = document.createElement('div');
+    let mobHits = 0;
     for (const entry of entries) {
+        if (mobHits == skillHitLimit) {
+            break;
+        }
         const bounds = entry.boundingClientRect;
         if ((between(bounds['left'], trueLeft, trueRight) || between(bounds['right'], trueLeft, trueRight)) && (between(bounds['top'], skillHitData['top'], skillHitData['bottom']) || between(bounds['bottom'], skillHitData['top'], skillHitData['bottom']))) {
             mobDamageEvent(entry.target, 61001000, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]);
             poggersGroup.appendChild(hitTestFart(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
+            mobHits++;
         }
     }
     if (poggersGroup.hasChildNodes()) {

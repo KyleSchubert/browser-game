@@ -15,8 +15,8 @@ function getMob(fromList=false) {
 
 function spawn(mob=getMob(true)) {
     let madeMob = mobGifSetup(mob);
-    //mobMove(madeMob);
-    //someAnimate(madeMob, 'alive');
+    mobMove(madeMob);
+    someAnimate(madeMob, 'alive');
     $('#mobArea').append(madeMob);
 }
 
@@ -79,11 +79,11 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
     let damageRoll = 1;
     if (skill == 0) { // default attack AKA click
         damageRoll = rollDamageToMob(skill);
-        damageNumbers(damageRoll, parseInt($(event).css('left')) + parseInt($(event).css('width')) / 2, parseInt($(event).css('height')) + marginToAccountFor - 60);
+        damageNumbers(damageRoll, parseInt($(event).css('left')) + parseInt($(event).css('width')) / 2, -parseInt($(event).css('height')) + marginToAccountFor - 20);
     }
     else {
         damageRoll = rollDamageToMob(skill=0); // temporarily the same thing as default attack
-        damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - 60);
+        damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - 70);
     }
     let theirNameAndLevelText = event.firstChild;
     let theirHpBar = event.lastChild;
@@ -194,7 +194,7 @@ function mobDie(origin='') {
     }
 }
 
-MAX_MOBS = 200;
+MAX_MOBS = 30;
 $(() => {
     spawn(getMob());
     spawn(getMob());
@@ -223,9 +223,8 @@ $(() => {
             for (i=0; i<amountToSpawn; i++) {
                 spawn(getMob());
             }
-            someAnimate('', 'alive');
         }
-    }, 2000);
+    }, 6680);
 });
 
 function gainTextStreamAdd(text) {
@@ -246,17 +245,16 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.hpFasterFade',
 });
 
 $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', function(event) { // part of the mob death effect
-    if ($(event.target).hasClass('mob')) {
+    if (event.target.classList.contains('mob')) {
         mobSetAnimation(event.target, 'alive');
-        $(event.target).removeClass('mobMoving');
-        //mobMove(event.target);
+        event.target.classList.remove('mobMoving');
+        mobMove(event.target);
     }
 });
 
 function mobMove(mob) {
     mob = $(mob);
     setTimeout(() => {
-        console.log('move FIRS');
         if (!mob.hasClass('mobDying')) {
             mobSetAnimation(mob, 'move');
         }
@@ -275,12 +273,6 @@ function mobSetAnimation(mob, status) {
 }
 
 function someAnimate(mob, lastStatus, frame=0) {
-    if ($('.mob').length == 0) {
-        mob = $(mob);
-    }
-    else {
-        mob = $('.mob');
-    }
     let status = mob.attr('status');
     let durationSource = mobFrameDurations[mob.val()][status];
     if (durationSource.length == 1) {
