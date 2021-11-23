@@ -94,7 +94,7 @@ function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhen
         }
     });
     setTimeout(() => {
-        genericSpritesheetAnimation(animations, frame+1, timings, deleteGroupWhenDone)
+        requestAnimationFrame(() => genericSpritesheetAnimation(animations, frame+1, timings, deleteGroupWhenDone));
     }, timings[frame]);
 }
 

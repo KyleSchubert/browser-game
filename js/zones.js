@@ -73,6 +73,6 @@ $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(
     }
 });
 
-$(document).ready(function() {
+$(() => {
     loadPortals();
 });

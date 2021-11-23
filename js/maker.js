@@ -1,5 +1,5 @@
 // Starts chosen support on the menus
-$(document).ready(function() {
+$(() => {
     $('.chosen-select').chosen();
     $('.chosen-select').on('change', function(evt, params) {
         chosenLoadNextOptions(evt, params);
@@ -19,10 +19,10 @@ function chosenLoadNextOptions(e, parameters) {
     let optionsToAdd = [];
     let target = {};
     if (targetSelectArea == 1) {
-        $('.chosen-select:eq(1)').empty();
-        $('.chosen-select:eq(1)').trigger('chosen:updated');
-        $('.chosen-select:eq(2)').empty();
-        $('.chosen-select:eq(2)').trigger('chosen:updated');
+        $('.chosen-select').eq(1).empty();
+        $('.chosen-select').eq(1).trigger('chosen:updated');
+        $('.chosen-select').eq(2).empty();
+        $('.chosen-select').eq(2).trigger('chosen:updated');
         chosenIsEquipment = false;
         switch (parameters.selected) {
             case 'Items - Equip':
@@ -62,8 +62,8 @@ function chosenLoadNextOptions(e, parameters) {
         chosenTopSelected = target;
     }
     else if (targetSelectArea == 2) {
-        $('.chosen-select:eq(2)').empty();
-        $('.chosen-select:eq(2)').trigger('chosen:updated');
+        $('.chosen-select').eq(2).empty();
+        $('.chosen-select').eq(2).trigger('chosen:updated');
         Object.keys(chosenTopSelected).forEach(function(value) {
             if (Object.keys(chosenTopSelected[value]).includes(parameters.selected)) {
                 chosenMiddleOneSelected = value;
@@ -99,16 +99,16 @@ function chosenLoadNextOptions(e, parameters) {
             makerLoadTheEditor(parameters.selected, 'Items');
         }
     }
-    $('.chosen-select:eq(' + targetSelectArea + ')').empty();
+    $('.chosen-select').eq(targetSelectArea).empty();
     optionsToAdd.forEach(function(value) {
         if (value[1] == 0) {
-            $('.chosen-select:eq(' + targetSelectArea + ')').append('<option>' + value[0] + '</option>');
+            $('.chosen-select').eq(targetSelectArea).append('<option>' + value[0] + '</option>');
         }
         else {
-            $('.chosen-select:eq(' + targetSelectArea + ')').append('<option value="' + value[1].toString() + '">' + value[0] + '</option>');
+            $('.chosen-select').eq(targetSelectArea).append('<option value="' + value[1].toString() + '">' + value[0] + '</option>');
         }
     });
-    $('.chosen-select:eq(' + targetSelectArea + ')').trigger('chosen:updated');
+    $('.chosen-select').eq(targetSelectArea).trigger('chosen:updated');
 }
 
 function setMakerVisualPartTwo(img) {

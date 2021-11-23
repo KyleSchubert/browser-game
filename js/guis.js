@@ -1,9 +1,9 @@
 var somethingIsOpen = false;
 var somethingWasClosed = false;
 
-$('.guiOpeningButton').click(function() {
-    guiType = guiGetType(this);
-    guiToggleVisibility(guiType, this.getAttribute('value'));
+$('.guiOpeningButton').on('click', (event) => {
+    guiType = guiGetType(event.currentTarget);
+    guiToggleVisibility(guiType, event.currentTarget.getAttribute('value'));
 });
 
 guiIDs = ['#shopHolder', '#equipmentHolder'];
@@ -40,7 +40,7 @@ $('body').keydown(function(e) {
     }
 });
 
-$(function() {
+$(() => {
     $('#guiHolder').draggable({handle: '.draggableBar'});
     $('#guiHolder').draggable({cancel: '.guiInnerContentArea'});
     $('#guiHolder').draggable({scroll: false});
@@ -165,14 +165,14 @@ $('.easyItem').click(function(e) {
     }
 });
 
-$('.statButton').click(function(e) {
-    allocatedStat = $(this).attr('stat');
+$('.statButton').on('click', (event) => {
+    allocatedStat = event.currentTarget.getAttribute('stat');
     character.stats[allocatedStat] ++;
     character.info.attributePoints --;
     updateCharacterDisplay();
 });
 
-$('#shopHolder .guiInnerContentArea .closeButton').click(function() {
+$('#shopHolder .guiInnerContentArea .closeButton').click(() => {
     somethingIsOpen = false;
     guiClose(guiIDs[0]);
     playSound(sounds[5]); // MenuUp.mp3
@@ -180,7 +180,7 @@ $('#shopHolder .guiInnerContentArea .closeButton').click(function() {
     $('#guiHolder').css('left', 'calc(50% - 320px)');
 });
 
-$('#equipmentHolder .guiInnerContentArea .closeButton').click(function() {
+$('#equipmentHolder .guiInnerContentArea .closeButton').click(() => {
     somethingIsOpen = false;
     guiClose(guiIDs[1]);
     playSound(sounds[5]); // MenuUp.mp3

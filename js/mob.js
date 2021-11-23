@@ -97,9 +97,7 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
     if (theirRedPart.classList.contains('hpFasterFade')) {
         theirRedPart.classList.remove('hpFasterFade');
         theirRedPart.style.animation = 'none';
-        setTimeout(() => {
-            theirRedPart.style.animation = '';
-        }, 1);
+        requestAnimationFrame(() => theirRedPart.style.animation = '');
     }
     theirRedPart.style.width = width + 4 - parseInt(theirRedPart.style.right) + 'px'; // maybe needs improvement
     theirRedPart.classList.add('hpFasterFade');
@@ -197,7 +195,7 @@ function mobDie(origin='') {
 }
 
 MAX_MOBS = 200;
-$(document).ready( () => {
+$(() => {
     spawn(getMob())
     spawn(getMob())
     spawn(getMob())
@@ -277,7 +275,6 @@ function mobSetAnimation(mob, status) {
 }
 
 function someAnimate(mob, lastStatus, frame=0) {
-    console.log('FIRING')
     if ($('.mob').length == 0) {
         mob = $(mob);
     }
@@ -339,7 +336,7 @@ function someAnimate(mob, lastStatus, frame=0) {
         }
     }
     setTimeout(() => {
-        someAnimate(mob, status, frame+1)
+        requestAnimationFrame(() => someAnimate(mob, status, frame+1));
     }, durationSource[frame]);
 }
 

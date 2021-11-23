@@ -23,7 +23,7 @@ function makeDraggableItemsDraggable() {
                 imgLink = $(event.currentTarget).children('img').attr('src');
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
             },
-            stop: function(event) {
+            stop: function() {
                 $('#draggedItemHolder').css('visibility', 'hidden');
                 $(this).css('visibility', '');
                 isSomethingBeingDragged = false;
@@ -225,7 +225,7 @@ function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED
         if ($('.selectedThing')[0]) {
             if ($('.selectedThing')[0] == $(this)[0]) {
                 if ($(this).parent()[0].classList.contains('shopItemArea')) {
-                    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text().replace(/,/g, ''));
+                    price = parseInt($('.selectedThing').eq(0).find('.itemCardPrice').text().replace(/,/g, ''));
                     if (doTheyHaveEnoughDoubloons(price)) {
                         dialogTrigger('shop');
                     }
@@ -306,8 +306,8 @@ function dialogPrepareText(reason) {
             else {
                 dialogSubReason = 'withdraw';
                 text.push('Would you like to withdraw');
-                itemName = $('.selectedThing:eq(0) .itemCardName').text();
-                itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
+                itemName = $('.selectedThing').eq(0).find('.itemCardName').text();
+                itemPrice = $('.selectedThing').eq(0).find('itemCardPrice').text();
             }
             text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>');
             text.push('<strong>' + itemName + '</strong>');
@@ -330,8 +330,8 @@ function dialogPrepareText(reason) {
             else {
                 dialogSubReason = 'buy';
                 text.push('Would you like to purchase');
-                itemName = $('.selectedThing:eq(0) .itemCardName').text();
-                itemPrice = $('.selectedThing:eq(0) .itemCardPrice').text();
+                itemName = $('.selectedThing').eq(0).find('.itemCardName').text();
+                itemPrice = $('.selectedThing').eq(0).find('.itemCardPrice').text();
             }
             text.push('<strong>' + numberWithCommas(transferAmount) + 'x</strong>');
             text.push('<strong>' + itemName + '</strong>');

@@ -145,28 +145,28 @@ function canEquipToHere(desiredSlot, itemSlot) {
     }
 }
 
-$(document).ready(function() {
+$(() => {
     for (let i = 0; i < 6; i++) {
         $('#equipmentSlotsArea').append('<tr class="row"><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td><td class="equipmentSlot"></td></tr>');
     };
 
     for (var slot = 0; slot < 30; slot++) {
-        $('.equipmentSlot:eq(' + slot + ')').attr('data-slotID', 30+slot);
+        $('.equipmentSlot').eq(slot).attr('data-slotID', 30+slot);
     }
 
     disabledSlots.forEach(function(value) {
-        $('.equipmentSlot:eq(' + value + ')').addClass('disabledSlot');
+        $('.equipmentSlot').eq(value).addClass('disabledSlot');
     });
 
     Object.keys(slotRestrictions).forEach(function(key) {
         const slots = slotRestrictions[key];
         slots.forEach(function(slot) {
-            $('.equipmentSlot:eq(' + slot + ')').append('<span class="slotRestrictionHelper">' + slotText[key].toUpperCase() + '</span>');
+            $('.equipmentSlot').eq(slot).append('<span class="slotRestrictionHelper">' + slotText[key].toUpperCase() + '</span>');
         });
     });
 
     for (var slot = 0; slot < 30; slot++) {
-        $('.equipmentSlot:eq(' + slot + ')').addClass('emptyEquipmentSlot');
+        $('.equipmentSlot').eq(slot).addClass('emptyEquipmentSlot');
     }
 
     character.equipment.length = 30;
@@ -202,8 +202,8 @@ function equipmentLoad() {
     $('.equipmentSlot:not(.disabledSlot) div').remove();
     itemsInEquipmentSlots.forEach(function(value, slot) {
         if (value) {
-            $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden');
-            $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot');
+            $('.equipmentSlot').eq(slot).find('.slotRestrictionHelper').css('visibility', 'hidden');
+            $('.equipmentSlot').eq(slot).removeClass('emptyEquipmentSlot');
             itemImageSetup(value.id, processEquipmentImages, slot);
             character.equipment[slot] = getEquipmentCompoundStats(value);
         }
@@ -227,8 +227,8 @@ function equipmentLoad() {
 
 
 function equipmentLoadOne(theItem, slot) {
-    $('.equipmentSlot:eq(' + slot + ') .slotRestrictionHelper').css('visibility', 'hidden');
-    $('.equipmentSlot:eq(' + slot + ')').removeClass('emptyEquipmentSlot');
+    $('.equipmentSlot').eq(slot).find('.slotRestrictionHelper').css('visibility', 'hidden');
+    $('.equipmentSlot').eq(slot).removeClass('emptyEquipmentSlot');
     itemImageSetup(theItem.id, processEquipmentImages, slot);
     character.equipment[slot] = getEquipmentCompoundStats(theItem);
 
@@ -236,7 +236,7 @@ function equipmentLoadOne(theItem, slot) {
     makeDraggableItemsDraggable();
     activateFastSell();
 
-    target = $('.equipmentSlot:eq(' + slot + ')');
+    target = $('.equipmentSlot').eq(slot);
     target.mousemove(function(event) {
         if (isSomethingBeingDragged) { // someone wants to swap items
             prepareToSwapItems(event, 1);
@@ -253,7 +253,7 @@ function equipmentLoadOne(theItem, slot) {
 
 function processEquipmentImages(img, slot) {
     itemHolder = equipmentItemHolderSetup(slot, img);
-    $('.equipmentSlot:eq(' + slot + ')').append(itemHolder);
+    $('.equipmentSlot').eq(slot).append(itemHolder);
 }
 
 function equipmentItemHolderSetup(slot, img) {

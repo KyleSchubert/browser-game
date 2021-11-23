@@ -61,7 +61,7 @@ function checkForProblems() {
         console.warn('From "problemsWithItemNames": ' + JSON.stringify(problematicIDs));
     }
 }
-$(document).ready(checkForProblems());
+$(checkForProblems());
 
 // me
 function organizeResultList(results) {
@@ -84,10 +84,10 @@ function organizeResultList(results) {
 }
 
 // https://stackoverflow.com/questions/22581345/click-button-copy-to-clipboard-using-jquery
-$('.textTightContainer input').on('click', function() {
+$('.textTightContainer input').on('click', () => {
     const $temp = $('<input>');
     $('body').append($temp);
-    $temp.val($(this).val()).select();
+    $temp.val($(event.currentTarget).val()).select();
     document.execCommand('copy');
     $temp.remove();
 });
@@ -99,17 +99,19 @@ function doNothing() {
 
 // https://stackoverflow.com/questions/16868122/mousemove-very-laggy/29276058#answer-29263341    with some tweaks but it's practically the same
 var SQUAREposX; var SQUAREposY;
-$('body').mousemove(FollowSquare);
-function FollowSquare(e) {
-    e.preventDefault();
-    SQUAREposX = e.pageX-14;
-    SQUAREposY = e.pageY-14;
+$('body').on('mousemove', function(event) {
+    event.preventDefault();
+    SQUAREposX = event.pageX;
+    SQUAREposY = event.pageY;
     window.requestAnimationFrame(showBigImg);
-}
+});
+
 function showBigImg() {
+    let x = SQUAREposX-14;
+    let y = SQUAREposY-14;
     $('#draggedItemHolder').css({
-        '-webkit-transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)',
-        'transform': 'translateX(' + SQUAREposX + 'px) translateY(' + SQUAREposY + 'px)'
+        '-webkit-transform': 'translateX(' + x + 'px) translateY(' + y + 'px)',
+        'transform': 'translateX(' + x + 'px) translateY(' + y + 'px)'
     });
 }
 
@@ -128,6 +130,4 @@ function preloadImages(array) {
     })
 }
 
-$(document).ready(function() {
-    preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png"]);
-});
+$(preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png"]));

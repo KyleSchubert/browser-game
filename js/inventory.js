@@ -1,10 +1,10 @@
 // some animations for opening and closing with the big button
-$('.openInventoryButton').click(function() {
+$('.openInventoryButton').click(() => {
     if (!$('#inventoryArea').hasClass('inventory-open')) {
         // START OPENING ANIMATION
         $('#inventoryArea').addClass('inventory-opening');
         // ANIMATION DONE
-        $('.inventory-opening').on('animationend webkitAnimationEnd oAnimationEnd', function() {
+        $('.inventory-opening').on('animationend webkitAnimationEnd oAnimationEnd', () => {
             $('#inventoryArea').addClass('inventory-open');
             $('#inventoryArea').removeClass('inventory-opening');
         });
@@ -14,7 +14,7 @@ $('.openInventoryButton').click(function() {
         $('#inventoryArea').addClass('inventory-closing');
         $('#inventoryArea').removeClass('inventory-open');
         // animation done
-        $('.inventory-closing').on('animationend webkitAnimationEnd oAnimationEnd', function() {
+        $('.inventory-closing').on('animationend webkitAnimationEnd oAnimationEnd', () => {
             $('#inventoryArea').removeClass('inventory-open'); // safety first! (rare case)
             $('#inventoryArea').removeClass('inventory-closing');
         });
@@ -41,17 +41,17 @@ var inventory = {
     Use: [2000019, 0, 0, 0, 0, 2000019, 0, 0, 0, 0, 0, 2046319],
     Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4000001],
     DetailedEquip: [],
-    getter: function() {
+    getter: () => {
         str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
         string = str.charAt(0).toUpperCase() + str.slice(1);
         return inventory[string];
     },
-    countsGetter: function() {
+    countsGetter: () => {
         str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
         string = str.charAt(0).toUpperCase() + str.slice(1);
         return inventory.counts[string];
     },
-    readyName: function() {
+    readyName: () => {
         str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
         return str.charAt(0).toUpperCase() + str.slice(1);
     },
@@ -64,7 +64,7 @@ var inventory = {
 
 // making the inventory
 // showing the first tab first by making it the selected tab
-$(document).ready(function() {
+$(() => {
     inventoryTabs = document.getElementById('moreInventoryButtonsArea').getElementsByClassName('subTab');
     inventoryTabs[0].classList.add('subTabFocused');
     $(inventoryTabs).on('click', inventoryTabs, switchTabs);
@@ -75,7 +75,7 @@ $(document).ready(function() {
 });
 
 var inventoryCurrentSelectedTab = ''; // TODO: since i now have this I should probably change the variables so that only this gets used
-$(document).ready(function() {
+$(() => {
     inventoryCurrentSelectedTab = document.getElementsByClassName('subTabFocused')[0];
 });
 
@@ -158,7 +158,7 @@ function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false, equipItem=
         makeDraggableItemsDraggable();
         activateFastSell();
 
-        target = $('.slot:eq(' + slot + ')');
+        target = $('.slot').eq(slot);
         target.mousemove(function(event) {
             if (isSomethingBeingDragged) { // someone wants to swap items
                 prepareToSwapItems(event, 1);
@@ -290,13 +290,13 @@ function itemHolderSetup(tabName, slot, img, equipItem) {
 }
 
 // set up the inventory slots and load what should be in those slots AFTER
-$(document).ready(function() {
+$(() => {
     for (let i = 0; i < ROWS_OF_SLOTS; i++) {
         $('#slotsSpot').append('<tr class="row"><td class="slot"></td><td class="slot"></td><td class="slot"></td><td class="slot"></td><td class="slot"></td></tr>');
     };
 
     for (let slot = 0; slot < NUM_OF_SLOTS; slot++) {
-        $('.slot:eq(' + slot + ')').attr('data-slotID', slot);
+        $('.slot').eq(slot).attr('data-slotID', slot);
     }
 
     inventoryLoad(); // I know not of a better way to get this to load after that^  Its like the computer is too fast

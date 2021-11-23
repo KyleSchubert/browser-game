@@ -18,7 +18,7 @@ function constructAvatarURL(state='stand1') {
     return finishedURL.concat('/', state, '/animated?showEars=false&showLefEars=false&resize=1&flipX=false');
 };
 
-$(document).ready(function() {
+$(() => {
     $('#avatar').on('load', function(event) {
         console.log(''.concat('THE HEIGHT IS NOW: ', $(this).height()));
         if (equipmentLatestChange == 2) { // hat changed
@@ -29,4 +29,4 @@ $(document).ready(function() {
         }
         lastAvatarHeight = $(this).height();
     });
-})
+});

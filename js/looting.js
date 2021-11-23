@@ -60,7 +60,7 @@ function lootItem(target) { // use   this.whatever   to get what you need   ex: 
     target.parentElement.classList.remove('itemAnimationHelper');
     const _ = target; // I dont know any better way
     playSound(sounds[0]); // pickup.wav
-    window.setTimeout(function() {
+    window.setTimeout(() => {
         remainingItems = _.parentElement.parentElement.value;
         remainingItems = remainingItems - 1;
         _.parentElement.parentElement.value = remainingItems;

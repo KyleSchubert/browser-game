@@ -25,18 +25,18 @@ shopWorths = {
     4000012: 10
 };
 
-$(document).ready(function() {
+$(() => {
     node = document.getElementById('shopButtonArea');
     shopButtonAppeared(node);
 });
 
 function shopButtonAppeared(shopNode) {
-    $(shopNode).mouseenter(function(event) {
-        id = this.getAttribute('value');
+    $(shopNode).on('mouseenter', function(event) {
+        id = event.currentTarget.getAttribute('value');
         if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
             shopInventories[id].forEach(checkIfWeKnowTheItemName);
         }
-        $(this).off(event);
+        $(event.currentTarget).off(event);
     });
 }
 
@@ -45,7 +45,7 @@ function preloadTheShop() {
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
         shopInventories[id].forEach(checkIfWeKnowTheItemName);
     }
-    $(this).unbind('mouseenter', preloadTheShop);
+    $(this).off('mouseenter');
 }
 
 var storageIsOpen = false;
@@ -54,20 +54,20 @@ function shopLoad(id, isStorage=false) {
     doubloonsHaveToBeUpdatedNow = true;
     if (isStorage) {
         $('.shopMerchantImage')[0].src = './files/use-as-storage-guy.png';
-        $('.sellArea:eq(0)').css('background-image', 'url(./files/storage_background.png)');
-        $('.sellArea:eq(0)').css('content-visibility', 'hidden');
+        $('.sellArea').eq(0).css('background-image', 'url(./files/storage_background.png)');
+        $('.sellArea').eq(0).css('content-visibility', 'hidden');
         storageIsOpen = true;
     }
     else {
         $('.shopMerchantImage')[0].src = './files/use-as-shop-guy.png';
-        $('.sellArea:eq(0)').css('content-visibility', '');
-        $('.sellArea:eq(0)').css('background-image', 'url(./files/sell_background.png)');
+        $('.sellArea').eq(0).css('content-visibility', '');
+        $('.sellArea').eq(0).css('background-image', 'url(./files/sell_background.png)');
         storageIsOpen = false;
     }
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').html('');
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) { // Essentially, this is a backup for if I forget to do   shopButtonAppeared(shopNode)
         shopInventories[id].forEach(checkIfWeKnowTheItemName);
-        setTimeout(function() {
+        setTimeout(() => {
             shopInventories[id].forEach(function(i) {
                 createItemCard(i, false, shopStocks[id][i], id);
             });
@@ -194,7 +194,7 @@ var weAreCurrentlySelling = false;
 function sellProcess(fastSell=false) {
     if (fastSell) {
         itemBeingSold = fastSell;
-        itemBeingSoldId = $(itemBeingSold).find('.item:eq(1)').val();
+        itemBeingSoldId = $(itemBeingSold).find('.item').eq(1).val();
         itemBeingSoldCount = $(itemBeingSold).find('.itemCount').html();
         if (!itemBeingSoldCount) {
             itemBeingSoldCount = 1;
@@ -230,7 +230,7 @@ function secondPartOfSellProcess(fastSell=false) {
     }
     else {
         counts[slotNumber] = remaining;
-        $('.slot:eq(' + slotNumber + ') span')[0].innerHTML = remaining;
+        $('.slot').eq(slotNumber).find('span')[0].innerHTML = remaining;
         $(itemBeingSold).css('left', '0px');
         $(itemBeingSold).css('top', '0px');
         $(itemBeingSold).css('pointer-events', 'auto');
@@ -255,29 +255,29 @@ function shopGetTransferAmount() { // the dialog box has to be open while this h
 }
 
 function shopGetItemId() {
-    return $('.selectedThing:eq(0) img:eq(0)').val();
+    return $('.selectedThing').eq(0).find('img').eq(0).val();
 }
 
 function getShop() {
-    console.log($('.selectedThing:eq(0) img:eq(1)'))
-    return $('.selectedThing:eq(0) img:eq(1)').val();
+    console.log($('.selectedThing').eq(0).find('img').eq(1))
+    return $('.selectedThing').eq(0).find('img').eq(1).val();
 }
 
 function shopGetStock() {
-    if ($('.selectedThing:eq(0) .itemCardImageArea span:eq(0)').length) { // this checks if the stock number exists
-        return parseInt($('.selectedThing:eq(0) .itemCardImageArea span:eq(0)').html()); // this gets the stock number
+    if ($('.selectedThing').eq(0).find('.itemCardImageArea span').eq(0).length) { // this checks if the stock number exists
+        return parseInt($('.selectedThing').eq(0).find('itemCardImageArea span').eq(0).html()); // this gets the stock number
     }
     else {
         return 0; // this is for when the item should have unlimited stock
     }
 }
 
-function shopSetStock(amount, target='.selectedThing:eq(0)') { // target should be the item card in the shop that you want to edit
-    if ($(target + ' .itemCardImageArea span:eq(0)').length) { // this checks if the stock number exists
-        $(target + ' .itemCardImageArea span:eq(0)').html(amount.toString());
+function shopSetStock(amount, target=$('.selectedThing').eq(0)) { // target should be the item card in the shop that you want to edit
+    if (target.find('.itemCardImageArea span').eq(0).length) { // this checks if the stock number exists
+        target.find('.itemCardImageArea span').eq(0).html(amount.toString());
     }
     else {
-        $(target + ' .itemCardImageArea').append(createItemCardStock(amount));
+        target.find('.itemCardImageArea').append(createItemCardStock(amount));
     }
 }
 
@@ -336,7 +336,7 @@ function transferIt(buying, fastSell=false) { // id is only necessary for sellin
     // temporary ^ ^ ^
 }
 
-function shopDeleteItemCard(target='.selectedThing:eq(0)') {
+function shopDeleteItemCard(target=$('.selectedThing').eq(0)) {
     $(target).remove();
 }
 
@@ -355,7 +355,7 @@ function doTheyHaveEnoughDoubloons(needed) { // because I'll probably use this i
 }
 
 function shopMaxAffordNumber() { // this will only be used for when they're buying something anyways
-    price = parseInt($('.selectedThing:eq(0) .itemCardPrice').text().replace(/,/g, ''));
+    price = parseInt($('.selectedThing').eq(0).find('.itemCardPrice').text().replace(/,/g, ''));
     return Math.floor(doubloons / price);
 }
 

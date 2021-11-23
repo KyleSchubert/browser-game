@@ -9,7 +9,7 @@ function depositProcess() {
     }
     else {
         counts[slotNumber] = remaining;
-        $('.slot:eq(' + slotNumber + ') span')[0].innerHTML = remaining;
+        $('.slot').eq(slotNumber).find('span')[0].innerHTML = remaining;
         $(itemBeingSold).css('left', '0px');
         $(itemBeingSold).css('top', '0px');
         $(itemBeingSold).css('pointer-events', 'auto');

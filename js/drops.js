@@ -38,7 +38,7 @@ function itemImageSetup(itemID, callback, slot=999999) {
         $.ajax({
             url: './item/'.concat(itemID).concat('/icon.png'),
             type: 'HEAD',
-            error: function() {
+            error: () => {
                 img = getItemURL(itemID).concat('/icon');
                 knownItemImages.push(itemID);
                 img = setupImage(img, itemID);
@@ -49,7 +49,7 @@ function itemImageSetup(itemID, callback, slot=999999) {
                     return callback(img);
                 }
             },
-            success: function() {
+            success: () => {
                 img = './item/'.concat(itemID).concat('/icon.png');
                 knownItemImages.push(itemID);
                 img = setupImage(img, itemID);

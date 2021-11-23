@@ -57,7 +57,7 @@ function playSound(buf, reason='') {
     const source = audioCtx.createBufferSource();
     source.buffer = buf;
     source.connect(gainNode);
-    source.onended = function() {
+    source.onended = () => {
         if (this.stop) this.stop(); if (this.disconnect) this.disconnect();
     };
     source.start(0);
@@ -73,11 +73,11 @@ function soundWork(sound) {
     });
 }
 
-$(document).ready(function() { // double checks that I have every sound loaded
+$(() => { // double checks that I have every sound loaded
     allSoundFiles.forEach(soundWork);
 });
 
 // Assigning the sounds to things
-$('#testSound').click(function() {
+$('#testSound').click(() => {
     playSound(sounds[0]); // pickup.wav
 });

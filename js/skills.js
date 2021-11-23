@@ -3,9 +3,9 @@ function testFart() {
     let div = document.createElement('div');
     div.style.backgroundImage = 'url(./skills/effect/61001000.png)';
     div.style.width = '283px';
-    let width = parseInt(div.style.width) / 2 + 14;
+    let width = parseInt(div.style.width) / 2;
     div.style.height = '167px';
-    let height = parseInt(div.style.height) / 2 + 14;
+    let height = parseInt(div.style.height) / 2;
     div.style.position = 'absolute';
     div.style.left = SQUAREposX - width - $('#gameArea').position()['left'] + 'px';
     div.style.top = SQUAREposY - height + 'px';
@@ -16,7 +16,7 @@ function testFart() {
     const rightBound = SQUAREposX + width + 400;
     const topBound = SQUAREposY - height;
     const bottomBound = SQUAREposY + height;
-    checkHit(leftBound, rightBound, bottomBound, topBound, gameArea.offsetLeft);
+    checkHit(leftBound, rightBound, bottomBound, topBound, 0);
     genericSpritesheetAnimation([div], 0, testTimings);
 }
 
@@ -27,8 +27,8 @@ function hitTestFart(left, top, reason) {
     div.style.width = '187px';
     div.style.height = '131px';
     div.style.position = 'absolute';
-    div.style.left = (left - 187 / 2 + 14) + 'px';
-    div.style.top = (top - 131 / 2 + 14) + 'px';
+    div.style.left = (left - 187 / 2) + 'px';
+    div.style.top = (top - 131 / 2) + 'px';
     div.setAttribute('group', reason);
     return div;
 }
