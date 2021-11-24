@@ -49,7 +49,7 @@ function useAttackSkill(skill, widthStyle, heightStyle) {
     const rightBound = SQUAREposX + width;
     const topBound = SQUAREposY - height;
     const bottomBound = SQUAREposY + height;
-    checkHit(leftBound, rightBound, bottomBound, topBound, 0);
+    checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
     genericSpritesheetAnimation([div], 0, classSkills[usedSkill].delays);
 }
 

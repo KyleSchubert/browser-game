@@ -370,6 +370,25 @@ input[type=number]::-webkit-inner-spin-button {
     }
 }
 
+#skillKeys {
+    position: absolute;
+    left: 290px;
+    border: 4px solid white;
+    bottom: 2px;
+}
+
+.changeableKeybind {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+}
+
+.changeableKeybind img {
+    position: absolute;
+    left: 2px;
+    top: 3px;
+}
+
 .portal {
     position: absolute;
 }
