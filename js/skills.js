@@ -1,34 +1,67 @@
-const testTimings = [90,90,90,90];
-function testFart() {
+var previousSkill = 0;
+var usedSkill = 0;
+var realSkill = 0;
+var realSkillData = {};
+var cannotUse = [];
+function processSkill(skill) {
+    if (cannotUse.includes(skill)) {
+        return;
+    }
+    cannotUse.push(skill);
+    setTimeout(() => {
+        removeItemOnce(cannotUse, skill);
+    }, classSkills[skill].reuseWaitTime);
+    previousSkill = usedSkill;
+    usedSkill = skill;
+    let skillType = classSkills[skill].type;
+    if (skillType == 'attackSequence') {
+        if (previousSkill == skill) {
+            if (realSkill in classSkills[skill].attackSequence) {
+                realSkill = classSkills[skill].attackSequence[realSkill].next;
+            }
+            else {
+                realSkill = classSkills[skill].attackSequence[skill].next;
+            }
+        }
+        else {
+            realSkill = skill;
+        }
+        realSkillData = classSkills[skill].attackSequence[realSkill];
+        let skillDimensions = classSkills[skill].attackSequence[realSkill].dimensions;
+        useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1]);
+    }
+}
+
+function useAttackSkill(skill, widthStyle, heightStyle) {
     let div = document.createElement('div');
-    div.style.backgroundImage = 'url(./skills/effect/61001000.png)';
-    div.style.width = '283px';
-    let width = parseInt(div.style.width) / 2;
-    div.style.height = '167px';
-    let height = parseInt(div.style.height) / 2;
+    div.style.backgroundImage = 'url(./skills/effect/' + skill + '.png)';
+    div.style.width = widthStyle + 'px';
+    let width = widthStyle / 2;
+    div.style.height = heightStyle + 'px';
+    let height = heightStyle / 2;
     div.style.position = 'absolute';
     div.style.left = SQUAREposX - width - $('#gameArea').position()['left'] + 'px';
     div.style.top = SQUAREposY - height + 'px';
     let gameArea = document.getElementById('gameArea');
     gameArea.appendChild(div);
-    playSound(sounds[allSoundFiles.indexOf('61001000use.mp3')]);
+    playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
     const leftBound = SQUAREposX - width;
     const rightBound = SQUAREposX + width;
     const topBound = SQUAREposY - height;
     const bottomBound = SQUAREposY + height;
     checkHit(leftBound, rightBound, bottomBound, topBound, 0);
-    genericSpritesheetAnimation([div], 0, testTimings);
+    genericSpritesheetAnimation([div], 0, classSkills[usedSkill].delays);
 }
 
-const testTimings2 = [90,90,90,90,90,90];
-function hitTestFart(left, top, reason) {
+function hitTest(left, top, reason) {
+    let hitDimensions = classSkills[usedSkill].hitDimensions;
     let div = document.createElement('div');
-    div.style.backgroundImage = 'url(./skills/hit/61001000.png)';
-    div.style.width = '187px';
-    div.style.height = '131px';
+    div.style.backgroundImage = 'url(./skills/hit/' + usedSkill + '.png)';
+    div.style.width = hitDimensions[0] + 'px';
+    div.style.height = hitDimensions[1] + 'px';
     div.style.position = 'absolute';
-    div.style.left = (left - 187 / 2) + 'px';
-    div.style.top = (top - 131 / 2) + 'px';
+    div.style.left = (left - hitDimensions[0] / 2) + 'px';
+    div.style.top = (top - hitDimensions[1] / 2) + 'px';
     div.setAttribute('group', reason);
     return div;
 }
@@ -52,7 +85,7 @@ var skillHitLimit = 8;
 const hitCheckObserver = new IntersectionObserver((entries) => {
     let trueLeft = skillHitData['left'];
     let trueRight = skillHitData['right'];
-    let poggersGroup = document.createElement('div');
+    let hitGroup = document.createElement('div');
     let mobHits = 0;
     for (const entry of entries) {
         if (mobHits == skillHitLimit) {
@@ -60,15 +93,15 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
         }
         const bounds = entry.boundingClientRect;
         if ((between(bounds['left'], trueLeft, trueRight) || between(bounds['right'], trueLeft, trueRight)) && (between(bounds['top'], skillHitData['top'], skillHitData['bottom']) || between(bounds['bottom'], skillHitData['top'], skillHitData['bottom']))) {
-            mobDamageEvent(entry.target, 61001000, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]);
-            poggersGroup.appendChild(hitTestFart(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
+            mobDamageEvent(entry.target, realSkill, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]);
+            hitGroup.appendChild(hitTest(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
             mobHits++;
         }
     }
-    if (poggersGroup.hasChildNodes()) {
-        playSound(sounds[allSoundFiles.indexOf('61001000hit.mp3')]);
-        document.getElementById('gameArea').appendChild(poggersGroup);
-        genericSpritesheetAnimation(poggersGroup.children, 0, testTimings2, deleteGroupWhenDone=true);
+    if (hitGroup.hasChildNodes()) {
+        playSound(sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]);
+        document.getElementById('gameArea').appendChild(hitGroup);
+        genericSpritesheetAnimation(hitGroup.children, 0, classSkills[usedSkill].hitDelays, deleteGroupWhenDone=true);
     }
     hitCheckObserver.disconnect();
 });

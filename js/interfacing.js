@@ -464,6 +464,6 @@ $(document).keydown(function(event) {
         }
     }  
     else if (event.key === 'x') { // TESTING
-        testFart();
+        processSkill(61001000);
     }
 });

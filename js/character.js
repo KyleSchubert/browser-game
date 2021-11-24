@@ -152,15 +152,19 @@ const classMainStat = {
 };
 
 const classSkills = {
-    'kaiser': {
-        'Dragon Slash': {
-            id: 61001000,
-            type: 'attackSequence',
-            attackSequence: [
-                {id: 61001000, damage: 0.7, lines: 3, targets: 8},
-                {id: 61001004, damage: 0.5, lines: 5, targets: 6},
-                {id: 61001005, damage: 0.6, lines: 5, targets: 6}
-            ]
-        }
+    61001000: {
+        className: 'kaiser',
+        skillName: 'Dragon Slash',
+        tier: 1,
+        type: 'attackSequence',
+        reuseWaitTime: 320,
+        delays: [90,90,90,90],
+        attackSequence: {
+            61001000: {damage: 0.7, lines: 3, targets: 8, dimensions: [283,167], next: 61001004},
+            61001004: {damage: 0.5, lines: 5, targets: 6, dimensions: [363,129], next: 61001005},
+            61001005: {damage: 0.6, lines: 5, targets: 6, dimensions: [335,209], next: 61001000}
+        },
+        hitDelays: [90,90,90,90,90,90],
+        hitDimensions: [187, 131]
     }
 };

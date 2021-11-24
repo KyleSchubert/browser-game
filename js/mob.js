@@ -82,9 +82,8 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
         damageNumbers(damageRoll, parseInt($(event).css('left')) + parseInt($(event).css('width')) / 2, -parseInt($(event).css('height')) + marginToAccountFor - 20);
     }
     else {
-        let damageLines = 3; // temporary
         let damageTopLocation = 70;
-        for (let i=0; i<damageLines; i++) {
+        for (let i=0; i<realSkillData.lines; i++) {
             damageRoll = rollDamageToMob(skill);
             damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - damageTopLocation);
             damageTopLocation += 32;
@@ -124,7 +123,7 @@ function rollDamageToMob(skill=0) {
     let damage = 0;
     let damageMult = 1.00;
     if (skill != 0) {
-        damageMult = 0.70; // temporary for skill testing
+        damageMult = realSkillData.damage;
     }
     if (jQuery.isEmptyObject(character.equipment[16])) {
         weaponType = 'strength';
