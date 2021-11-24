@@ -146,3 +146,21 @@ function updateOneCharacterDisplay(subject) {
         $('#' + subject + 'Value').text(value);
     }
 }
+
+const classMainStat = {
+    'kaiser': 'strength'
+};
+
+const classSkills = {
+    'kaiser': {
+        'Dragon Slash': {
+            id: 61001000,
+            type: 'attackSequence',
+            attackSequence: [
+                {id: 61001000, damage: 0.7, lines: 3, targets: 8},
+                {id: 61001004, damage: 0.5, lines: 5, targets: 6},
+                {id: 61001005, damage: 0.6, lines: 5, targets: 6}
+            ]
+        }
+    }
+};

@@ -82,8 +82,13 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
         damageNumbers(damageRoll, parseInt($(event).css('left')) + parseInt($(event).css('width')) / 2, -parseInt($(event).css('height')) + marginToAccountFor - 20);
     }
     else {
-        damageRoll = rollDamageToMob(skill=0); // temporarily the same thing as default attack
-        damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - 70);
+        let damageLines = 3; // temporary
+        let damageTopLocation = 70;
+        for (let i=0; i<damageLines; i++) {
+            damageRoll = rollDamageToMob(skill);
+            damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - damageTopLocation);
+            damageTopLocation += 32;
+        }
     }
     let theirNameAndLevelText = event.firstChild;
     let theirHpBar = event.lastChild;
@@ -117,46 +122,45 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
 
 function rollDamageToMob(skill=0) {
     let damage = 0;
+    let damageMult = 1.00;
     if (skill != 0) {
-        // do something
+        damageMult = 0.70; // temporary for skill testing
+    }
+    if (jQuery.isEmptyObject(character.equipment[16])) {
+        weaponType = 'strength';
     }
     else {
-        if (jQuery.isEmptyObject(character.equipment[16])) {
-            weaponType = 'strength';
+        switch (itemsInEquipmentSlots[16].exactType) {
+            case 'One-Handed Sword':
+            case 'One-Handed Axe':
+            case 'One-Handed Blunt Weapon':
+            case 'Two-Handed Sword':
+            case 'Two-Handed Axe':
+            case 'Two-Handed Blunt':
+                weaponType = 'strength';
+                break;
+            case 'Bow':
+            case 'Gun':
+            case 'Spear':
+            case 'Pole Arm':
+                weaponType = 'dexterity';
+                break;
+            case 'Wand':
+            case 'Staff':
+            case 'Scepter':
+            case 'Arm Cannon':
+                weaponType = 'intelligence';
+                break;
+            case 'Katara':
+            case 'Claw':
+            case 'Gauntlet':
+            case 'Dagger':
+                weaponType = 'luck';
+                break;
         }
-        else {
-            switch (itemsInEquipmentSlots[16].exactType) {
-                case 'One-Handed Sword':
-                case 'One-Handed Axe':
-                case 'One-Handed Blunt Weapon':
-                case 'Two-Handed Sword':
-                case 'Two-Handed Axe':
-                case 'Two-Handed Blunt':
-                    weaponType = 'strength';
-                    break;
-                case 'Bow':
-                case 'Gun':
-                case 'Spear':
-                case 'Pole Arm':
-                    weaponType = 'dexterity';
-                    break;
-                case 'Wand':
-                case 'Staff':
-                case 'Scepter':
-                case 'Arm Cannon':
-                    weaponType = 'intelligence';
-                    break;
-                case 'Katara':
-                case 'Claw':
-                case 'Gauntlet':
-                case 'Dagger':
-                    weaponType = 'luck';
-                    break;
-            }
-        }
-        baseDamage = character.compoundedStats[weaponType];
-        damage = randomIntFromInterval(baseDamage * 0.6, baseDamage * 1.2);
     }
+    baseDamage = character.compoundedStats[weaponType] * damageMult;
+    damage = randomIntFromInterval(baseDamage * 0.8, baseDamage * 1.2);
     return damage;
 }
 
@@ -337,7 +341,8 @@ function damageNumbers(number, left, top) {
     let div = document.createElement('div');
     div.classList = ['damageNumberHolder'];
     number = String(number);
-    let leftChange = -4;
+    let randomLeftMovement = randomIntFromInterval(-22, 22);
+    let leftChange = -4 + randomLeftMovement;
     let lastWidth = 0;
     for (i=0; i<number.length; i++) {
         let img = new Image();
@@ -347,7 +352,7 @@ function damageNumbers(number, left, top) {
             $(img).css('width', Math.round(img.width * 7/6) + 'px');
             $(img).css('height', Math.round(img.height * 7/6) + 'px');
             lastWidth = parseInt($(img).css('width'));
-            $(img).css('left', '-6px');
+            $(img).css('left', -6 + randomLeftMovement + 'px');
         }
         else if (i % 2 == 0) {
             if (i % 4 == 0) {
