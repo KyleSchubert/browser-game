@@ -189,6 +189,17 @@ input[type=number]::-webkit-inner-spin-button {
     width: 160px;
 }
 
+#autoAllocateButton {
+    top: 10px;
+    width: 158px;
+    height: 72px;
+    align-self: center;
+    color: black;
+    background: linear-gradient(0deg, rgb(115 203 175) 2%, rgb(201 231 206) 65%, rgb(224 237 228) 100%);
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
 .statHolder {
     display: flex;
     height: 28px;

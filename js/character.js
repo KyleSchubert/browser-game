@@ -4,8 +4,8 @@ var character = {
     info: {
         name: '-',
         attributePoints: 0,
-        class: '-',
-        job: '-',
+        class: 'Kaiser',
+        job: 'Kaiser',
         level: 1,
         experience: 0,
         loot: 100,
@@ -148,7 +148,7 @@ function updateOneCharacterDisplay(subject) {
 }
 
 const classMainStat = {
-    'kaiser': 'strength'
+    'Kaiser': 'strength'
 };
 
 const classSkills = {

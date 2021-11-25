@@ -172,6 +172,15 @@ $('.statButton').on('click', (event) => {
     updateCharacterDisplay();
 });
 
+$('#autoAllocateButton').on('click', (event) => {
+    if (character.info.attributePoints > 0) {
+        allocatedStat = classMainStat[character.info.class];
+        character.stats[allocatedStat] += character.info.attributePoints;
+        character.info.attributePoints = 0;
+        updateCharacterDisplay();
+    }
+});
+
 $('#shopHolder .guiInnerContentArea .closeButton').click(() => {
     somethingIsOpen = false;
     guiClose(guiIDs[0]);
