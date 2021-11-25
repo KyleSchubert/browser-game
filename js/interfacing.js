@@ -466,4 +466,9 @@ $(document).keydown(function(event) {
     else if (event.key === 'x') { // TESTING
         processSkill(61001000);
     }
+    else if (event.key === 'i') { // TESTING
+        if (!(document.getElementById('inventoryArea').classList.contains('inventory-closing') || document.getElementById('inventoryArea').classList.contains('inventory-opening'))) {
+            $('.openInventoryButton').eq(0).click();
+        }
+    }
 });

@@ -328,8 +328,13 @@ input[type=number]::-webkit-inner-spin-button {
 #someGuiButtons {
     display: flex;
     position: absolute;
-    top: 800px;
-    left: 40px;
+    top: 236px;
+    left: 842px;
+}
+
+#bottomScreenArea {
+    position: absolute;
+    top: 916px;
 }
 
 #gainTextStream {
@@ -503,6 +508,20 @@ input[type=number]::-webkit-inner-spin-button {
     opacity: .72;
     color: white;
     white-space: nowrap;
+}
+
+.npcName {
+    visibility: visible;
+    color: yellow !important;
+    position: absolute;
+    top: -17px;
+}
+
+.npcTitle {
+    visibility: visible;
+    color: yellow !important;
+    position: absolute;
+    top: 2px;
 }
 
 .mobNameText {
@@ -951,11 +970,14 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .guiOpeningButton {
+    -webkit-user-drag: none;
+}
+
+.guiOpeningButtonStyling {
     border: 1px solid black;
     border-radius: 6px;
     background-color: #969696;
     background: linear-gradient(#969696, #2b2b2b);
-    -webkit-user-drag: none;
 }
 
 .checkerBackground {

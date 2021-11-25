@@ -1,23 +1,20 @@
-// some animations for opening and closing with the big button
-$('.openInventoryButton').click(() => {
-    if (!$('#inventoryArea').hasClass('inventory-open')) {
-        // START OPENING ANIMATION
-        $('#inventoryArea').addClass('inventory-opening');
-        // ANIMATION DONE
-        $('.inventory-opening').on('animationend webkitAnimationEnd oAnimationEnd', () => {
-            $('#inventoryArea').addClass('inventory-open');
-            $('#inventoryArea').removeClass('inventory-opening');
-        });
+$('#inventoryArea').on('animationend webkitAnimationEnd oAnimationEnd', () => {
+    if (!$('#inventoryArea').hasClass('inventory-open') && !$('#inventoryArea').hasClass('inventory-closing') && $('#inventoryArea').hasClass('inventory-opening')) {
+        $('#inventoryArea').addClass('inventory-open');
+        $('#inventoryArea').removeClass('inventory-opening');
     }
     else {
-        // START closing animation
+        $('#inventoryArea').removeClass('inventory-closing');
+    }
+});
+
+$('.openInventoryButton').on('click', (event) => {
+    if (!$('#inventoryArea').hasClass('inventory-open')) {
+        $('#inventoryArea').addClass('inventory-opening');
+    }
+    else {
         $('#inventoryArea').addClass('inventory-closing');
         $('#inventoryArea').removeClass('inventory-open');
-        // animation done
-        $('.inventory-closing').on('animationend webkitAnimationEnd oAnimationEnd', () => {
-            $('#inventoryArea').removeClass('inventory-open'); // safety first! (rare case)
-            $('#inventoryArea').removeClass('inventory-closing');
-        });
     }
 });
 
