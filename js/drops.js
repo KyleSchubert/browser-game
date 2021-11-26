@@ -67,12 +67,11 @@ function itemImageSetup(itemID, callback, slot=999999) {
 
 function setupImage(url, itemID) {
     const finishedImage = new Image();
+    finishedImage.src = url;
     finishedImage.onerror=() => { // this seems to fix the problem of items RARELY not loading when they drop onto the ground
-        console.log('WHAT');
-        //finishedImage.src = url;
+        finishedImage.src = url;
     };
     finishedImage.classList = ['item clickable'];
-    finishedImage.src = url;
     finishedImage.value = itemID;
     finishedImage.setAttribute('draggable', false);
     return finishedImage;
