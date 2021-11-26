@@ -52,6 +52,7 @@ var storageIsOpen = false;
 var doubloonsHaveToBeUpdatedNow = false;
 function shopLoad(id, isStorage=false) {
     doubloonsHaveToBeUpdatedNow = true;
+    updateDoubloons();
     if (isStorage) {
         $('.shopMerchantImage')[0].src = './files/use-as-storage-guy.png';
         $('.sellArea').eq(0).css('background-image', 'url(./files/storage_background.png)');
@@ -361,7 +362,6 @@ function shopMaxAffordNumber() { // this will only be used for when they're buyi
 
 var doubloons = 0;
 function updateDoubloons(value=0) {
-    console.log(value);
     doubloons = Number(doubloons) + value;
     if (doubloonsHaveToBeUpdatedNow) {
         document.getElementsByClassName('amountOfDoubloons')[0].innerHTML = numberWithCommas(doubloons);
