@@ -24,6 +24,7 @@ function itemDropSetup(img, aligner) {
 }
 
 function itemImageSetup(itemID, callback, slot=999999) {
+    itemID = parseInt(itemID);
     if (knownItemImages.includes(itemID)) {
         url = './item/'.concat(itemID).concat('/icon.png');
         img = setupImage(url, itemID);
@@ -66,6 +67,9 @@ function itemImageSetup(itemID, callback, slot=999999) {
 
 function setupImage(url, itemID) {
     const finishedImage = new Image();
+    finishedImage.onerror=() => { // this seems to fix the problem of items RARELY not loading when they drop onto the ground
+        finishedImage.src = url;
+    };
     finishedImage.classList = ['item clickable'];
     finishedImage.src = url;
     finishedImage.value = itemID;

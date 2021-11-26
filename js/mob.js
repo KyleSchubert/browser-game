@@ -186,7 +186,7 @@ function mobDie(origin='') {
         target.addClass('mobDying');
 
         mobDropAmount = Math.ceil(Math.random()); // temporary example
-        //dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
+        dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
         if (bossMobs.includes(mobName)) {
