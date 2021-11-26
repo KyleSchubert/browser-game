@@ -361,6 +361,7 @@ function shopMaxAffordNumber() { // this will only be used for when they're buyi
 
 var doubloons = 0;
 function updateDoubloons(value=0) {
+    console.log(value);
     doubloons = Number(doubloons) + value;
     if (doubloonsHaveToBeUpdatedNow) {
         document.getElementsByClassName('amountOfDoubloons')[0].innerHTML = numberWithCommas(doubloons);
