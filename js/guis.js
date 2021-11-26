@@ -130,14 +130,14 @@ function guiLoadData(guiType, id) {
     }
 }
 
-$('.textTightContainer, .statName').on('mousemove', function(event) {
+$('.textTightContainer, .statName, #skillMenuButton').on('mousemove', function(event) {
     $(event.currentTarget).children('.textTooltip').css({
         'left': event.pageX +6,
         'top': event.pageY +6,
         'visibility': 'visible'
     });
 });
-$('.textTightContainer, .statName').on('mouseleave', function(event) {
+$('.textTightContainer, .statName, #skillMenuButton').on('mouseleave', function(event) {
     $(event.currentTarget).children('.textTooltip').css({
         'visibility': 'hidden'
     });
