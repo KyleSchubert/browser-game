@@ -120,6 +120,14 @@ input[type=number]::-webkit-inner-spin-button {
     visibility: hidden;
 }
 
+#skillWindowHolder {
+    position: absolute;
+    z-index: 4;
+    height: 44%;
+    width: 44%;
+    visibility: hidden;
+}
+
 #statsEntireHolder {
     position: absolute;
     width: 380px;
@@ -1128,6 +1136,20 @@ input[type=number]::-webkit-inner-spin-button {
     border-color: black;
     border-style: solid;
     padding: 2px 8px 2px 8px;
+}
+
+.xButton {
+    position: absolute;
+    display: flex;
+    width: 28px;
+    height: 28px;
+    top: -28px;
+    right: 0px;
+    color: white;
+    font-family: monospace;
+    font-size: 16px;
+    justify-content: center;
+    align-items: center;
 }
 
 .sellArea {

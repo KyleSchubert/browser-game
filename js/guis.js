@@ -6,7 +6,7 @@ $('.guiOpeningButton').on('click', (event) => {
     guiToggleVisibility(guiType, event.currentTarget.getAttribute('value'));
 });
 
-guiIDs = ['#shopHolder', '#equipmentHolder'];
+guiIDs = ['#shopHolder', '#equipmentHolder', '#skillWindowHolder'];
 $('body').keydown(function(e) {
     if (e.key === 'Escape') { // escape key maps to keycode `27`
         if (smallDialogBoxOpen) {
@@ -53,7 +53,8 @@ $(() => {
 guiTypes = {
     80001: 'shop',
     80002: 'storage',
-    200: 'equipment'
+    200: 'equipment',
+    500: 'skill'
 };
 
 
@@ -71,6 +72,9 @@ function guiToggleVisibility(guiType, guiID) {
             break;
         case 'equipment':
             target = guiIDs[1];
+            break;
+        case 'skill':
+            target = guiIDs[2];
             break;
         default:
             console.log('in guiToggleVisibility, there is no case for this guiType: ');
@@ -123,6 +127,9 @@ function guiLoadData(guiType, id) {
             break;
         case 'storage':
             shopLoad(id, true);
+            break;
+        case 'equipment':
+        case 'skill':
             break;
         default:
             console.log('guiLoadData does not have any case for this guiType: ');
@@ -181,7 +188,7 @@ $('#autoAllocateButton').on('click', (event) => {
     }
 });
 
-$('#shopHolder .guiInnerContentArea .closeButton').click(() => {
+$('#shopHolder .guiInnerContentArea .closeButton, #shopHolder .guiInnerContentArea .xButton').click(() => {
     somethingIsOpen = false;
     guiClose(guiIDs[0]);
     playSound(sounds[5]); // MenuUp.mp3
@@ -189,9 +196,17 @@ $('#shopHolder .guiInnerContentArea .closeButton').click(() => {
     $('#guiHolder').css('left', 'calc(50% - 320px)');
 });
 
-$('#equipmentHolder .guiInnerContentArea .closeButton').click(() => {
+$('#equipmentHolder .guiInnerContentArea .xButton').click(() => {
     somethingIsOpen = false;
     guiClose(guiIDs[1]);
+    playSound(sounds[5]); // MenuUp.mp3
+    $('#guiHolder').css('top', 'calc(50% - 400px)');
+    $('#guiHolder').css('left', 'calc(50% - 320px)');
+});
+
+$('#skillWindowHolder .guiInnerContentArea .xButton').click(() => {
+    somethingIsOpen = false;
+    guiClose(guiIDs[2]);
     playSound(sounds[5]); // MenuUp.mp3
     $('#guiHolder').css('top', 'calc(50% - 400px)');
     $('#guiHolder').css('left', 'calc(50% - 320px)');
