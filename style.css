@@ -182,7 +182,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     width: 100%;
     height: 39px;
-    background: linear-gradient(180deg, #6679ff, #116ee3);
+    background: linear-gradient(180deg, #8c8aff, #003578);
     align-items: center;
 }
 
