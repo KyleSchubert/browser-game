@@ -128,6 +128,95 @@ input[type=number]::-webkit-inner-spin-button {
     visibility: hidden;
 }
 
+#skillsArea {
+    width: 100%;
+    height: 100%;
+}
+
+#skillTabArea {
+    display: flex;
+    width: 100%;
+    height: 25px;
+    padding-top: 4px;
+    background-color: whitesmoke;
+    align-items: flex-end;
+}
+
+.skillTab {
+    width: 10%;
+    height: 80%;
+    background-color: burlywood;
+    text-align: center;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-right: 1px;
+}
+
+#skillPointsArea {
+    display: flex;
+    width: 40%;
+    height: calc(100% - 4px);
+    justify-content: right;
+    padding: 2px;
+}
+
+#skillPointsArea span {
+    font-size: 12px;
+}
+
+#skillPoints {
+    width: 20%;
+    background-color: white;
+    text-align: right;
+    margin-right: 2px;
+}
+
+#skillContentArea {
+    width: 100%;
+    height: 280px;
+    background-color: crimson;
+}
+
+#skillContentAreaTopPart {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 39px;
+    background: linear-gradient(180deg, #6679ff, #116ee3);
+    align-items: center;
+}
+
+#skillBookPictureHolder {
+    position: absolute;
+    display: flex;
+    height: 100%;
+    width: 22%;
+    align-items: center;
+    background: linear-gradient(90deg, #ff585873, #00000000);
+}
+
+#skillBookPictureHolder img {
+    width: 25px;
+    height: 28px;
+    margin-left: 6px;
+}
+
+#skillContentAreaTabName {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    color: white;
+    background-image: url(data:image/png;base64,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);
+    align-items: center;
+    justify-content: center;
+}
+
+#skillContentAreaBottomPart {
+    width: 100%;
+    height: 241px;
+    background-color: darkolivegreen;
+}
+
 #statsEntireHolder {
     position: absolute;
     width: 380px;
@@ -1036,9 +1125,9 @@ input[type=number]::-webkit-inner-spin-button {
 .guiInnerContentArea {
     position: relative;
     background-color: var(--gui-standard-color);
-    width: calc(100% - 48px);
-    height: calc(97% - 51px);
-    padding: 24px;
+    width: calc(100% - 16px);
+    height: calc(97% - 19px);
+    padding: 8px;
 }
 
 .shopMerchantImage {
@@ -1049,6 +1138,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 .shopItemArea {
     position: absolute;
+    margin-left: 4px;
     top: 140px;
     width: 45%;
     height: 72%;
@@ -1153,7 +1243,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 .sellArea {
-    right: 24px;
+    right: 12px;
     background-image: url("./files/sell_background.png");
     background-repeat: no-repeat;
     background-position: center;
