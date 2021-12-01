@@ -105,3 +105,113 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
     }
     hitCheckObserver.disconnect();
 });
+
+function makeSkillCards() {
+    let currentSelectedSkillTab = document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value');
+    skillsPerClass[character.info.class][currentSelectedSkillTab].forEach((skill) => {
+        let skillInfoHolder = document.createElement('div');
+        skillInfoHolder.classList = ['skillInfoHolder'];
+        let tooltip = makeSkillTooltip(skill);
+        skillInfoHolder.appendChild(tooltip);
+        $(skillInfoHolder).on('mousemove', function(event) {
+            $(event.currentTarget).children('.itemTooltip').css({
+                'left': event.pageX - 240,
+                'top': event.pageY + 16,
+                'visibility': 'visible'
+            });
+        });
+        $(skillInfoHolder).on('mouseleave', function(event) {
+            $(event.currentTarget).children('.itemTooltip').css({
+                'visibility': 'hidden'
+            });
+        });
+        let skillImg = new Image();
+        skillImg.src = "./skills/icon/" + skill + ".png";
+        skillImg.style.alignSelf = 'center';
+        skillImg.style.marginLeft = '2px';
+        skillInfoHolder.appendChild(skillImg);
+        let everythingElse = document.createElement('div');
+        everythingElse.style.marginLeft = '4px';
+        everythingElse.style.marginRight = '4px';
+        let skillName = document.createElement('div');
+        skillName.innerHTML = classSkills[skill].skillName;
+        skillName.style.borderBottom = '1px dotted #e8e8e8';
+        skillName.style.height = '18px';
+        everythingElse.appendChild(skillName);
+        let bottomInfo = document.createElement('div');
+        bottomInfo.classList = ['skillBottomInfo'];
+        let currentLevel = document.createElement('div');
+        currentLevel.innerHTML = character.skillLevels[skill].toString();
+        currentLevel.style.width = '50%';
+        bottomInfo.appendChild(currentLevel);
+        let allocateButton = new Image();
+        allocateButton.classList = ['skillPointAllocateDisabled'];
+        bottomInfo.appendChild(allocateButton);
+        everythingElse.appendChild(bottomInfo);
+        skillInfoHolder.appendChild(everythingElse);
+        document.getElementById('skillContentAreaBottomPart').appendChild(skillInfoHolder);
+    });
+}
+
+function makeSkillTooltip(skill) {
+    let tooltip = document.createElement('div');
+    tooltip.classList = 'itemTooltip';
+    let skillName = document.createElement('div');
+    skillName.classList = ['tooltipName skillName'];
+    skillName.innerHTML = classSkills[skill].skillName;
+    tooltip.appendChild(skillName);
+    let topArea = document.createElement('div');
+    topArea.classList = ['skillTooltipTopArea'];
+    let skillImg = new Image();
+    skillImg.src = "./skills/icon/" + skill + ".png";
+    skillImg.style.width = '64px';
+    skillImg.style.height = '64px';
+    skillImg.setAttribute('draggable', 'false');
+    topArea.appendChild(skillImg);
+    let descriptionArea = document.createElement('div');
+    descriptionArea.classList = ['skillDescriptionArea'];
+    let masterLevel = document.createElement('div');
+    masterLevel.innerHTML = '[Master level: 20]';
+    descriptionArea.appendChild(masterLevel);
+    let description = document.createElement('div');
+    description.innerHTML = classSkills[skill].description;
+    descriptionArea.appendChild(description);
+    if ('requirementText' in classSkills[skill]) {
+        let requirementText = document.createElement('div');
+        requirementText.innerHTML = classSkills[skill].requirementText;
+        requirementText.style.color = 'darkorange';
+        descriptionArea.appendChild(requirementText);
+    }
+    topArea.appendChild(descriptionArea);
+    tooltip.appendChild(topArea);
+    let bottomArea = document.createElement('div');
+    bottomArea.classList = ['tooltipBottomArea'];
+    if (character.skillLevels[skill] != 0) {
+        let currentLevelText = document.createElement('div');
+        currentLevelText.innerHTML = '[Current level: ' + character.skillLevels[skill] + ']';
+        bottomArea.appendChild(currentLevelText);
+        writeSkillHitDescription(bottomArea, skill, character.skillLevels[skill]);
+    }
+    let nextLevelText = document.createElement('div');
+    nextLevelText.innerHTML = '[Next level: ' + (character.skillLevels[skill]+1) + ']';
+    bottomArea.appendChild(nextLevelText);
+    writeSkillHitDescription(bottomArea, skill, character.skillLevels[skill]+1);
+    tooltip.appendChild(bottomArea);
+    return tooltip;
+}
+
+function writeSkillHitDescription(elementToAppendTo, skill, level) {
+    if (classSkills[skill].type == 'attackSequence') {
+        let attackSequence = classSkills[skill].attackSequence;
+        let nextSkill = skill;
+        classSkills[skill].hitDescriptions.forEach((text) => {
+            let finishedText = text.replace('{damage}', Math.round((attackSequence[nextSkill].damage + attackSequence[nextSkill].scaling.damage * level) * 100));
+            let textSpot = document.createElement('div');
+            textSpot.innerHTML = finishedText;
+            elementToAppendTo.appendChild(textSpot);
+            nextSkill = attackSequence[nextSkill].next;
+        });
+    }
+}
+
+$(makeSkillCards);

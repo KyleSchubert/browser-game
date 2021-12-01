@@ -2,6 +2,7 @@
     --inventory-color: rgb(255, 152, 0);
     --inventory-holder-color: rgb(80, 80, 80);
     --gui-standard-color: rgba(45, 45, 52, 0.83);
+    --tooltip-color: rgb(12 12 12 / 80%);
 }
 
 body {
@@ -255,6 +256,7 @@ input[type=number]::-webkit-inner-spin-button {
     height: 12px;
     right: 0px;
     bottom: 3px;
+    background-image: url('./files/pointsDisabled.png');
 }
 
 #statsEntireHolder {
@@ -1570,7 +1572,7 @@ input[type=number]::-webkit-inner-spin-button {
     visibility: hidden;
     pointer-events: none;
     border: 1px solid gray;
-    background-color: var(--inventory-holder-color);
+    background-color: var(--tooltip-color);
     color: white;
     padding: 8px;
 }
@@ -1593,17 +1595,26 @@ input[type=number]::-webkit-inner-spin-button {
     z-index: 8;
     min-width: 200px;
     visibility: hidden;
-    background-color: var(--gui-standard-color);
-    padding: 20px;
-    padding-bottom: 36px;
+    background-color: var(--tooltip-color);
+    padding: 10px;
+    padding-bottom: 18px;
     pointer-events: none;
     white-space: nowrap;
+    outline: 2px solid var(--tooltip-color);
+    border-radius: 6px;
+    border: 1px solid white;
+    background-image: linear-gradient(135deg, rgb(133 133 133 / 62%), transparent 20%)
+}
+
+.skillName {
+    font-size: 14px;
+    color: white !important;
 }
 
 .tooltipName {
     width: 100%;
-    font-size: 18px;
-    text-align: left;
+    font-weight: bold;
+    text-align: center;
     color: #b0ff9c;
 }
 
@@ -1613,18 +1624,48 @@ input[type=number]::-webkit-inner-spin-button {
     padding-left: 8px;
 }
 
+.skillTooltipTopArea {
+    display: flex;
+    margin-top: 6px;
+    border-bottom: 1px solid white;
+    padding-bottom: 6px;
+}
+
+.skillTooltipTopArea img {
+    border: 2px solid lightgray;
+    background-color: lightgray;
+}
+
+.skillTooltipTopArea div {
+    margin-left: 4px;
+}
+
 .tooltipTopArea div {
     position: relative;
     align-self: flex-end;
     font-size: 12px;
     margin-left: 8px;
     bottom: -6px;
-    color: #f38e8e;
+}
+
+.skillDescriptionArea {
+    width: 392px;
+    line-height: 16px;
+}
+
+.skillDescriptionArea div {
+    white-space: pre-wrap;
 }
 
 .tooltipBottomArea {
+    max-width: 458px;
     text-align: left;
     padding-top: 8px;
+    line-height: 16px;
+}
+
+.tooltipBottomArea div {
+    white-space: pre-wrap;
 }
 
 .tooltipStatsTextArea {
