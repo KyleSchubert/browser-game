@@ -204,12 +204,23 @@ function writeSkillHitDescription(elementToAppendTo, skill, level) {
     if (classSkills[skill].type == 'attackSequence') {
         let attackSequence = classSkills[skill].attackSequence;
         let nextSkill = skill;
-        classSkills[skill].hitDescriptions.forEach((text) => {
+        classSkills[skill].hitDescriptions.forEach((text, index) => {
+            if (nextSkill == skill && index != 0) {
+                return;
+            }
             let finishedText = text.replace('{damage}', Math.round((attackSequence[nextSkill].damage + attackSequence[nextSkill].scaling.damage * level) * 100));
             let textSpot = document.createElement('div');
             textSpot.innerHTML = finishedText;
             elementToAppendTo.appendChild(textSpot);
             nextSkill = attackSequence[nextSkill].next;
+            if (nextSkill == skill && 'finalForm' in classSkills[skill]) {
+                let realText = classSkills[skill].hitDescriptions[index+1];
+                realText = realText.replace('{damage}', Math.round((classSkills[skill].finalForm.damage + classSkills[skill].finalForm.scaling.damage * level) * 100)); 
+                let textSpot = document.createElement('div');
+                textSpot.innerHTML = realText;
+                elementToAppendTo.appendChild(textSpot);
+                return;
+            }
         });
     }
 }

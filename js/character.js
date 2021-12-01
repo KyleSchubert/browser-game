@@ -172,7 +172,7 @@ const classSkills = {
             61001004: {damage: 0.30, lines: 5, targets: 6, scaling: {damage: 0.01}, dimensions: [363,129], next: 61001005},
             61001005: {damage: 0.40, lines: 5, targets: 6, scaling: {damage: 0.01}, dimensions: [335,209], next: 61001000}
         },
-        finalForm: {damage: 1.40, lines: 5, targets: 8},
+        finalForm: {damage: 1.40, lines: 5, targets: 8, scaling: {damage: 0.01}},
         hitDelays: [90,90,90,90,90,90],
         hitDimensions: [187, 131],
         description: 'Mash the attack key to whip enemies in front of you up to 3 times. Can be used with basic attack key while in Final Form.',
