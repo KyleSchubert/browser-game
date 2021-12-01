@@ -130,7 +130,7 @@ function rollDamageToMob(skill=0) {
     let damage = 0;
     let damageMult = 1.00;
     if (skill != 0) {
-        damageMult = realSkillData.damage;
+        damageMult = realSkillData.damage + realSkillData.scaling.damage * character.skillLevels[usedSkill];
     }
     if (jQuery.isEmptyObject(character.equipment[16])) {
         weaponType = 'strength';
