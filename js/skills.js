@@ -146,6 +146,35 @@ function makeSkillCards() {
         bottomInfo.appendChild(currentLevel);
         let allocateButton = new Image();
         allocateButton.classList = ['skillPointAllocateDisabled'];
+        allocateButton.setAttribute('value', skill);
+        $(allocateButton).on('click', (event) => {
+            let skill = event.currentTarget.getAttribute('value');
+            let skillTier = parseInt(document.getElementsByClassName('selectedSkillTab')[0].innerHTML);
+            if (character.skillLevels[skill] < classSkills[skill].maxLevel && character.info.skillPoints[skillTier] > 0) {
+                character.skillLevels[skill]++;
+                let target = document.querySelector('.tooltipBottomArea[value="' + skill + '"]');
+                removeAllChildNodes(target);
+                let currentLevelText = document.createElement('div');
+                currentLevelText.innerHTML = '[Current level: ' + character.skillLevels[skill] + ']';
+                target.appendChild(currentLevelText);
+                writeSkillHitDescription(target, skill, character.skillLevels[skill]);
+                if (character.skillLevels[skill] < classSkills[skill].maxLevel) {
+                    let nextLevelText = document.createElement('div');
+                    nextLevelText.innerHTML = '[Next level: ' + (character.skillLevels[skill]+1) + ']';
+                    target.appendChild(nextLevelText);
+                    writeSkillHitDescription(target, skill, character.skillLevels[skill]+1);
+                }
+                character.info.skillPoints[skillTier]--;
+                if (character.info.skillPoints[skillTier] < 1) {
+                    makeSkillPointsAllocateable(); // makes them not allocateable
+                }
+                else if (!(character.skillLevels[skill] < classSkills[skill].maxLevel)) {
+                    event.currentTarget.src = '';
+                }
+                document.getElementById('skillPoints').innerHTML = character.info.skillPoints[skillTier];
+                event.currentTarget.previousElementSibling.innerHTML = character.skillLevels[skill];
+            }
+        });
         bottomInfo.appendChild(allocateButton);
         everythingElse.appendChild(bottomInfo);
         skillInfoHolder.appendChild(everythingElse);
@@ -186,6 +215,7 @@ function makeSkillTooltip(skill) {
     tooltip.appendChild(topArea);
     let bottomArea = document.createElement('div');
     bottomArea.classList = ['tooltipBottomArea'];
+    bottomArea.setAttribute('value', skill);
     if (character.skillLevels[skill] != 0) {
         let currentLevelText = document.createElement('div');
         currentLevelText.innerHTML = '[Current level: ' + character.skillLevels[skill] + ']';
@@ -226,3 +256,18 @@ function writeSkillHitDescription(elementToAppendTo, skill, level) {
 }
 
 $(makeSkillCards);
+
+function makeSkillPointsAllocateable() {
+    let skillTier = document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value');
+    skillsPerClass[character.info.class][skillTier].forEach((skill) => {
+        let target = document.querySelector('.skillBottomInfo [value="' + skill + '"]');
+        if (character.skillLevels[skill] < classSkills[skill].maxLevel && character.info.skillPoints[skillTier] > 0) {
+            target.src = './files/pointsEnabled.png';
+            target.classList.add('clickable');
+        }
+        else {
+            target.src = '';
+            target.classList.remove('clickable');
+        }
+    });
+}

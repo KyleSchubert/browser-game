@@ -4,6 +4,7 @@ var character = {
     info: {
         name: '-',
         attributePoints: 0,
+        skillPoints: [0, 0, 0, 0, 0, 0],
         class: 'Kaiser',
         job: 'Kaiser',
         level: 1,
@@ -52,8 +53,17 @@ var character = {
                 character.info.level += 1;
                 character.info.attributePoints += 5;
                 leveledUp = true;
+                let whichTierGetsSkillPoints = 0;
+                if (character.info.level < 10) {
+                    whichTierGetsSkillPoints = 0;
+                }
+                character.info.skillPoints[whichTierGetsSkillPoints]++;
+                if (whichTierGetsSkillPoints == document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value')) {
+                    document.getElementById('skillPoints').innerHTML = character.info.skillPoints[whichTierGetsSkillPoints];
+                }
             }
             if (leveledUp) {
+                makeSkillPointsAllocateable();
                 prepareLevelUpAnimation();
                 playSound(sounds[9]);
                 updateCharacterDisplay();
