@@ -18,7 +18,9 @@ var character = {
         currentMp: 20
     },
     skillLevels: {
-        61001000: 0
+        61001000: 1,
+        61000003: 0,
+        61001101: 0
     },
     stats: { // stats from skills and allocated points
         strength: 5,

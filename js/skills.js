@@ -3,6 +3,7 @@ var usedSkill = 0;
 var realSkill = 0;
 var realSkillData = {};
 var cannotUse = [];
+var previousSequentialSkillIndex = 0;
 function processSkill(skill) {
     if (cannotUse.includes(skill)) {
         return;
@@ -15,19 +16,21 @@ function processSkill(skill) {
     usedSkill = skill;
     let skillType = classSkills[skill].type;
     if (skillType == 'attackSequence') {
-        if (previousSkill == skill) {
-            if (realSkill in classSkills[skill].attackSequence) {
-                realSkill = classSkills[skill].attackSequence[realSkill].next;
-            }
-            else {
-                realSkill = classSkills[skill].attackSequence[skill].next;
-            }
+        let index = 0;
+        if (previousSkill == skill && previousSequentialSkillIndex != attackSequences[skill].length-1) {
+            index = previousSequentialSkillIndex + 1;
         }
-        else {
-            realSkill = skill;
-        }
-        realSkillData = classSkills[skill].attackSequence[realSkill];
-        let skillDimensions = classSkills[skill].attackSequence[realSkill].dimensions;
+        realSkill = attackSequences[skill][index][0];
+        let linesVariable = attackSkillVars[usedSkill][0][previousSequentialSkillIndex];
+        let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
+        let damageVariable = attackSkillVars[usedSkill][1][previousSequentialSkillIndex];
+        let equation = classSkills[usedSkill].usedVariables[damageVariable];
+        let damageMult = classSkills[usedSkill].computedVars[equation] / 100;
+        let targetsVariable = attackSkillVars[usedSkill][2][previousSequentialSkillIndex];
+        let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
+        realSkillData = {'lines': lines, 'damageMult': damageMult, 'targets': targets};
+        let skillDimensions = attackSequences[skill][index][1];
+        previousSequentialSkillIndex = index;
         useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1]);
     }
 }
@@ -81,14 +84,13 @@ function checkHit(left, right, bottom, top, leftOffset) {
     });
 }
 
-var skillHitLimit = 8;
 const hitCheckObserver = new IntersectionObserver((entries) => {
     let trueLeft = skillHitData['left'];
     let trueRight = skillHitData['right'];
     let hitGroup = document.createElement('div');
     let mobHits = 0;
     for (const entry of entries) {
-        if (mobHits == skillHitLimit) {
+        if (mobHits == realSkillData['targets']) {
             break;
         }
         const bounds = entry.boundingClientRect;
@@ -230,28 +232,32 @@ function makeSkillTooltip(skill) {
     return tooltip;
 }
 
+function skillEquationManager(source, level, skill) {
+    while (source.search('{.+?}') != -1) {
+        originalEquation = source.match('{.+?}')[0];
+        equation = originalEquation.slice(1, -1);
+        let value = eval(equation.replace('x', level));
+        if (character.skillLevels[skill] == level) {
+            classSkills[skill].computedVars[equation] = value;
+            if (equation == classSkills[skill].usedVariables.mpCon) {
+                classSkills[skill].mpCon = value;
+            }
+        }
+        source = source.replace('{' + equation + '}', value);
+    }
+    return source;
+}
+
 function writeSkillHitDescription(elementToAppendTo, skill, level) {
+    let repeatCount = 1;
     if (classSkills[skill].type == 'attackSequence') {
-        let attackSequence = classSkills[skill].attackSequence;
-        let nextSkill = skill;
-        classSkills[skill].hitDescriptions.forEach((text, index) => {
-            if (nextSkill == skill && index != 0) {
-                return;
-            }
-            let finishedText = text.replace('{damage}', Math.round((attackSequence[nextSkill].damage + attackSequence[nextSkill].scaling.damage * level) * 100));
-            let textSpot = document.createElement('div');
-            textSpot.innerHTML = finishedText;
-            elementToAppendTo.appendChild(textSpot);
-            nextSkill = attackSequence[nextSkill].next;
-            if (nextSkill == skill && 'finalForm' in classSkills[skill]) {
-                let realText = classSkills[skill].hitDescriptions[index+1];
-                realText = realText.replace('{damage}', Math.round((classSkills[skill].finalForm.damage + classSkills[skill].finalForm.scaling.damage * level) * 100)); 
-                let textSpot = document.createElement('div');
-                textSpot.innerHTML = realText;
-                elementToAppendTo.appendChild(textSpot);
-                return;
-            }
-        });
+        repeatCount = attackSkillVars[skill][0].length;
+    }
+    for (let i=0; i<repeatCount; i++) {
+        let string = skillEquationManager(classSkills[skill].hitDescriptions[i], level, skill);
+        let textSpot = document.createElement('div');
+        textSpot.innerHTML = string;
+        elementToAppendTo.appendChild(textSpot);
     }
 }
 
