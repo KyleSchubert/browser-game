@@ -185,7 +185,7 @@ function mobDie(origin='') {
         target.css('transition-duration', mobFrameDurations[mobName]['dead'].reduce((partial_sum, a) => partial_sum + a, 0).toString() + 'ms');
         target.addClass('mobDying');
 
-        mobDropAmount = Math.ceil(Math.random()); // temporary example
+        mobDropAmount = Math.round(Math.random()*5/9); // temporary example
         dropLoot(mobName.toLowerCase(), target.css('left'), mobDropAmount);
         console.log('mobDropAmount: ' + mobDropAmount.toString() + '  mob: ' + mobName);
 
