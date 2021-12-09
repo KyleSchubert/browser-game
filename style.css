@@ -1449,6 +1449,11 @@ input[type=number]::-webkit-inner-spin-button {
 				-1px -1px 0 #000;
 }
 
+#expText {
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
 @keyframes openTheInventory {
     from {top: -10px;}
     to {top: 400px;}

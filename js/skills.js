@@ -202,7 +202,7 @@ function makeSkillTooltip(skill) {
     let descriptionArea = document.createElement('div');
     descriptionArea.classList = ['skillDescriptionArea'];
     let masterLevel = document.createElement('div');
-    masterLevel.innerHTML = '[Master level: 20]';
+    masterLevel.innerHTML = '[Master level: ' + classSkills[skill].maxLevel + ']';
     descriptionArea.appendChild(masterLevel);
     let description = document.createElement('div');
     description.innerHTML = classSkills[skill].description;
