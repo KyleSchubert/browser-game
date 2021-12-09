@@ -5,6 +5,10 @@
     --tooltip-color: rgb(12 12 12 / 80%);
 }
 
+html, body {
+    font-family: Montserrat !important;
+}
+
 body {
     display: flex;
     flex: auto;
@@ -468,7 +472,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     position: absolute;
     top: 236px;
-    left: 842px;
+    left: 836px;
 }
 
 #bottomScreenArea {
