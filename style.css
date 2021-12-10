@@ -479,7 +479,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     width: 200px;
     height: 100px;
-    top: 890px;
+    top: 864px;
 }
 
 #skillMenuButton {
@@ -578,7 +578,7 @@ input[type=number]::-webkit-inner-spin-button {
 #lootArea {
     position: relative;
     width: 1080px;
-    height: 944px;
+    height: 937px;
     background-image: url(./files/terrainv2.png);
 }
 
@@ -1458,7 +1458,7 @@ input[type=number]::-webkit-inner-spin-button {
     background-image: url('./files/expBackground.png');
     width: 100%;
     height: 12px;
-    top: 932px;
+    top: 925px;
     text-align: center;
 }
 
