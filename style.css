@@ -563,6 +563,9 @@ input[type=number]::-webkit-inner-spin-button {
 
 .portal {
     position: absolute;
+    width: 101px;
+    height: 142px;
+    background-image: url("./files/portal.gif");
 }
 
 .damageNumberHolder {

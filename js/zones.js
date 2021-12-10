@@ -25,15 +25,31 @@ var currentZone = 1;
 function loadPortals() {
     $('.portal').remove();
     zoneConnections[currentZone].forEach(function(portalData) {
-        let portal = new Image();
-        portal.src = "./files/portal.gif";
+        let portal = document.createElement('div');
         portal.value = portalData.dest;
         portal.classList = ['portal clickable'];
         portal.setAttribute('draggable', 'false');
+        let tooltip = document.createElement('span');
+        tooltip.classList = ['textTooltip'];
+        let text = 'Lv. ' + mobLevels[zoneMobs[portalData.dest]] + ' ' + mobNames[zoneMobs[portalData.dest]];
+        tooltip.innerHTML = text;
+        portal.appendChild(tooltip);
         $(portal).css('left', portalData.l);
         $(portal).css('top', portalData.t);
         $(portal).on('click', portal, changeZones);
         $('#lootArea').append(portal);
+    });
+    $('.portal').on('mousemove', function(event) {
+        $(event.currentTarget).children('.textTooltip').css({
+            'left': event.pageX +6,
+            'top': event.pageY +6,
+            'visibility': 'visible'
+        });
+    });
+    $('.portal').on('mouseleave', function(event) {
+        $(event.currentTarget).children('.textTooltip').css({
+            'visibility': 'hidden'
+        });
     });
 }
 
