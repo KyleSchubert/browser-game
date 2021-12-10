@@ -51,7 +51,7 @@ var character = {
         if (amount > 0) {
             character.info.experience += amount;
             leveledUp = false;
-            while (character.info.experience > experienceCurve[character.info.level-1]) {
+            while (character.info.experience >= experienceCurve[character.info.level-1]) {
                 character.info.experience -=  experienceCurve[character.info.level-1];
                 character.info.level += 1;
                 character.info.attributePoints += 5;
