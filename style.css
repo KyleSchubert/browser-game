@@ -581,7 +581,8 @@ input[type=number]::-webkit-inner-spin-button {
 #lootArea {
     position: relative;
     width: 1080px;
-    height: 937px;
+    height: 100vh;
+    max-height: 944px;
     background-image: url(./files/terrainv2.png);
 }
 
@@ -1461,7 +1462,7 @@ input[type=number]::-webkit-inner-spin-button {
     background-image: url('./files/expBackground.png');
     width: 100%;
     height: 12px;
-    top: 925px;
+    bottom: 0px;
     text-align: center;
 }
 
