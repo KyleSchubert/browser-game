@@ -1453,8 +1453,33 @@ input[type=number]::-webkit-inner-spin-button {
 				-1px -1px 0 #000;
 }
 
+#expBar {
+    position: absolute;
+    background-image: url('./files/expBackground.png');
+    width: 100%;
+    height: 12px;
+    top: 932px;
+    text-align: center;
+}
+
+#expDivisions {
+    position: absolute;
+    top: 3px;
+    left: 0px;
+}
+
+.expGraphic {
+    background-position-x: 15px;
+    background-position-y: 2px;
+    background-size: 1px 9px;
+    background-repeat: no-repeat;
+    background-image: url('./files/exp.png');
+    transition: 0.7s linear;
+}
+
 #expText {
     font-size: 10px;
+    line-height: 12px;
     letter-spacing: 1px;
 }
 
