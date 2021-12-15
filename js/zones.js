@@ -6,7 +6,17 @@ var zoneConnections = {
     5: [{l: 78, t: 162, dest: 4}, {l: 600, t: 265, dest: 6}],
     6: [{l: 78, t: 162, dest: 5}, {l: 600, t: 265, dest: 7}],
     7: [{l: 78, t: 162, dest: 6}, {l: 600, t: 265, dest: 8}],
-    8: [{l: 78, t: 162, dest: 7}, {l: 600, t: 265, dest: 9}]
+    8: [{l: 78, t: 162, dest: 7}, {l: 600, t: 265, dest: 9}],
+    9: [{l: 78, t: 162, dest: 8}, {l: 600, t: 265, dest: 10}],
+    10: [{l: 78, t: 162, dest: 9}, {l: 600, t: 265, dest: 11}],
+    11: [{l: 78, t: 162, dest: 10}, {l: 600, t: 265, dest: 12}],
+    12: [{l: 78, t: 162, dest: 11}, {l: 600, t: 265, dest: 13}],
+    13: [{l: 78, t: 162, dest: 12}, {l: 600, t: 265, dest: 14}],
+    14: [{l: 78, t: 162, dest: 13}, {l: 600, t: 265, dest: 15}],
+    15: [{l: 78, t: 162, dest: 14}, {l: 600, t: 265, dest: 16}],
+    16: [{l: 78, t: 162, dest: 15}, {l: 600, t: 265, dest: 17}],
+    17: [{l: 78, t: 162, dest: 16}, {l: 600, t: 265, dest: 18}],
+    18: [{l: 78, t: 162, dest: 17}, {l: 600, t: 265, dest: 19}]
 };
 
 var zoneMobs = {
@@ -17,7 +27,17 @@ var zoneMobs = {
     5: ['mano'],
     6: ['orange mushroom'],
     7: ['water thief monster'],
-    8: ['crying blue mushroom']
+    8: ['crying blue mushroom'],
+    9: ['zombie mushroom'],
+    10: ['mushmom'],
+    11: ['stone golem'],
+    12: ['yeti'],
+    13: ['jr pepe'],
+    14: ['royal guard pepe'],
+    15: ['helmet pepe'],
+    16: ['pepe'],
+    17: ['white yeti and king pepe'],
+    18: ['mutant ribbon pig']
 };
 
 var currentZone = 1;
