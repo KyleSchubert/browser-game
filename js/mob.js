@@ -285,6 +285,9 @@ function mobSetAnimation(mob, status) {
 function someAnimate(mob, lastStatus, frame=0) {
     let status = mob.attr('status');
     let durationSource = mobFrameDurations[mob.val()][status];
+    if (!document.contains(mob[0])) {
+        return;
+    }
     if (durationSource.length == 1) {
         durationSource = [300];
     }
