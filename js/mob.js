@@ -275,7 +275,7 @@ function someAnimate(mob, lastStatus, frame=0) {
     if (durationSource.length == 1) {
         durationSource = [300];
     }
-    mob.css('background-position-x', '-=' + mob.width());
+    mob.css('background-position-x', '-=' + mobDimensions[mob.val()][status][0]);
     if (frame >= durationSource.length || status != lastStatus) {
         if (frame >= durationSource.length && mob.hasClass('mobDying')) {
             mob.remove();
