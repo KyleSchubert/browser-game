@@ -17,7 +17,7 @@ function spawn(mob=getMob(true)) {
     let madeMob = mobGifSetup(mob);
     mobMove(madeMob);
     $('#mobArea').append(madeMob);
-    return someAnimate(madeMob, 'alive');
+    return someAnimate(madeMob, 'alive', mob.toLowerCase());
 }
 
 function spawnOneOfEach() {
@@ -31,7 +31,7 @@ function mobGifSetup(name) { // name in any case
     let div = document.createElement('div');
     div = $(div);
     div.val(name);
-    mobSetAnimation(div, 'alive');
+    mobSetAnimation(div, 'alive', name);
     div.css('left', 540 - mobDimensions[name]['alive'][0]/2 + randomIntFromInterval(-400, 400) + 'px' );
     div.addClass('mob clickable');
     div.attr('draggable', false);
@@ -181,7 +181,7 @@ function mobDie(origin='') {
         target.off('click');
         target.css('pointer-events', 'none');
         let mobName = target.val();
-        mobSetAnimation(target, 'dead');
+        mobSetAnimation(target, 'dead', mobName);
         target.css('transition-duration', mobFrameDurations[mobName]['dead'].reduce((partial_sum, a) => partial_sum + a, 0).toString() + 'ms');
         target.addClass('mobDying');
 
@@ -240,7 +240,7 @@ $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.hpFasterFade',
 
 $(document).on('animationend webkitAnimationEnd oAnimationEnd', '.mobMoving', function(event) { // part of the mob death effect
     if (event.target.classList.contains('mob')) {
-        mobSetAnimation(event.target, 'alive');
+        mobSetAnimation(event.target, 'alive', event.target.value);
         event.target.classList.remove('mobMoving');
         mobMove(event.target);
     }
@@ -250,32 +250,32 @@ function mobMove(mob) {
     mob = $(mob);
     setTimeout(() => {
         if (!mob.hasClass('mobDying')) {
-            mobSetAnimation(mob, 'move');
+            mobSetAnimation(mob, 'move', mob.val());
         }
     }, randomIntFromInterval(4217, 10203));
 }
 
-function mobSetAnimation(mob, status) {
+function mobSetAnimation(mob, status, mobName) {
     mob = $(mob);
-    sprites = './mob/' + status + '/' + mob.val().replaceAll(' ', '%20') + '.png';
+    sprites = './mob/' + status + '/' + mobName.replaceAll(' ', '%20') + '.png';
     mob.css('background-image', 'url(' + sprites + ')');
     mob.attr('status', status);
     mob.css('background-position-x', '0px');
-    mob.css('width', mobDimensions[mob.val()][status][0] + 'px');
-    mob.css('height', mobDimensions[mob.val()][status][1] + 'px');
+    mob.css('width', mobDimensions[mobName][status][0] + 'px');
+    mob.css('height', mobDimensions[mobName][status][1] + 'px');
     //mob.css('left', '-=' + mobDimensions[name]['alive'][0]/2)
 }
 
-function someAnimate(mob, lastStatus, frame=0) {
+function someAnimate(mob, lastStatus, mobName, frame=0) {
     let status = mob.attr('status');
-    let durationSource = mobFrameDurations[mob.val()][status];
+    let durationSource = mobFrameDurations[mobName][status];
     if (!document.contains(mob[0])) {
         return;
     }
     if (durationSource.length == 1) {
         durationSource = [300];
     }
-    mob.css('background-position-x', '-=' + mobDimensions[mob.val()][status][0]);
+    mob.css('background-position-x', '-=' + mobDimensions[mobName][status][0]);
     if (frame >= durationSource.length || status != lastStatus) {
         if (frame >= durationSource.length && mob.hasClass('mobDying')) {
             mob.remove();
@@ -287,17 +287,17 @@ function someAnimate(mob, lastStatus, frame=0) {
             let movingLeft = Boolean(randomIntFromInterval(0, 1));
             let currentLeft = parseInt(mob.css('left'));
             if (!movingLeft) {
-                currentLeft = 1080 - currentLeft - parseInt(mob.css('width'));
+                currentLeft = 1080 - currentLeft - mobFrameDurations[mobName][status];
             }
             let upperLimit = 6;
-            if (Math.floor(currentLeft / (mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20)) < upperLimit) {
-                upperLimit = Math.floor(currentLeft / (mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20));
+            if (Math.floor(currentLeft / (mobFrameDurations[mobName]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20)) < upperLimit) {
+                upperLimit = Math.floor(currentLeft / (mobFrameDurations[mobName]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20));
             }
             if (upperLimit <= 1) {
                 movingLeft = !movingLeft;
                 upperLimit = 6;
             } 
-            let distance = mobFrameDurations[mob.val()]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, upperLimit) / 20;
+            let distance = mobFrameDurations[mobName]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, upperLimit) / 20;
             let final = 0;
             let duration = distance * 20;
             //console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
@@ -325,7 +325,7 @@ function someAnimate(mob, lastStatus, frame=0) {
         }
     }
     setTimeout(() => {
-        requestAnimationFrame(() => someAnimate(mob, status, frame+1));
+        requestAnimationFrame(() => someAnimate(mob, status, mobName, frame+1));
     }, durationSource[frame]);
 }
 
