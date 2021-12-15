@@ -1842,4 +1842,6 @@ input[type=number]::-webkit-inner-spin-button {
     pointer-events: none;
     visibility: hidden;
     z-index: -99999;
+    width: 1px;
+    height: 1px;
 }
