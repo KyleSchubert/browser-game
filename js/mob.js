@@ -16,8 +16,8 @@ function getMob(fromList=false) {
 function spawn(mob=getMob(true)) {
     let madeMob = mobGifSetup(mob);
     mobMove(madeMob);
-    someAnimate(madeMob, 'alive');
     $('#mobArea').append(madeMob);
+    return someAnimate(madeMob, 'alive');
 }
 
 function spawnOneOfEach() {
@@ -206,26 +206,10 @@ function mobDie(origin='') {
 
 MAX_MOBS = 30;
 $(() => {
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
-    spawn(getMob());
+    let amountToSpawn = (MAX_MOBS-$('.mob').length);
+    for (i=0; i<amountToSpawn; i++) {
+        spawn(getMob());
+    }
     setInterval(() => {
         if ($('.mob').length < MAX_MOBS) {
             console.log("Respawning mobs");
