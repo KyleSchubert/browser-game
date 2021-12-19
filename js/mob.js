@@ -287,7 +287,7 @@ function someAnimate(mob, lastStatus, mobName, frame=0) {
             let movingLeft = Boolean(randomIntFromInterval(0, 1));
             let currentLeft = parseInt(mob.css('left'));
             if (!movingLeft) {
-                currentLeft = 1080 - currentLeft - mobFrameDurations[mobName][status];
+                currentLeft = 1080 - currentLeft - mobDimensions[mobName][status][0];
             }
             let upperLimit = 6;
             if (Math.floor(currentLeft / (mobFrameDurations[mobName]['move'].reduce((partial_sum, a) => partial_sum + a, 0) / 20)) < upperLimit) {
@@ -300,7 +300,7 @@ function someAnimate(mob, lastStatus, mobName, frame=0) {
             let distance = mobFrameDurations[mobName]['move'].reduce((partial_sum, a) => partial_sum + a, 0) * randomIntFromInterval(1, upperLimit) / 20;
             let final = 0;
             let duration = distance * 20;
-            //console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration)
+            //console.log('Movingleft: %s, distance: %s, duration: %s', movingLeft, distance, duration);
             if (movingLeft) { 
                 final = parseInt(mob.css('left'))-distance;
             }
