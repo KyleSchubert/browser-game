@@ -3,6 +3,7 @@
         "target": "ES6"
     },
     "exclude": [
+        "avatarData.js",
         "node_modules",
         ".eslintrc.js",
 		"package.json",

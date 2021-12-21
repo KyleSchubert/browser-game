@@ -453,9 +453,24 @@ input[type=number]::-webkit-inner-spin-button {
     height: 196px;
     width: 140px;
     top: 702px;
+    left: 200px;
+    transform: scaleX(-1);
+    pointer-events: none;
+}
+
+#avatarAreaNew {
+    position: absolute;
+    align-items: start;
+    height: 196px;
+    width: 140px;
+    top: 702px;
     left: 50px;
     transform: scaleX(-1);
     pointer-events: none;
+}
+
+.avatarPart {
+    position: absolute;
 }
 
 .levelUpGif {
