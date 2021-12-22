@@ -452,7 +452,7 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: start;
     height: 196px;
     width: 140px;
-    top: 702px;
+    top: 703px;
     left: 200px;
     transform: scaleX(-1);
     pointer-events: none;
@@ -463,7 +463,7 @@ input[type=number]::-webkit-inner-spin-button {
     align-items: start;
     height: 196px;
     width: 140px;
-    top: 702px;
+    top: 703px;
     left: 50px;
     transform: scaleX(-1);
     pointer-events: none;

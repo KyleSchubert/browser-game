@@ -32,47 +32,71 @@ $(() => {
 });
 
 function testing() {
-    let face = 20000;
-    let head = 12000;
     let body = 2000;
-    let ids = [face, head, body];
+    let head = 12000;
+    let face = 20000;
+    let ids = [body, head, face];
     let faceState = 'default';
     let headState  = 'stand1';
     let bodyState  = 'stand1';
-    let states = [faceState, headState, bodyState];
+    let states = [bodyState, headState, faceState];
     for (let i=0; i<ids.length; i++) {
         addBodyPartToAvatar(ids[i], states[i]);
     }
 }
 
+var neck = [0, 0];
+var avatarNavel = 1;
 function addBodyPartToAvatar(id, state) {
     let appendLocation = document.getElementById('avatarAreaNew');
     let frames = bodyData[id][state];
     let initialFrame = frames[0];
     initialFrame.forEach((part) => {
-        let fileDir = './item/' + id + '/' + part[0] + '.png';
-        let coordsForPart = part[1];
+        let fileDir = './item/' + id + '/' + part[0][0] + '.png';
+        let coordsForPart = part[0][1];
         let partDiv = document.createElement('div');
-        let partDimensions = bodyDimensions[id][part[0]][1];
-        let staticPartDimensions = bodyOffsets[id][part[0]]; // these never change for any frame
+        let partDimensions = bodyDimensions[id][part[0][0]][1];
+        let staticPartDimensions = bodyOffsets[id][part[0][0]][0]; // these never change for any frame
+        let mapTo = part[1];
+        let origin = part[2];
+        if (mapTo[0] == 'neck' || mapTo[0] == 'brow' || mapTo[0] == 'navel') {
+            let value = [0, 0];
+            if (mapTo[0] == 'brow') {
+                value[0] -= 4;
+                value[1] -= 20;
+            }
+            else if (mapTo[0] == 'navel') {
+                value[0] -= 5;
+                value[1] += 12;
+            }
+            //console.log('NECK STUFF!  ' + neck);
+            //console.log(2*origin[0] - staticPartDimensions[0] + mapTo[1][0]);
+            //console.log(2*origin[1] - staticPartDimensions[1] + mapTo[1][1]);
+            let changeX = neck[0] + value[0] - (2*origin[0] - staticPartDimensions[0] + mapTo[1][0]);
+            let changeY = neck[1] + value[1] - (2*origin[1] - staticPartDimensions[1] + mapTo[1][1]);
+            partDiv.style.left = changeX + 'px';
+            partDiv.style.top = changeY + 'px';
+        }
         switch(id) {
             case 2000: // body
                 partDiv.style.zIndex = 1;
                 staticPartDimensions[0] += -10;
                 staticPartDimensions[1] += 3;
+                if (part[0][0] == 'body') {
+                    neck = [origin[0] + mapTo[1][0] + staticPartDimensions[0], origin[1] + mapTo[1][1] + staticPartDimensions[1]];
+                    //console.log('The neck is at  (left, top):  ' + neck[0] + ', ' + neck[1]);
+                    partDiv.style.left = staticPartDimensions[0] + 'px';
+                    partDiv.style.top = staticPartDimensions[1] + 'px';
+                }
                 break;
             case 12000: // head
                 partDiv.style.zIndex = 2;
-                staticPartDimensions[0] += -15;
-                staticPartDimensions[1] += -15;
-                if (part[0] == 'accessoryOverHair') {
+                if (part[0][0] == 'accessoryOverHair') {
                     return;
                 }
                 break;
             case 20000: // face
                 partDiv.style.zIndex = 3;
-                staticPartDimensions[0] += -8;
-                staticPartDimensions[1] += 10;
                 break;
         }
         partDiv.classList = ['avatarPart'];
@@ -80,8 +104,6 @@ function addBodyPartToAvatar(id, state) {
         partDiv.style.height = partDimensions[1] + 'px';
         partDiv.style.backgroundImage = 'url(' + fileDir + ')';
         partDiv.style.backgroundPosition = '-' + coordsForPart[0] + 'px -' + coordsForPart[1] + 'px';
-        partDiv.style.left = staticPartDimensions[0] + 'px';
-        partDiv.style.top = staticPartDimensions[1] + 'px';
         appendLocation.appendChild(partDiv);
     });
 }
