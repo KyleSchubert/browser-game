@@ -37,7 +37,7 @@ function testing() {
     let body = 2000;
     let ids = [face, head, body];
     let faceState = 'default';
-    let headState  = 'front';
+    let headState  = 'stand1';
     let bodyState  = 'stand1';
     let states = [faceState, headState, bodyState];
     for (let i=0; i<ids.length; i++) {
@@ -65,6 +65,9 @@ function addBodyPartToAvatar(id, state) {
                 partDiv.style.zIndex = 2;
                 staticPartDimensions[0] += -15;
                 staticPartDimensions[1] += -15;
+                if (part[0] == 'accessoryOverHair') {
+                    return;
+                }
                 break;
             case 20000: // face
                 partDiv.style.zIndex = 3;
