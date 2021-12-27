@@ -460,10 +460,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 #avatarAreaNew {
     position: absolute;
-    align-items: start;
-    height: 196px;
-    width: 140px;
-    top: 703px;
+    top: 769px;
     left: 50px;
     transform: scaleX(-1);
     pointer-events: none;
