@@ -31,24 +31,25 @@ $(() => {
     });
 });
 
+var avatarMoving = false;
+var faceState = 'default';
+var headState  = 'stand1';
+var bodyState  = 'stand1';
+const AVATAR = document.getElementById('avatarAreaNew');
 function testing() {
     let body = 2000;
     let head = 12000;
     let face = 20000;
     let ids = [head, body, face];
-    let faceState = 'default';
-    let headState  = 'walk1';
-    let bodyState  = 'walk1';
     for (let i=0; i<ids.length; i++) {
         addBodyPartsToAvatar(ids[i]);
     }
-    cyclicAvatarAnimate(body, bodyState);
-    cyclicAvatarAnimate(head, headState);
-    cyclicAvatarAnimate(face, faceState);
+    cyclicAvatarAnimate(body);
+    cyclicAvatarAnimate(head);
 }
 
 function makeTestPixel(x, y, color='red', name='') {
-    let appendLocation = document.getElementById('avatarAreaNew');
+    let appendLocation = AVATAR;
     let pixel = document.createElement('div');
     pixel.style.position = 'absolute';
     pixel.style.left = x + 'px';
@@ -61,8 +62,18 @@ function makeTestPixel(x, y, color='red', name='') {
     appendLocation.appendChild(pixel);
 }
 
-function cyclicAvatarAnimate(id, state, reverse=false, frame=0) { // the part needs to already be on the avatar
-    if (bodyData[id][state].length == 1) {
+function cyclicAvatarAnimate(id, previousState='', reverse=false, frame=0) { // the part needs to already be on the avatar
+    let state = '';
+    if (id == 2000) {
+        state = bodyState;
+    }
+    else if (id == 12000) {
+        state = headState;
+    }
+    else if (id == 20000) {
+        state = faceState;
+    }
+    if (bodyData[id][state].length == 1) { // stuff that needs to be updated when they get moved
         let part = bodyData[id][state][frame][0];
         let partDiv = allAvatarParts[id][part[0][0]];
         let partXOffset = part[0][1];
@@ -72,10 +83,14 @@ function cyclicAvatarAnimate(id, state, reverse=false, frame=0) { // the part ne
         partDiv.style.left = offsets[0] + 'px';
         partDiv.style.top = offsets[1] + 'px';
         setTimeout(() => {
-            cyclicAvatarAnimate(id, state, false);
-        }, 500);
+            cyclicAvatarAnimate(id);
+        }, SMALL_UNIT_OF_TIME);
         return;
     }
+    if (previousState != state) {
+        frame = 0;
+    }
+    let delay = bodyDelays[id][state][frame];
     bodyData[id][state][frame].forEach((part) => {
         let partName = part[0][0];
         if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
@@ -89,32 +104,59 @@ function cyclicAvatarAnimate(id, state, reverse=false, frame=0) { // the part ne
         partDiv.style.left = offsets[0] + 'px';
         partDiv.style.top = offsets[1] + 'px';
     });
-    if (frame == bodyData[id][state].length-1) {
-        setTimeout(() => {
-            cyclicAvatarAnimate(id, state, true, frame-1);
-        }, 500);
-    }
-    else {
-        if (frame == 0) {
-            reverse = false;
-        }
-        if (reverse) {
-            setTimeout(() => {
-                cyclicAvatarAnimate(id, state, true, frame-1);
-            }, 500);
+    if (id == 12000) {
+        let face = [];
+        if (bodyData[20000][faceState].length == 1) {
+            face = bodyData[20000][faceState][0][0];
         }
         else {
-            setTimeout(() => {
-                cyclicAvatarAnimate(id, state, false, frame+1);
-            }, 500);
+            face = bodyData[20000][faceState][frame][0];
         }
+        let faceName = face[0][0];
+        let faceXOffset = face[0][1];
+        let faceDiv = allAvatarParts[20000][faceName];
+        faceDiv.style.backgroundPositionX = '-' + faceXOffset + 'px';
+        faceDiv.style.visibility = 'visible';
+        let offsets = positionOneAvatarPart(face);
+        faceDiv.style.left = offsets[0] + 'px';
+        faceDiv.style.top = offsets[1] + 'px';
+    }
+    if (state == 'stand1' || state == 'stand2' || state == 'alert') { // cyclic animation
+        if (frame == bodyData[id][state].length-1) {
+            setTimeout(() => {
+                cyclicAvatarAnimate(id, state, true, frame-1);
+            }, delay);
+        }
+        else {
+            if (frame == 0) {
+                reverse = false;
+            }
+            if (reverse) {
+                setTimeout(() => {
+                    cyclicAvatarAnimate(id, state, true, frame-1);
+                }, delay);
+            }
+            else {
+                setTimeout(() => {
+                    cyclicAvatarAnimate(id, state, false, frame+1);
+                }, delay);
+            }
+        }
+    }
+    else {
+        if (frame == bodyData[id][state].length-1) {
+            frame = -1; // restart the animation
+        }
+        setTimeout(() => {
+            cyclicAvatarAnimate(id, state, false, frame+1);
+        }, delay);
     }
 }
 
 var allAvatarParts = {};
 //var neck = [21, 34];
 function addBodyPartsToAvatar(id) {
-    let appendLocation = document.getElementById('avatarAreaNew');
+    let appendLocation = AVATAR;
     let doneParts = [];
     Object.keys(bodyData[id]).forEach((state) => {
         bodyData[id][state].forEach((frame) => {
@@ -240,3 +282,29 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
 $(() => {
     testing();
 });
+
+function avatarWalk() {
+    if (avatarMoving) {
+        bodyState = 'walk1';
+        headState = 'walk1';
+        requestAnimationFrame(() => {
+            if (leftArrowPressed) {
+                if (AVATAR.style.transform == 'scaleX(-1)') {
+                    AVATAR.style.left = AVATAR.offsetLeft + 6 + 'px';
+                }
+                AVATAR.style.transform = 'scaleX(1)';
+                AVATAR.style.left = AVATAR.offsetLeft - 3 + 'px';
+            }
+            else {
+                if (AVATAR.style.transform == 'scaleX(1)') {
+                    AVATAR.style.left = AVATAR.offsetLeft - 6 + 'px';
+                }
+                AVATAR.style.transform = 'scaleX(-1)';
+                AVATAR.style.left = AVATAR.offsetLeft + 3 + 'px';
+            }
+            setTimeout(() => {
+                avatarWalk();
+            }, 20);
+        });
+    }
+}

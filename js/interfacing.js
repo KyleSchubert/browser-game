@@ -457,18 +457,53 @@ function dialogProceed() {
     closeSmallDialogBox();
 }
 
+var rightArrowPressed = false;
+var leftArrowPressed = false;
 $(document).keydown(function(event) {
     if (event.key === 'z') { // ONLY used to  pick up  currentHoveredDropItem
         if (currentHoveredDropItem) {
             lootItem(currentHoveredDropItem);
         }
-    }  
+    }
+    else if (event.key === 'ArrowRight') {
+        rightArrowPressed = true;
+        if (!avatarMoving && !leftArrowPressed) {
+            avatarMoving = true;
+            avatarWalk();
+        }
+    }
+    else if (event.key === 'ArrowLeft') {
+        leftArrowPressed = true;
+        if (!avatarMoving && !rightArrowPressed) {
+            avatarMoving = true;
+            avatarWalk();
+        }
+    }
     else if (event.key === 'x') { // TESTING
         processSkill(61001000);
     }
     else if (event.key === 'i') { // TESTING
         if (!(document.getElementById('inventoryArea').classList.contains('inventory-closing') || document.getElementById('inventoryArea').classList.contains('inventory-opening'))) {
             $('.openInventoryButton').eq(0).click();
+        }
+    }
+});
+
+$(document).keyup(function(event) {
+    if (event.key === 'ArrowRight') {
+        rightArrowPressed = false;
+        if (!leftArrowPressed) {
+            avatarMoving = false;
+            bodyState = 'stand1';
+            headState = 'stand1';
+        }
+    }
+    else if (event.key === 'ArrowLeft') {
+        leftArrowPressed = false;
+        if (!rightArrowPressed) {
+            avatarMoving = false;
+            bodyState = 'stand1';
+            headState = 'stand1';
         }
     }
 });
