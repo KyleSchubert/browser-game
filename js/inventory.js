@@ -38,26 +38,29 @@ var inventory = {
     Use: [2000019, 0, 0, 0, 0, 2000019, 0, 0, 0, 0, 0, 2046319],
     Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4000001],
     DetailedEquip: [],
-    getter: () => {
-        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
-        string = str.charAt(0).toUpperCase() + str.slice(1);
-        return inventory[string];
-    },
-    countsGetter: () => {
-        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
-        string = str.charAt(0).toUpperCase() + str.slice(1);
-        return inventory.counts[string];
-    },
-    readyName: () => {
-        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    },
     counts: {
         Equip: [],
         Use: [178, 0, 0, 0, 0, 900, 0, 0, 0, 0, 0, 45],
         Etc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 103]
     }
 };
+
+function addFunctionsToInventory() {
+    inventory.getter = () => {
+        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
+        string = str.charAt(0).toUpperCase() + str.slice(1);
+        return inventory[string];
+    };
+    inventory.countsGetter = () => {
+        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
+        string = str.charAt(0).toUpperCase() + str.slice(1);
+        return inventory.counts[string];
+    };
+    inventory.readyName = () => {
+        str = inventoryCurrentSelectedTab.innerHTML.toLowerCase();
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+}
 
 // making the inventory
 // showing the first tab first by making it the selected tab
@@ -69,6 +72,7 @@ $(() => {
     _ = inventory.DetailedEquip.length;
     inventory.DetailedEquip.length = NUM_OF_SLOTS;
     inventory.DetailedEquip.fill(0, _, NUM_OF_SLOTS);
+    addFunctionsToInventory();
 });
 
 var inventoryCurrentSelectedTab = ''; // TODO: since i now have this I should probably change the variables so that only this gets used

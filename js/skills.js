@@ -261,8 +261,6 @@ function writeSkillHitDescription(elementToAppendTo, skill, level) {
     }
 }
 
-$(makeSkillCards);
-
 function makeSkillPointsAllocateable() {
     let skillTier = document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value');
     skillsPerClass[character.info.class][skillTier].forEach((skill) => {

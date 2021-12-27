@@ -75,8 +75,3 @@ function soundWork(sound) {
 $(() => { // double checks that I have every sound loaded
     allSoundFiles.forEach(soundWork);
 });
-
-// Assigning the sounds to things
-$('#testSound').click(() => {
-    playSound(sounds[0]); // pickup.wav
-});

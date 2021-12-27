@@ -77,7 +77,7 @@ function setupImage(url, itemID) {
     return finishedImage;
 }
 
-function dropLoot(mob, mobLeft=540, dropCount=$('#dropCount').val(), unknown=false, justGetThem=false) {
+function dropLoot(mob, mobLeft=540, dropCount=0, unknown=false, justGetThem=false) {
     const aligner = document.createElement('div');
     aligner.classList = ['dropAligner'];
     aligner.style.width = ''.concat(dropCount*32, 'px');

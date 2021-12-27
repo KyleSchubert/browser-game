@@ -131,3 +131,52 @@ function preloadImages(array) {
 }
 
 $(preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png", "./files/levelup.png", './files/pointsEnabled.png', './files/pointsDisabled.png']));
+
+// https://stackoverflow.com/questions/2010892/how-to-store-objects-in-html5-localstorage#answer-3146971
+Storage.prototype.setObject = function(key, value) {
+    this.setItem(key, JSON.stringify(value));
+};
+
+Storage.prototype.getObject = function(key) {
+    var value = this.getItem(key);
+    return value && JSON.parse(value);
+};
+
+// me
+$(() => {
+    let data = window.localStorage.getObject('character');
+    if (data) {
+        character = data;
+        updateExpBar();
+        if (character.info.skillPoints[0] > 1) {
+            document.getElementById('skillPoints').innerHTML = character.info.skillPoints[0];
+            makeSkillPointsAllocateable();
+        }
+    }
+    makeSkillCards();
+    data = window.localStorage.getObject('inventory');
+    if (data) {
+        inventory = data;
+        addFunctionsToInventory();
+        inventoryLoad();
+    }
+    data = window.localStorage.getObject('equipment');
+    if (data) {
+        itemsInEquipmentSlots = data;
+        equipmentLoad();
+        updateCharacterDisplay();
+    }
+    data = window.localStorage.getObject('doubloons');
+    if (data) {
+        doubloons = data;
+        updateDoubloons(0);
+    }
+});
+
+function saveAlmostEverything() {
+    window.localStorage.setObject('character', character);
+    window.localStorage.setObject('inventory', inventory);
+    window.localStorage.setObject('equipment', itemsInEquipmentSlots);
+    window.localStorage.setObject('doubloons', doubloons);
+    console.log('Game saved');
+}

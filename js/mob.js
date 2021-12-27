@@ -195,7 +195,7 @@ function mobDie(origin='') {
         else {
             experienceAmount = mobLevelToExp[mobLevels[mobName]];
         }
-        character.gainExperience(experienceAmount);
+        gainExperience(experienceAmount);
         gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
 
         doubloonsAmount = randomIntFromInterval(28, 32) + mobLevelToExp[mobLevels[mobName]]; // TEMPORARY EXAMPLE

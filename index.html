@@ -94,9 +94,6 @@
                 <img id="expDivisions" src="./files/expDivisions.png">
                 <div class="numberText expGraphic" id="expText">0 [0.00%]</div>
             </div>
-            <div id="avatarArea">
-                <img id="avatar" src='./files/defaultChar.gif'>
-            </div>
             <div id="avatarAreaNew"></div>
             <div id="someGuiButtons">
                 <div class="guiOpeningButton clickable" id="shopButtonArea" value="80001">
@@ -121,9 +118,15 @@
                     <img src="./files/skill-menu-button.png">
                 </div>
                 <img id="skillKeys" src="./files/keyboard/skillkeys.png">
-                <div class="changeableKeybind" style="left:237px;top:-3px;background-image:url(./skills/icon/61001000.png);">
+                <div class="changeableKeybind" style="left:377px;top:-3px;background-image:url(./skills/icon/61001000.png);">
                     <img src="./files/keyboard/x.png">
                 </div>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="saveButton" onclick=saveAlmostEverything();>
+                    Save Game
+                </button>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="deleteSaveButton" onclick=window.localStorage.clear();>
+                    Delete Save
+                </button>
             </div>
             <div id="gainTextStream"></div>
             <div id="statsArea">
@@ -353,18 +356,6 @@
         </div>
         <div class="mainArea" id="temporaryButtons">
             <div class="subArea" id="itemArea">
-                <button class="mdl-button mdl-js-button mdl-button--raised" onclick=dropLoot();>
-                    Drop Loot
-                </button>
-                <button class="mdl-button mdl-js-button mdl-button--raised" id="testSound" value="0">
-                    Test sound
-                </button>
-                <form action="#">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="dropCount">
-                        <label class="mdl-textfield__label" for="dropCount"># of items to drop...</label>
-                    </div>
-                </form>
                 <div class="subArea">
                     <button class="mdl-button mdl-js-button mdl-button--raised" value="0" onclick=clearItems();>
                         Clear Items

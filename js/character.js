@@ -46,36 +46,36 @@ var character = {
         evasion: 0,
         accuracy: 0
     },
-    equipment: [],
-    gainExperience: function(amount) {
-        if (amount > 0) {
-            character.info.experience += amount;
-            leveledUp = false;
-            while (character.info.experience >= experienceCurve[character.info.level-1]) {
-                character.info.experience -=  experienceCurve[character.info.level-1];
-                character.info.level += 1;
-                character.info.attributePoints += 5;
-                leveledUp = true;
-                let whichTierGetsSkillPoints = 0;
-                if (character.info.level < 10) {
-                    whichTierGetsSkillPoints = 0;
-                }
-                character.info.skillPoints[whichTierGetsSkillPoints] += 3;
-                if (whichTierGetsSkillPoints == document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value')) {
-                    document.getElementById('skillPoints').innerHTML = character.info.skillPoints[whichTierGetsSkillPoints];
-                }
-            }
-            if (leveledUp) {
-                makeSkillPointsAllocateable();
-                prepareLevelUpAnimation();
-                playSound(sounds[9]);
-                updateCharacterDisplay();
-            }
-            updateExpBar();
-        }
-    }
-
+    equipment: []
 };
+
+function gainExperience(amount) {
+    if (amount > 0) {
+        character.info.experience += amount;
+        leveledUp = false;
+        while (character.info.experience >= experienceCurve[character.info.level-1]) {
+            character.info.experience -=  experienceCurve[character.info.level-1];
+            character.info.level += 1;
+            character.info.attributePoints += 5;
+            leveledUp = true;
+            let whichTierGetsSkillPoints = 0;
+            if (character.info.level < 10) {
+                whichTierGetsSkillPoints = 0;
+            }
+            character.info.skillPoints[whichTierGetsSkillPoints] += 3;
+            if (whichTierGetsSkillPoints == document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value')) {
+                document.getElementById('skillPoints').innerHTML = character.info.skillPoints[whichTierGetsSkillPoints];
+            }
+        }
+        if (leveledUp) {
+            makeSkillPointsAllocateable();
+            prepareLevelUpAnimation();
+            playSound(sounds[9]);
+            updateCharacterDisplay();
+        }
+        updateExpBar();
+    }
+}
 
 const compoundedStatsToIterateThrough = Object.keys(character.compoundedStats);
 

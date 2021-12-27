@@ -446,18 +446,6 @@ input[type=number]::-webkit-inner-spin-button {
     animation: 400ms ease-out closeTheStatsPanel;
 }
 
-#avatarArea {
-    position: absolute;
-    display: flex;
-    align-items: start;
-    height: 196px;
-    width: 140px;
-    top: 703px;
-    left: 200px;
-    transform: scaleX(-1);
-    pointer-events: none;
-}
-
 #avatarAreaNew {
     position: absolute;
     top: 769px;
@@ -497,7 +485,7 @@ input[type=number]::-webkit-inner-spin-button {
 #skillMenuButton {
     position: relative;
     display: flex;
-    left: 90px;
+    left: 230px;
     top: -40px;
     align-items: center;
     justify-content: center;
@@ -556,7 +544,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 #skillKeys {
     position: absolute;
-    left: 200px;
+    left: 340px;
     border: 4px solid white;
     top: -40px;
 }
@@ -571,6 +559,20 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     left: 2px;
     top: 3px;
+}
+
+#saveButton {
+    position: absolute;
+    width: 140px;
+    left: 20px;
+    top: -40px;
+}
+
+#deleteSaveButton {
+    position: absolute;
+    width: 140px;
+    left: 20px;
+    top: 0px;
 }
 
 .portal {
