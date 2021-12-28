@@ -171,6 +171,12 @@ $(() => {
         doubloons = data;
         updateDoubloons(0);
     }
+    data = window.localStorage.getObject('storageItems');
+    if (data) {
+        shopInventories[80002] = data;
+        data = window.localStorage.getObject('storageStock');
+        shopStocks[80002] = data;
+    }
 });
 
 function saveAlmostEverything() {
@@ -178,5 +184,7 @@ function saveAlmostEverything() {
     window.localStorage.setObject('inventory', inventory);
     window.localStorage.setObject('equipment', itemsInEquipmentSlots);
     window.localStorage.setObject('doubloons', doubloons);
+    window.localStorage.setObject('storageItems', shopInventories[80002]);
+    window.localStorage.setObject('storageStock', shopStocks[80002]);
     console.log('Game saved');
 }

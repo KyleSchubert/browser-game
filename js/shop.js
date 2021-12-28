@@ -266,7 +266,7 @@ function getShop() {
 
 function shopGetStock() {
     if ($('.selectedThing').eq(0).find('.itemCardImageArea span').eq(0).length) { // this checks if the stock number exists
-        return parseInt($('.selectedThing').eq(0).find('itemCardImageArea span').eq(0).html()); // this gets the stock number
+        return parseInt($('.selectedThing').eq(0).find('.itemCardImageArea span').eq(0).html()); // this gets the stock number
     }
     else {
         return 0; // this is for when the item should have unlimited stock
