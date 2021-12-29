@@ -114,22 +114,45 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
         state = bodyState;
         item = true;
     }
-    if (dataSource[id][state].length == 1 || item) { // stuff that needs to be updated when they get moved
-        let part = dataSource[id][state][frame][0];
-        let itemsUnusedParts = [];
+    if (state in dataSource[id]) {
+        if (dataSource[id][state].length == 1 || item) { // stuff that needs to be updated when they get moved
+            let itemsUnusedParts = [];
+            Object.keys(allAvatarParts[id]).forEach((partName) => {
+                itemsUnusedParts.push(partName);
+            });
+            dataSource[id][state][0].forEach((part) => {
+                let partName = part[0][0];
+                if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
+                    return;
+                }
+                itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
+                avatarSetPositionOfOnePart(part, id);
+            });
+            itemsUnusedParts.forEach((partName) => {
+                let partDiv = allAvatarParts[id][partName];
+                partDiv.style.visibility = 'hidden';
+            });
+            if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
+                let face = [];
+                if (dataSource[20000][faceState].length == 1) {
+                    face = dataSource[20000][faceState][0][0];
+                }
+                else {
+                    face = dataSource[20000][faceState][frame][0];
+                }
+                avatarSetPositionOfOnePart(face, 20000);
+            }
+            setTimeout(() => {
+                requestAnimationFrame(() =>avatarAnimate(id));
+            }, SMALL_UNIT_OF_TIME);
+            return;
+        }
+    }
+    else { // HIDE EVERYTHING 
         Object.keys(allAvatarParts[id]).forEach((partName) => {
-            itemsUnusedParts.push(partName);
-        });
-        let partName = part[0][0];
-        itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
-        avatarSetPositionOfOnePart(part, id);
-        itemsUnusedParts.forEach((partName) => {
             let partDiv = allAvatarParts[id][partName];
             partDiv.style.visibility = 'hidden';
         });
-        setTimeout(() => {
-            requestAnimationFrame(() =>avatarAnimate(id));
-        }, SMALL_UNIT_OF_TIME);
         return;
     }
     if (previousState != state) {

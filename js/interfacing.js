@@ -459,6 +459,9 @@ function dialogProceed() {
 
 var rightArrowPressed = false;
 var leftArrowPressed = false;
+var isCrouching = false;
+var isOnLadder = false;
+var isJumping = false;
 $(document).keydown(function(event) {
     if (event.key === 'z') { // ONLY used to  pick up  currentHoveredDropItem
         if (currentHoveredDropItem) {
@@ -467,16 +470,28 @@ $(document).keydown(function(event) {
     }
     else if (event.key === 'ArrowRight') {
         rightArrowPressed = true;
-        if (!avatarMoving && !leftArrowPressed) {
+        if (!avatarMoving && !leftArrowPressed && !isCrouching && !isOnLadder && !isJumping) {
             avatarMoving = true;
             avatarWalk();
         }
     }
     else if (event.key === 'ArrowLeft') {
         leftArrowPressed = true;
-        if (!avatarMoving && !rightArrowPressed) {
+        if (!avatarMoving && !rightArrowPressed && !isCrouching && !isOnLadder && !isJumping) {
             avatarMoving = true;
             avatarWalk();
+        }
+    }
+    else if (event.key === 'ArrowDown') {
+        if (!isJumping) {
+            if (isOnLadder) {
+                // do later
+            }
+            else {
+                isCrouching = true;
+                bodyState = 'prone';
+                headState = 'prone';
+            }
         }
     }
     else if (event.key === 'x') { // TESTING
@@ -504,6 +519,18 @@ $(document).keyup(function(event) {
             avatarMoving = false;
             bodyState = 'stand1';
             headState = 'stand1';
+        }
+    }
+    else if (event.key === 'ArrowDown') {
+        if (!isJumping) {
+            if (isOnLadder) {
+                // do later
+            }
+            else {
+                isCrouching = false;
+                bodyState = 'stand1';
+                headState = 'stand1';
+            }
         }
     }
 });
