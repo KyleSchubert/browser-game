@@ -7,9 +7,28 @@ var faceState = 'default';
 var headState  = 'stand1';
 var bodyState  = 'stand1';
 const AVATAR = document.getElementById('avatarAreaNew');
+const bodyItems = [2000, 12000, 20000];
 
 
+var lastEquipmentPerVisualSlot = {2: 0, 7: 0, 12: 0, 13: 0, 16: 0, 17: 0, 19: 0, 22: 0, 23: 0, 24: 0, 27: 0};
 function loadAvatar() {
+    equipmentThatShowsUp.forEach((slot) => {
+        if (itemsInEquipmentSlots[slot] != 0) {
+            if (lastEquipmentPerVisualSlot[slot] == 0) {
+                lastEquipmentPerVisualSlot[slot] = itemsInEquipmentSlots[slot].id;
+                addItemToAvatar(itemsInEquipmentSlots[slot].id);
+            }
+            else if (lastEquipmentPerVisualSlot[slot] != itemsInEquipmentSlots[slot].id) {
+                removeItemFromAvatar(lastEquipmentPerVisualSlot[slot]);
+                lastEquipmentPerVisualSlot[slot] = itemsInEquipmentSlots[slot].id;
+                addItemToAvatar(itemsInEquipmentSlots[slot].id);
+            }
+        }
+        else if (itemsInEquipmentSlots[slot] == 0 && lastEquipmentPerVisualSlot[slot] != 0) {
+            removeItemFromAvatar(lastEquipmentPerVisualSlot[slot]);
+            lastEquipmentPerVisualSlot[slot] = 0;
+        }
+    });
     return; // for now
 }
 
@@ -21,8 +40,19 @@ function testing() {
     for (let i=0; i<ids.length; i++) {
         addBodyPartsToAvatar(ids[i]);
     }
-    cyclicAvatarAnimate(body);
-    cyclicAvatarAnimate(head);
+    avatarAnimate(body);
+    avatarAnimate(head);
+}
+
+function addItemToAvatar(id) {
+    addBodyPartsToAvatar(id);
+    avatarAnimate(id);
+}
+
+function removeItemFromAvatar(id) {
+    Object.keys(allAvatarParts[id]).forEach((key) => {
+        allAvatarParts[id][key].remove();
+    });
 }
 
 function makeTestPixel(x, y, color='red', name='') {
@@ -39,69 +69,65 @@ function makeTestPixel(x, y, color='red', name='') {
     appendLocation.appendChild(pixel);
 }
 
-function cyclicAvatarAnimate(id, previousState='', reverse=false, frame=0) { // the part needs to already be on the avatar
+const SMALL_UNIT_OF_TIME = 10;
+function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the part needs to already be on the avatar
     let state = '';
-    if (id == 2000) {
+    let dataSource = [];
+    let dataDelaySource = [];
+    let item = false;
+    if (bodyItems.includes(id)) {
+        dataSource = bodyData;
+        dataDelaySource = bodyDelays;
+        if (id == 2000) {
+            state = bodyState;
+        }
+        else if (id == 12000) {
+            state = headState;
+        }
+        else if (id == 20000) {
+            state = faceState;
+        }
+    }
+    else {
+        dataSource = allData;
+        // I mean there are only a few items, so if it turns out I did something wrong, I'll add this back
+        //dataDelaySource = allDelays;
         state = bodyState;
+        item = true;
     }
-    else if (id == 12000) {
-        state = headState;
-    }
-    else if (id == 20000) {
-        state = faceState;
-    }
-    if (bodyData[id][state].length == 1) { // stuff that needs to be updated when they get moved
-        let part = bodyData[id][state][frame][0];
-        let partDiv = allAvatarParts[id][part[0][0]];
-        let partXOffset = part[0][1];
-        partDiv.style.backgroundPositionX = '-' + partXOffset + 'px';
-        partDiv.style.visibility = 'visible';
-        let offsets = positionOneAvatarPart(part);
-        partDiv.style.left = offsets[0] + 'px';
-        partDiv.style.top = offsets[1] + 'px';
+    if (dataSource[id][state].length == 1 || item) { // stuff that needs to be updated when they get moved
+        let part = dataSource[id][state][frame][0];
+        avatarSetPositionOfOnePart(part, id);
         setTimeout(() => {
-            cyclicAvatarAnimate(id);
+            requestAnimationFrame(() =>avatarAnimate(id));
         }, SMALL_UNIT_OF_TIME);
         return;
     }
     if (previousState != state) {
         frame = 0;
     }
-    let delay = bodyDelays[id][state][frame];
-    bodyData[id][state][frame].forEach((part) => {
+    let delay = dataDelaySource[id][state][frame];
+    dataSource[id][state][frame].forEach((part) => {
         let partName = part[0][0];
         if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
             return;
         }
-        let partXOffset = part[0][1];
-        let partDiv = allAvatarParts[id][partName];
-        partDiv.style.backgroundPositionX = '-' + partXOffset + 'px';
-        partDiv.style.visibility = 'visible';
-        let offsets = positionOneAvatarPart(part);
-        partDiv.style.left = offsets[0] + 'px';
-        partDiv.style.top = offsets[1] + 'px';
+        avatarSetPositionOfOnePart(part, id);
     });
-    if (id == 12000) {
+    if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
         let face = [];
-        if (bodyData[20000][faceState].length == 1) {
-            face = bodyData[20000][faceState][0][0];
+        if (dataSource[20000][faceState].length == 1) {
+            face = dataSource[20000][faceState][0][0];
         }
         else {
-            face = bodyData[20000][faceState][frame][0];
+            face = dataSource[20000][faceState][frame][0];
         }
-        let faceName = face[0][0];
-        let faceXOffset = face[0][1];
-        let faceDiv = allAvatarParts[20000][faceName];
-        faceDiv.style.backgroundPositionX = '-' + faceXOffset + 'px';
-        faceDiv.style.visibility = 'visible';
-        let offsets = positionOneAvatarPart(face);
-        faceDiv.style.left = offsets[0] + 'px';
-        faceDiv.style.top = offsets[1] + 'px';
+        avatarSetPositionOfOnePart(face, 20000);
     }
     if (state == 'stand1' || state == 'stand2' || state == 'alert') { // cyclic animation
-        if (frame == bodyData[id][state].length-1) {
+        if (frame == dataSource[id][state].length-1) {
             setTimeout(() => {
-                cyclicAvatarAnimate(id, state, true, frame-1);
+                requestAnimationFrame(() => avatarAnimate(id, state, true, frame-1));
             }, delay);
         }
         else {
@@ -110,24 +136,36 @@ function cyclicAvatarAnimate(id, previousState='', reverse=false, frame=0) { // 
             }
             if (reverse) {
                 setTimeout(() => {
-                    cyclicAvatarAnimate(id, state, true, frame-1);
+                    requestAnimationFrame(() => avatarAnimate(id, state, true, frame-1));
                 }, delay);
             }
             else {
                 setTimeout(() => {
-                    cyclicAvatarAnimate(id, state, false, frame+1);
+                    requestAnimationFrame(() => avatarAnimate(id, state, false, frame+1));
                 }, delay);
             }
         }
     }
     else {
-        if (frame == bodyData[id][state].length-1) {
+        if (frame == dataSource[id][state].length-1) {
             frame = -1; // restart the animation
         }
         setTimeout(() => {
-            cyclicAvatarAnimate(id, state, false, frame+1);
+            requestAnimationFrame(() => avatarAnimate(id, state, false, frame+1));
         }, delay);
     }
+}
+
+function avatarSetPositionOfOnePart(part, id) { // part   =    entire item -> one state -> one frame -> one part  ex:  part = bodyData[id][state][frame]
+    let partName = part[0][0];
+    let partDiv = allAvatarParts[id][partName];
+    let partXOffset = part[0][1];
+    partDiv.style.backgroundPositionX = '-' + partXOffset + 'px';
+    partDiv.style.visibility = 'visible';
+    let offsets = positionOneAvatarPart(part);
+    partDiv.style.left = offsets[0] + 'px';
+    partDiv.style.top = offsets[1] + 'px';
+    return;
 }
 
 var allAvatarParts = {};
@@ -135,8 +173,20 @@ var allAvatarParts = {};
 function addBodyPartsToAvatar(id) {
     let appendLocation = AVATAR;
     let doneParts = [];
-    Object.keys(bodyData[id]).forEach((state) => {
-        bodyData[id][state].forEach((frame) => {
+    let dataSource = [];
+    let dataDimensionsSource = [];
+    let item = false;
+    if (bodyItems.includes(id)) {
+        dataSource = bodyData;
+        dataDimensionsSource = bodyDimensions;
+    }
+    else {
+        dataSource = allData;
+        dataDimensionsSource = allGroupDimensionsAndUnitDimensions;
+        item = true;
+    }
+    Object.keys(dataSource[id]).forEach((state) => {
+        dataSource[id][state].forEach((frame) => {
             frame.forEach((part) => {
                 let partName = part[0][0];
                 let fileDir = './item/' + id + '/' + partName + '.png';
@@ -146,25 +196,23 @@ function addBodyPartsToAvatar(id) {
                 doneParts.push(fileDir);
                 let partXOffset = part[0][1];
                 let partDiv = document.createElement('div');
-                let partDimensions = bodyDimensions[id][partName][1];
+                let partDimensions = dataDimensionsSource[id][partName];
+                if (item) {
+                    partDiv.style.width = partDimensions[1] + 'px';
+                    partDiv.style.height = partDimensions[0][1] + 'px';
+                }
+                else {
+                    partDiv.style.width = partDimensions[1][0] + 'px';
+                    partDiv.style.height = partDimensions[1][1] + 'px';
+                }
                 let offsets = positionOneAvatarPart(part);
                 partDiv.style.left = offsets[0] + 'px';
                 partDiv.style.top = offsets[1] + 'px';
-                if (id == 2000) {
-                    partDiv.style.zIndex = 1;
+                if (id == 12000 && part[0][0] == 'accessoryOverHair') {
+                    return;
                 }
-                else if (id == 12000) {
-                    if (part[0][0] == 'accessoryOverHair') {
-                        return;
-                    }
-                    partDiv.style.zIndex = 2;
-                }
-                else if (id == 20000) {
-                    partDiv.style.zIndex = 3;
-                }
+                partDiv.style.zIndex = avatarZIndexOrder.indexOf(part[0][0]);
                 partDiv.classList = ['avatarPart'];
-                partDiv.style.width = partDimensions[0] + 'px';
-                partDiv.style.height = partDimensions[1] + 'px';
                 partDiv.style.backgroundImage = 'url(' + fileDir + ')';
                 partDiv.style.backgroundPositionX = '-' + partXOffset + 'px';
                 partDiv.style.visibility = 'hidden';
@@ -178,7 +226,6 @@ function addBodyPartsToAvatar(id) {
     });
 }
 
-// I'LL REMOVE WHAT I DONT USE (like normal)
 var brow = [0, 0];
 var headBrow = [0, 0];
 var headNeck = [0, 0];
