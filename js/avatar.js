@@ -6,6 +6,7 @@ var avatarMoving = false;
 var faceState = 'default';
 var headState  = 'stand1';
 var bodyState  = 'stand1';
+var walkType = 'walk1';
 const AVATAR = document.getElementById('avatarAreaNew');
 const bodyItems = [2000, 12000, 20000];
 
@@ -17,19 +18,37 @@ function loadAvatar() {
             if (lastEquipmentPerVisualSlot[slot] == 0) {
                 lastEquipmentPerVisualSlot[slot] = itemsInEquipmentSlots[slot].id;
                 addItemToAvatar(itemsInEquipmentSlots[slot].id);
+                if (slot == 16) {
+                    walkType = getWeaponWalkType(itemsInEquipmentSlots[slot].id);
+                }
             }
             else if (lastEquipmentPerVisualSlot[slot] != itemsInEquipmentSlots[slot].id) {
                 removeItemFromAvatar(lastEquipmentPerVisualSlot[slot]);
                 lastEquipmentPerVisualSlot[slot] = itemsInEquipmentSlots[slot].id;
                 addItemToAvatar(itemsInEquipmentSlots[slot].id);
+                if (slot == 16) {
+                    walkType = getWeaponWalkType(itemsInEquipmentSlots[slot].id);
+                }
             }
         }
         else if (itemsInEquipmentSlots[slot] == 0 && lastEquipmentPerVisualSlot[slot] != 0) {
+            if (slot == 16) {
+                walkType = 'walk1';
+            }
             removeItemFromAvatar(lastEquipmentPerVisualSlot[slot]);
             lastEquipmentPerVisualSlot[slot] = 0;
         }
     });
-    return; // for now
+    return;
+}
+
+function getWeaponWalkType(id) {
+    if ('walk1' in allData[id]) {
+        return 'walk1';
+    }
+    else {
+        return 'walk2';
+    }
 }
 
 function testing() {
@@ -97,7 +116,17 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
     }
     if (dataSource[id][state].length == 1 || item) { // stuff that needs to be updated when they get moved
         let part = dataSource[id][state][frame][0];
+        let itemsUnusedParts = [];
+        Object.keys(allAvatarParts[id]).forEach((partName) => {
+            itemsUnusedParts.push(partName);
+        });
+        let partName = part[0][0];
+        itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
         avatarSetPositionOfOnePart(part, id);
+        itemsUnusedParts.forEach((partName) => {
+            let partDiv = allAvatarParts[id][partName];
+            partDiv.style.visibility = 'hidden';
+        });
         setTimeout(() => {
             requestAnimationFrame(() =>avatarAnimate(id));
         }, SMALL_UNIT_OF_TIME);
@@ -107,12 +136,21 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
         frame = 0;
     }
     let delay = dataDelaySource[id][state][frame];
+    let itemsUnusedParts = [];
+    Object.keys(allAvatarParts[id]).forEach((partName) => {
+        itemsUnusedParts.push(partName);
+    });
     dataSource[id][state][frame].forEach((part) => {
         let partName = part[0][0];
         if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
             return;
         }
+        itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
         avatarSetPositionOfOnePart(part, id);
+    });
+    itemsUnusedParts.forEach((partName) => {
+        let partDiv = allAvatarParts[id][partName];
+        partDiv.style.visibility = 'hidden';
     });
     if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
         let face = [];
@@ -190,7 +228,7 @@ function addBodyPartsToAvatar(id) {
             frame.forEach((part) => {
                 let partName = part[0][0];
                 let fileDir = './item/' + id + '/' + partName + '.png';
-                if (doneParts.includes(fileDir) || (state != 'stand1' && id == 2000)) {
+                if (doneParts.includes(fileDir)) {
                     return;
                 }
                 doneParts.push(fileDir);
@@ -309,8 +347,8 @@ $(() => {
 
 function avatarWalk() {
     if (avatarMoving) {
-        bodyState = 'walk1';
-        headState = 'walk1';
+        bodyState = walkType;
+        headState = walkType;
         requestAnimationFrame(() => {
             if (leftArrowPressed) {
                 if (AVATAR.style.transform == 'scaleX(-1)') {

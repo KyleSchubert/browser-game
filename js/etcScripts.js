@@ -165,6 +165,7 @@ $(() => {
         itemsInEquipmentSlots = data;
         equipmentLoad();
         updateCharacterDisplay();
+        loadAvatar();
     }
     data = window.localStorage.getObject('doubloons');
     if (data) {
