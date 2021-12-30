@@ -488,6 +488,7 @@ $(document).keydown(function(event) {
                 // do later
             }
             else {
+                avatarMoving = false;
                 isCrouching = true;
                 bodyState = 'prone';
                 headState = 'prone';
@@ -527,6 +528,10 @@ $(document).keyup(function(event) {
                 // do later
             }
             else {
+                if (rightArrowPressed || leftArrowPressed) {
+                    avatarMoving = true;
+                    avatarWalk();
+                }
                 isCrouching = false;
                 bodyState = 'stand1';
                 headState = 'stand1';
