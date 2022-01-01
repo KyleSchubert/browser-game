@@ -115,7 +115,7 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
         item = true;
     }
     if (state in dataSource[id]) {
-        if (dataSource[id][state].length == 1 || item) { // stuff that needs to be updated when they get moved
+        if (dataSource[id][state].length == 1) { // stuff that needs to be updated when they get moved
             let itemsUnusedParts = [];
             Object.keys(allAvatarParts[id]).forEach((partName) => {
                 itemsUnusedParts.push(partName);
@@ -158,7 +158,6 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
     if (previousState != state) {
         frame = 0;
     }
-    let delay = dataDelaySource[id][state][frame];
     let itemsUnusedParts = [];
     Object.keys(allAvatarParts[id]).forEach((partName) => {
         itemsUnusedParts.push(partName);
@@ -184,6 +183,13 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
             face = dataSource[20000][faceState][frame][0];
         }
         avatarSetPositionOfOnePart(face, 20000);
+    }
+    let delay = 1000;
+    if (item) {
+        delay = bodyDelays[2000][state][frame];
+    }
+    else {
+        delay = dataDelaySource[id][state][frame];
     }
     if (state == 'stand1' || state == 'stand2' || state == 'alert') { // cyclic animation
         if (frame == dataSource[id][state].length-1) {
