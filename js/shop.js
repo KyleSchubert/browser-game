@@ -186,6 +186,9 @@ function getUrlForItemName(itemID) { //
 function deleteItem(slotNumber) {
     tab = inventory.getter();
     tab[slotNumber] = 0;
+    if (inventory.readyName() == 'Equip') {
+        inventory.DetailedEquip[slotNumber] = 0;
+    }
     counts[slotNumber] = 0;
     $('.slot')[slotNumber].children[0].remove();
 }
