@@ -85,15 +85,10 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
         let damageTopLocation = 70;
         damageRoll = rollDamageToMob(skill);
         damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - damageTopLocation);
-        damageTopLocation += 32;
+        //damageTopLocation += 32;
         for (let i=1; i<realSkillData.lines; i++) {
-            setTimeout(() => {
-                requestAnimationFrame(() => {
-                    damageRoll = rollDamageToMob(skill);
-                    damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - damageTopLocation);
-                    damageTopLocation += 32;
-                });
-            }, 75*i);
+            let parameters = [rollDamageToMob(skill), damageNumberLocation[0], damageNumberLocation[1] - (damageTopLocation+32*i)];
+            scheduleToGameLoop(75*i, damageNumbers, parameters, 'damageNumber');
         }
     }
     let theirNameAndLevelText = event.firstChild;
