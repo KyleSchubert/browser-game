@@ -148,11 +148,12 @@ $(() => {
     if (data) {
         character = data;
         updateExpBar();
+        makeSkillCards();
         if (character.info.skillPoints[0] > 1) {
             document.getElementById('skillPoints').innerHTML = character.info.skillPoints[0];
-            makeSkillCards();
             makeSkillPointsAllocateable();
         }
+        
     }
     data = window.localStorage.getObject('inventory');
     if (data) {

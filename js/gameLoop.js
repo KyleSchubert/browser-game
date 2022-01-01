@@ -33,3 +33,5 @@ function gameLoopAdvance(timeStamp) {
     });
     requestAnimationFrame(gameLoopAdvance);
 }
+
+$(gameLoopAdvance());

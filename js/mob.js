@@ -103,7 +103,7 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
     if (theirRedPart.classList.contains('hpFasterFade')) {
         theirRedPart.classList.remove('hpFasterFade');
         theirRedPart.style.animation = 'none';
-        requestAnimationFrame(() => theirRedPart.style.animation = '');
+        scheduleToGameLoop(0, () => theirRedPart.style.animation = '');
     }
     theirRedPart.style.width = width + 4 - parseInt(theirRedPart.style.right) + 'px'; // maybe needs improvement
     theirRedPart.classList.add('hpFasterFade');
@@ -319,9 +319,8 @@ function someAnimate(mob, lastStatus, mobName, frame=0) {
             mob.css('left', final + 'px');
         }
     }
-    setTimeout(() => {
-        requestAnimationFrame(() => someAnimate(mob, status, mobName, frame+1));
-    }, durationSource[frame]);
+    let data = [mob, status, mobName, frame+1];
+    scheduleToGameLoop(durationSource[frame], someAnimate, data, 'mob');
 }
 
 const damageNumberLefts = {0: 12, 1: 8, 2: 11, 3: 11, 4: 12, 5: 11, 6: 12, 7: 11, 8: 12, 9: 12};
