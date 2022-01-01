@@ -150,10 +150,10 @@ $(() => {
         updateExpBar();
         if (character.info.skillPoints[0] > 1) {
             document.getElementById('skillPoints').innerHTML = character.info.skillPoints[0];
+            makeSkillCards();
             makeSkillPointsAllocateable();
         }
     }
-    makeSkillCards();
     data = window.localStorage.getObject('inventory');
     if (data) {
         inventory = data;
