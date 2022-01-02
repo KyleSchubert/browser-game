@@ -94,7 +94,17 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
             break;
         }
         const bounds = entry.boundingClientRect;
-        if ((between(bounds['left'], trueLeft, trueRight) || between(bounds['right'], trueLeft, trueRight)) && (between(bounds['top'], skillHitData['top'], skillHitData['bottom']) || between(bounds['bottom'], skillHitData['top'], skillHitData['bottom']))) {
+        if (
+            (between(bounds['left'], trueLeft, trueRight)
+                || between(bounds['right'], trueLeft, trueRight)
+                || between(trueLeft, bounds['left'], bounds['right'])
+                || between(trueRight, bounds['left'], bounds['right']))
+            && 
+            (between(bounds['top'], skillHitData['top'], skillHitData['bottom'])
+                || between(bounds['bottom'], skillHitData['top'], skillHitData['bottom'])
+                || between(skillHitData['top'], bounds['top'], bounds['bottom'])
+                || between(skillHitData['bottom'], bounds['top'], bounds['bottom']))
+        ) {
             mobDamageEvent(entry.target, realSkill, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]);
             hitGroup.appendChild(hitTest(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
             mobHits++;

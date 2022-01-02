@@ -92,6 +92,7 @@ function changeZones() {
     $('#superBlocker').addClass('fadeToBlack');
     $('#superBlocker').css('background', 'rgba(0,0,0,1)');
     currentZone = this.value;
+    gameLoop.mob = [];
 }
 
 $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()
