@@ -103,7 +103,7 @@ $('body').on('mousemove', function(event) {
     event.preventDefault();
     SQUAREposX = event.pageX;
     SQUAREposY = event.pageY;
-    window.requestAnimationFrame(showBigImg);
+    scheduleToGameLoop(0, showBigImg);
 });
 
 function showBigImg() {
@@ -145,6 +145,7 @@ Storage.prototype.getObject = function(key) {
 // me
 $(() => {
     let data = window.localStorage.getObject('character');
+
     if (data) {
         character = data;
         updateExpBar();
@@ -153,7 +154,9 @@ $(() => {
             document.getElementById('skillPoints').innerHTML = character.info.skillPoints[0];
             makeSkillPointsAllocateable();
         }
-        
+    }
+    else {
+        makeSkillCards();
     }
     data = window.localStorage.getObject('inventory');
     if (data) {

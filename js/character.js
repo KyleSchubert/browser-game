@@ -110,9 +110,8 @@ function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhen
             animation.style.backgroundPositionX = parseInt(animation.style.backgroundPositionX) - parseInt(animation.style.width) + 'px';
         }
     });
-    setTimeout(() => {
-        requestAnimationFrame(() => genericSpritesheetAnimation(animations, frame+1, timings, deleteGroupWhenDone));
-    }, timings[frame]);
+    let data = [animations, frame+1, timings, deleteGroupWhenDone];
+    scheduleToGameLoop(timings[frame], genericSpritesheetAnimation, data);
 }
 
 function prepareLevelUpAnimation() {
