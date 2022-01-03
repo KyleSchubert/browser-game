@@ -142,10 +142,42 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
                 }
                 avatarSetPositionOfOnePart(face, 20000);
             }
-            setTimeout(() => {
-                requestAnimationFrame(() =>avatarAnimate(id));
-            }, SMALL_UNIT_OF_TIME);
+            let data = [id];
+            scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, data);
             return;
+        }
+        else if (!item && state in dataDelaySource[id]) {
+            if (dataDelaySource[id][state].length == 0) {
+                let itemsUnusedParts = [];
+                Object.keys(allAvatarParts[id]).forEach((partName) => {
+                    itemsUnusedParts.push(partName);
+                });
+                dataSource[id][state][0].forEach((part) => {
+                    let partName = part[0][0];
+                    if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
+                        return;
+                    }
+                    itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
+                    avatarSetPositionOfOnePart(part, id);
+                });
+                itemsUnusedParts.forEach((partName) => {
+                    let partDiv = allAvatarParts[id][partName];
+                    partDiv.style.visibility = 'hidden';
+                });
+                if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
+                    let face = [];
+                    if (dataSource[20000][faceState].length == 1) {
+                        face = dataSource[20000][faceState][0][0];
+                    }
+                    else {
+                        face = dataSource[20000][faceState][frame][0];
+                    }
+                    avatarSetPositionOfOnePart(face, 20000);
+                }
+                let data = [id];
+                scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, data);
+                return;
+            }
         }
     }
     else { // HIDE EVERYTHING 
@@ -186,30 +218,27 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
     }
     let delay = 1000;
     if (item) {
-        delay = bodyDelays[2000][state][frame];
+        delay = bodyDelays[2000][state][0];
     }
     else {
         delay = dataDelaySource[id][state][frame];
     }
     if (state == 'stand1' || state == 'stand2' || state == 'alert') { // cyclic animation
         if (frame == dataSource[id][state].length-1) {
-            setTimeout(() => {
-                requestAnimationFrame(() => avatarAnimate(id, state, true, frame-1));
-            }, delay);
+            let data = [id, state, true, frame-1];
+            scheduleToGameLoop(delay, avatarAnimate, data);
         }
         else {
             if (frame == 0) {
                 reverse = false;
             }
             if (reverse) {
-                setTimeout(() => {
-                    requestAnimationFrame(() => avatarAnimate(id, state, true, frame-1));
-                }, delay);
+                let data = [id, state, true, frame-1];
+                scheduleToGameLoop(delay, avatarAnimate, data);
             }
             else {
-                setTimeout(() => {
-                    requestAnimationFrame(() => avatarAnimate(id, state, false, frame+1));
-                }, delay);
+                let data = [id, state, false, frame+1];
+                scheduleToGameLoop(delay, avatarAnimate, data);
             }
         }
     }
@@ -217,9 +246,8 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
         if (frame == dataSource[id][state].length-1) {
             frame = -1; // restart the animation
         }
-        setTimeout(() => {
-            requestAnimationFrame(() => avatarAnimate(id, state, false, frame+1));
-        }, delay);
+        let data = [id, state, false, frame+1];
+        scheduleToGameLoop(delay, avatarAnimate, data);
     }
 }
 
