@@ -88,6 +88,38 @@ function makeTestPixel(x, y, color='red', name='') {
     appendLocation.appendChild(pixel);
 }
 
+function avatarDealWithUnusedParts(id, dataSource, state, frame) {
+    let itemsUnusedParts = [];
+    Object.keys(allAvatarParts[id]).forEach((partName) => {
+        itemsUnusedParts.push(partName);
+    });
+    dataSource[id][state][frame].forEach((part) => {
+        let partName = part[0][0];
+        if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
+            return;
+        }
+        itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
+        avatarSetPositionOfOnePart(part, id);
+    });
+    itemsUnusedParts.forEach((partName) => {
+        let partDiv = allAvatarParts[id][partName];
+        partDiv.style.visibility = 'hidden';
+    });
+}
+
+function tempMoveHead(id, frame) {
+    if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
+        let face = [];
+        if (bodyData[20000][faceState].length == 1) {
+            face = bodyData[20000][faceState][0][0];
+        }
+        else {
+            face = bodyData[20000][faceState][frame][0];
+        }
+        avatarSetPositionOfOnePart(face, 20000);
+    }
+}
+
 const SMALL_UNIT_OF_TIME = 10;
 function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the part needs to already be on the avatar
     let state = '';
@@ -116,66 +148,16 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
     }
     if (state in dataSource[id]) {
         if (dataSource[id][state].length == 1) { // stuff that needs to be updated when they get moved
-            let itemsUnusedParts = [];
-            Object.keys(allAvatarParts[id]).forEach((partName) => {
-                itemsUnusedParts.push(partName);
-            });
-            dataSource[id][state][0].forEach((part) => {
-                let partName = part[0][0];
-                if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
-                    return;
-                }
-                itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
-                avatarSetPositionOfOnePart(part, id);
-            });
-            itemsUnusedParts.forEach((partName) => {
-                let partDiv = allAvatarParts[id][partName];
-                partDiv.style.visibility = 'hidden';
-            });
-            if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
-                let face = [];
-                if (dataSource[20000][faceState].length == 1) {
-                    face = dataSource[20000][faceState][0][0];
-                }
-                else {
-                    face = dataSource[20000][faceState][frame][0];
-                }
-                avatarSetPositionOfOnePart(face, 20000);
-            }
-            let data = [id];
-            scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, data);
+            avatarDealWithUnusedParts(id, dataSource, state, 0);
+            tempMoveHead(id, frame);
+            scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, [id]);
             return;
         }
         else if (!item && state in dataDelaySource[id]) {
             if (dataDelaySource[id][state].length == 0) {
-                let itemsUnusedParts = [];
-                Object.keys(allAvatarParts[id]).forEach((partName) => {
-                    itemsUnusedParts.push(partName);
-                });
-                dataSource[id][state][0].forEach((part) => {
-                    let partName = part[0][0];
-                    if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
-                        return;
-                    }
-                    itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
-                    avatarSetPositionOfOnePart(part, id);
-                });
-                itemsUnusedParts.forEach((partName) => {
-                    let partDiv = allAvatarParts[id][partName];
-                    partDiv.style.visibility = 'hidden';
-                });
-                if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
-                    let face = [];
-                    if (dataSource[20000][faceState].length == 1) {
-                        face = dataSource[20000][faceState][0][0];
-                    }
-                    else {
-                        face = dataSource[20000][faceState][frame][0];
-                    }
-                    avatarSetPositionOfOnePart(face, 20000);
-                }
-                let data = [id];
-                scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, data);
+                avatarDealWithUnusedParts(id, dataSource, state, 0);
+                tempMoveHead(id, frame);
+                scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, [id]);
                 return;
             }
         }
@@ -190,32 +172,8 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
     if (previousState != state) {
         frame = 0;
     }
-    let itemsUnusedParts = [];
-    Object.keys(allAvatarParts[id]).forEach((partName) => {
-        itemsUnusedParts.push(partName);
-    });
-    dataSource[id][state][frame].forEach((part) => {
-        let partName = part[0][0];
-        if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
-            return;
-        }
-        itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
-        avatarSetPositionOfOnePart(part, id);
-    });
-    itemsUnusedParts.forEach((partName) => {
-        let partDiv = allAvatarParts[id][partName];
-        partDiv.style.visibility = 'hidden';
-    });
-    if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
-        let face = [];
-        if (dataSource[20000][faceState].length == 1) {
-            face = dataSource[20000][faceState][0][0];
-        }
-        else {
-            face = dataSource[20000][faceState][frame][0];
-        }
-        avatarSetPositionOfOnePart(face, 20000);
-    }
+    avatarDealWithUnusedParts(id, dataSource, state, frame);
+    tempMoveHead(id, frame);
     let delay = 1000;
     if (item) {
         delay = bodyDelays[2000][state][0];
@@ -225,20 +183,17 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
     }
     if (state == 'stand1' || state == 'stand2' || state == 'alert') { // cyclic animation
         if (frame == dataSource[id][state].length-1) {
-            let data = [id, state, true, frame-1];
-            scheduleToGameLoop(delay, avatarAnimate, data);
+            scheduleToGameLoop(delay, avatarAnimate, [id, state, true, frame-1]);
         }
         else {
             if (frame == 0) {
                 reverse = false;
             }
             if (reverse) {
-                let data = [id, state, true, frame-1];
-                scheduleToGameLoop(delay, avatarAnimate, data);
+                scheduleToGameLoop(delay, avatarAnimate, [id, state, true, frame-1]);
             }
             else {
-                let data = [id, state, false, frame+1];
-                scheduleToGameLoop(delay, avatarAnimate, data);
+                scheduleToGameLoop(delay, avatarAnimate, [id, state, false, frame+1]);
             }
         }
     }
@@ -246,8 +201,7 @@ function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the pa
         if (frame == dataSource[id][state].length-1) {
             frame = -1; // restart the animation
         }
-        let data = [id, state, false, frame+1];
-        scheduleToGameLoop(delay, avatarAnimate, data);
+        scheduleToGameLoop(delay, avatarAnimate, [id, state, false, frame+1]);
     }
 }
 
