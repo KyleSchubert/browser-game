@@ -201,23 +201,6 @@ function mobDie(origin='') {
     }
 }
 
-MAX_MOBS = 30;
-$(() => {
-    let amountToSpawn = (MAX_MOBS-$('.mob').length);
-    for (i=0; i<amountToSpawn; i++) {
-        spawn(getMob());
-    }
-    setInterval(() => {
-        if ($('.mob').length < MAX_MOBS) {
-            console.log("Respawning mobs");
-            let amountToSpawn = (MAX_MOBS-$('.mob').length);
-            for (i=0; i<amountToSpawn; i++) {
-                spawn(getMob());
-            }
-        }
-    }, 6680);
-});
-
 function gainTextStreamAdd(text) {
     console.log(text);
     let div = document.createElement('div');

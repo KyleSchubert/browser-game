@@ -132,6 +132,20 @@ function preloadImages(array) {
 
 $(preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png", "./files/levelup.png", './files/pointsEnabled.png', './files/pointsDisabled.png']));
 
+$(() => {
+    let snackbarContainer = document.getElementById('snackbarHolderForSaving');
+    let showSnackbarButton = document.getElementById('saveButton');
+    showSnackbarButton.addEventListener('click', () => {
+        'use strict';
+        let data = {
+            message: 'Game saved successfully.',
+            timeout: 2400
+        };
+        snackbarContainer.MaterialSnackbar.showSnackbar(data);
+    });
+});
+
+
 // https://stackoverflow.com/questions/2010892/how-to-store-objects-in-html5-localstorage#answer-3146971
 Storage.prototype.setObject = function(key, value) {
     this.setItem(key, JSON.stringify(value));
@@ -182,6 +196,24 @@ $(() => {
         data = window.localStorage.getObject('storageStock');
         shopStocks[80002] = data;
     }
+    data = window.localStorage.getObject('currentZone');
+    if (data) {
+        currentZone = data;
+    }
+    loadPortals();
+    let amountToSpawn = (MAX_MOBS-$('.mob').length);
+    for (i=0; i<amountToSpawn; i++) {
+        spawn(getMob());
+    }
+    setInterval(() => {
+        if ($('.mob').length < MAX_MOBS) {
+            console.log("Respawning mobs");
+            let amountToSpawn = (MAX_MOBS-$('.mob').length);
+            for (i=0; i<amountToSpawn; i++) {
+                spawn(getMob());
+            }
+        }
+    }, 6680);
 });
 
 function saveAlmostEverything() {
@@ -191,5 +223,7 @@ function saveAlmostEverything() {
     window.localStorage.setObject('doubloons', doubloons);
     window.localStorage.setObject('storageItems', shopInventories[80002]);
     window.localStorage.setObject('storageStock', shopStocks[80002]);
+    window.localStorage.setObject('currentZone', currentZone);
+    
     console.log('Game saved');
 }

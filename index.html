@@ -124,6 +124,10 @@
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="saveButton" onclick=saveAlmostEverything();>
                     Save Game
                 </button>
+                <div class="mdl-snackbar mdl-js-snackbar" id="snackbarHolderForSaving" aria-live="assertive" aria-atomic="true" aria-relevant="text" >
+                    <div class="mdl-snackbar__text"></div>
+                    <button type="button" class="mdl-snackbar__action"></button>
+                </div>
                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="deleteSaveButton" onclick=window.localStorage.clear();>
                     Delete Save
                 </button>

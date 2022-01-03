@@ -1,3 +1,4 @@
+MAX_MOBS = 30;
 var zoneConnections = {
     1: [{l: 962, t: 630, dest: 2}],
     2: [{l: 38, t: 162, dest: 1}, {l: 600, t: 265, dest: 3}],
@@ -108,8 +109,4 @@ $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(
         $('#superBlocker').css('background', '');
         $('#superBlocker').removeClass('unfadeToBlack');
     }
-});
-
-$(() => {
-    loadPortals();
 });
