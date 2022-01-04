@@ -59,19 +59,19 @@ function testing() {
     for (let i=0; i<ids.length; i++) {
         addBodyPartsToAvatar(ids[i]);
     }
-    avatarAnimate(body);
-    avatarAnimate(head);
+    avatarAnimate();
 }
 
 function addItemToAvatar(id) {
     addBodyPartsToAvatar(id);
-    avatarAnimate(id);
 }
 
 function removeItemFromAvatar(id) {
     Object.keys(allAvatarParts[id]).forEach((key) => {
         allAvatarParts[id][key].remove();
     });
+    delete avatarEquipmentFrameRecords[lastEquipmentPerVisualSlot[slot]];
+    delete allAvatarParts[lastEquipmentPerVisualSlot[slot]];
 }
 
 function makeTestPixel(x, y, color='red', name='') {
@@ -107,101 +107,80 @@ function avatarDealWithUnusedParts(id, dataSource, state, frame) {
     });
 }
 
-function tempMoveHead(id, frame) {
-    if (id == 12000) { // set the face when the head is set (head is 12000 and face is 20000)
-        let face = [];
-        if (bodyData[20000][faceState].length == 1) {
-            face = bodyData[20000][faceState][0][0];
-        }
-        else {
-            face = bodyData[20000][faceState][frame][0];
-        }
-        avatarSetPositionOfOnePart(face, 20000);
+function tempMoveFace() {
+    let face = [];
+    if (bodyData[20000][faceState].length == 1) {
+        face = bodyData[20000][faceState][0][0];
     }
+    else {
+        face = bodyData[20000][faceState][frame][0];
+    }
+    avatarSetPositionOfOnePart(face, 20000);
 }
 
 const SMALL_UNIT_OF_TIME = 10;
-function avatarAnimate(id, previousState='', reverse=false, frame=0) { // the part needs to already be on the avatar
-    let state = '';
-    let dataSource = [];
-    let dataDelaySource = [];
-    let item = false;
-    if (bodyItems.includes(id)) {
-        dataSource = bodyData;
-        dataDelaySource = bodyDelays;
-        if (id == 2000) {
-            state = bodyState;
+var avatarEquipmentFrameRecords = {};
+function avatarAnimate(reverse=false, frame=0) { // the part needs to already be on the avatar
+    avatarDealWithUnusedParts(2000, bodyData, bodyState, frame);
+    if (headState in bodyData[12000]) {
+        if (bodyData[12000][headState].length == 1) { // stuff that needs to be updated when they get moved
+            avatarDealWithUnusedParts(12000, bodyData, headState, 0);
         }
-        else if (id == 12000) {
-            state = headState;
-        }
-        else if (id == 20000) {
-            state = faceState;
-        }
-    }
-    else {
-        dataSource = allData;
-        // I mean there are only a few items, so if it turns out I did something wrong, I'll add this back
-        //dataDelaySource = allDelays;
-        state = bodyState;
-        item = true;
-    }
-    if (state in dataSource[id]) {
-        if (dataSource[id][state].length == 1) { // stuff that needs to be updated when they get moved
-            avatarDealWithUnusedParts(id, dataSource, state, 0);
-            tempMoveHead(id, frame);
-            scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, [id]);
-            return;
-        }
-        else if (!item && state in dataDelaySource[id]) {
-            if (dataDelaySource[id][state].length == 0) {
-                avatarDealWithUnusedParts(id, dataSource, state, 0);
-                tempMoveHead(id, frame);
-                scheduleToGameLoop(SMALL_UNIT_OF_TIME, avatarAnimate, [id]);
-                return;
+        else if (headState in bodyDelays[12000]) {
+            if (bodyDelays[12000][headState].length == 0) {
+                avatarDealWithUnusedParts(12000, bodyData, headState, 0);
             }
         }
     }
-    else { // HIDE EVERYTHING 
-        Object.keys(allAvatarParts[id]).forEach((partName) => {
-            let partDiv = allAvatarParts[id][partName];
-            partDiv.style.visibility = 'hidden';
-        });
-        return;
-    }
-    if (previousState != state) {
-        frame = 0;
-    }
-    avatarDealWithUnusedParts(id, dataSource, state, frame);
-    tempMoveHead(id, frame);
-    let delay = 1000;
-    if (item) {
-        delay = bodyDelays[2000][state][0];
-    }
-    else {
-        delay = dataDelaySource[id][state][frame];
-    }
-    if (state == 'stand1' || state == 'stand2' || state == 'alert') { // cyclic animation
-        if (frame == dataSource[id][state].length-1) {
-            scheduleToGameLoop(delay, avatarAnimate, [id, state, true, frame-1]);
+    tempMoveFace();
+    Object.keys(avatarEquipmentFrameRecords).forEach((id) => {
+        let realFrame = frame;
+        if (allData[id][bodyState].length != 3) {
+            realFrame = avatarEquipmentFrameRecords[id][1];
+        }
+        if (bodyState in allData[id]) {
+            if (allData[id][bodyState].length == 1) { // stuff that needs to be updated when they get moved
+                avatarDealWithUnusedParts(id, allData, bodyState, 0);
+                return;
+            }
+        }
+        else { // HIDE EVERYTHING 
+            Object.keys(allAvatarParts[id]).forEach((partName) => {
+                let partDiv = allAvatarParts[id][partName];
+                partDiv.style.visibility = 'hidden';
+            });
+            return;
+        }
+        avatarDealWithUnusedParts(id, allData, bodyState, realFrame);
+        if (allData[id][bodyState].length != 3) {
+            if (realFrame == allData[id][bodyState].length-1) {
+                realFrame = -1;
+            }
+            avatarEquipmentFrameRecords[id] = [false, realFrame+1];
+        }
+    });
+    let delay = bodyDelays[2000][bodyState][frame];
+    if (bodyState == 'stand1' || bodyState == 'stand2' || bodyState == 'alert') { // cyclic animation
+        if (frame == bodyData[2000][bodyState].length-1) {
+            scheduleToGameLoop(delay, avatarAnimate, [true, frame-1], 'body');
         }
         else {
             if (frame == 0) {
                 reverse = false;
             }
             if (reverse) {
-                scheduleToGameLoop(delay, avatarAnimate, [id, state, true, frame-1]);
+                scheduleToGameLoop(delay, avatarAnimate, [true, frame-1], 'body');
             }
             else {
-                scheduleToGameLoop(delay, avatarAnimate, [id, state, false, frame+1]);
+                scheduleToGameLoop(delay, avatarAnimate, [false, frame+1], 'body');
             }
         }
     }
     else {
-        if (frame == dataSource[id][state].length-1) {
+        if (frame == bodyData[2000][bodyState].length-1) {
             frame = -1; // restart the animation
         }
-        scheduleToGameLoop(delay, avatarAnimate, [id, state, false, frame+1]);
+        scheduleToGameLoop(delay, avatarAnimate, [false, frame+1], 'body');
     }
 }
 
@@ -267,6 +246,9 @@ function addBodyPartsToAvatar(id) {
                 partDiv.style.visibility = 'hidden';
                 if (!(id in allAvatarParts)) {
                     allAvatarParts[id] = {};
+                }
+                if (!(id in avatarEquipmentFrameRecords) && !(bodyItems.includes(id))) {
+                    avatarEquipmentFrameRecords[id] = [false, 0];
                 }
                 appendLocation.appendChild(partDiv);
                 allAvatarParts[id][partName] = partDiv;

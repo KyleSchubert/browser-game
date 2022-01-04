@@ -468,21 +468,23 @@ $(document).keydown(function(event) {
             lootItem(currentHoveredDropItem);
         }
     }
-    else if (event.key === 'ArrowRight') {
+    else if (event.key === 'ArrowRight' && !event.originalEvent.repeat) {
         rightArrowPressed = true;
         if (!avatarMoving && !leftArrowPressed && !isCrouching && !isOnLadder && !isJumping) {
             avatarMoving = true;
             avatarWalk();
+            scheduleReplace('body', 0, avatarAnimate);
         }
     }
-    else if (event.key === 'ArrowLeft') {
+    else if (event.key === 'ArrowLeft' && !event.originalEvent.repeat) {
         leftArrowPressed = true;
         if (!avatarMoving && !rightArrowPressed && !isCrouching && !isOnLadder && !isJumping) {
             avatarMoving = true;
             avatarWalk();
+            scheduleReplace('body', 0, avatarAnimate);
         }
     }
-    else if (event.key === 'ArrowDown') {
+    else if (event.key === 'ArrowDown' && !event.originalEvent.repeat) {
         if (!isJumping) {
             if (isOnLadder) {
                 // do later
@@ -492,6 +494,7 @@ $(document).keydown(function(event) {
                 isCrouching = true;
                 bodyState = 'prone';
                 headState = 'prone';
+                scheduleReplace('body', 0, avatarAnimate);
             }
         }
     }
@@ -512,6 +515,7 @@ $(document).keyup(function(event) {
             avatarMoving = false;
             bodyState = 'stand1';
             headState = 'stand1';
+            scheduleReplace('body', 0, avatarAnimate);
         }
     }
     else if (event.key === 'ArrowLeft') {
@@ -520,6 +524,7 @@ $(document).keyup(function(event) {
             avatarMoving = false;
             bodyState = 'stand1';
             headState = 'stand1';
+            scheduleReplace('body', 0, avatarAnimate);
         }
     }
     else if (event.key === 'ArrowDown') {
@@ -535,6 +540,7 @@ $(document).keyup(function(event) {
                 isCrouching = false;
                 bodyState = 'stand1';
                 headState = 'stand1';
+                scheduleReplace('body', 0, avatarAnimate);
             }
         }
     }

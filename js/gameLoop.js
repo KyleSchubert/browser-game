@@ -6,12 +6,18 @@ var gameLoop = {
     damageNumber: [],
     body: [],
     head: [],
+    avatar: [],
     other: []
 };
 
 function scheduleToGameLoop(delay, callback, data=[], category='other') {
     let locationToSchedule = gameLoop[category];
     locationToSchedule.push([performance.now() + delay - start, callback, data]);
+}
+
+function scheduleReplace(category, index, callback, data=[], delay=0) {
+    let locationToSchedule = gameLoop[category];
+    locationToSchedule[index] = [performance.now() + delay - start, callback, data];
 }
 
 function gameLoopParseCallback(callback, data) {
