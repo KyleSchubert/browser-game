@@ -348,24 +348,63 @@ function setState(state) {
 
 const movementKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
 const maxMovementSpeed = 0.08;
+const gravity = 0.0012;
 function avatarMovement(timeDelta) {
-    if (movementKeys.some((element) => pressedKeys.includes(element))) {
+    if (movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && !isJumping)) {
+        let alreadySetState = false;
+        if (pressedKeys.includes(' ') && !isJumping && !pressedKeys.includes('ArrowDown')) {
+            if (!alreadySetState) {
+                setState('jump');
+                alreadySetState = true;
+            }
+            isJumping = true;
+            floor = AVATAR.offsetTop;
+            avatarComputedYPosition = AVATAR.offsetTop;
+            yVelocity = maxMovementSpeed * 5.5;
+            scheduleToGameLoop(0, avatarJump, [], 'movement');
+        }
         if (pressedKeys.includes('ArrowDown')) {
-            setState('prone');
+            if (!alreadySetState && !isJumping) {
+                setState('prone');
+                alreadySetState = true;
+            }
         }
         else if (pressedKeys.includes('ArrowRight')) {
-            setState(walkType);
+            if (!alreadySetState && !isJumping) {
+                setState(walkType);
+                alreadySetState = true;
+            }
             AVATAR.style.transform = 'scaleX(-1)';
             AVATAR.style.left = AVATAR.offsetLeft + maxMovementSpeed * timeDelta + 'px';
         }
         else if (pressedKeys.includes('ArrowLeft')) {
-            setState(walkType);
+            if (!alreadySetState && !isJumping) {
+                setState(walkType);
+                alreadySetState = true;
+            }
             AVATAR.style.transform = 'scaleX(1)';
             AVATAR.style.left = AVATAR.offsetLeft - maxMovementSpeed * timeDelta + 'px';
         }
     }
-    else {
+    else if (!isJumping) {
         setState('stand1');
     }
     scheduleToGameLoop(0, avatarMovement, [], 'movement');
+}
+
+var isJumping = false;
+var floor = AVATAR.offsetTop;
+var yVelocity = maxMovementSpeed * 5.5;
+var avatarComputedYPosition = AVATAR.offsetTop;
+function avatarJump(timeDelta) {
+    avatarComputedYPosition -= yVelocity * timeDelta;
+    AVATAR.style.top = avatarComputedYPosition + 'px';
+    yVelocity -= gravity * timeDelta;
+    if (parseInt(AVATAR.style.top) >= floor) {
+        isJumping = false;
+        AVATAR.style.top = floor + 'px';
+    }
+    if (isJumping) {
+        scheduleToGameLoop(0, avatarJump, [], 'movement');
+    }
 }
