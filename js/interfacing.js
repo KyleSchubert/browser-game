@@ -534,12 +534,15 @@ $(document).keyup(function(event) {
             }
             else {
                 if (rightArrowPressed || leftArrowPressed) {
+                    isCrouching = false;
                     avatarMoving = true;
                     avatarWalk();
                 }
-                isCrouching = false;
-                bodyState = 'stand1';
-                headState = 'stand1';
+                else {
+                    isCrouching = false;
+                    bodyState = 'stand1';
+                    headState = 'stand1';
+                }
                 scheduleReplace('body', 0, avatarAnimate);
             }
         }
