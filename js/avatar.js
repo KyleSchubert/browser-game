@@ -347,8 +347,9 @@ function setState(state) {
 }
 
 const movementKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
-const maxMovementSpeed = 0.08;
+const maxMovementSpeed = 0.20;
 const gravity = 0.0012;
+var avatarComputedXPosition = AVATAR.offsetLeft;
 function avatarMovement(timeDelta) {
     if (movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && !isJumping)) {
         let alreadySetState = false;
@@ -360,7 +361,7 @@ function avatarMovement(timeDelta) {
             isJumping = true;
             floor = AVATAR.offsetTop;
             avatarComputedYPosition = AVATAR.offsetTop;
-            yVelocity = maxMovementSpeed * 5.5;
+            yVelocity = maxMovementSpeed * 2.5;
             scheduleToGameLoop(0, avatarJump, [], 'movement');
         }
         if (pressedKeys.includes('ArrowDown')) {
@@ -375,7 +376,8 @@ function avatarMovement(timeDelta) {
                 alreadySetState = true;
             }
             AVATAR.style.transform = 'scaleX(-1)';
-            AVATAR.style.left = AVATAR.offsetLeft + maxMovementSpeed * timeDelta + 'px';
+            avatarComputedXPosition += maxMovementSpeed * timeDelta;
+            AVATAR.style.left = avatarComputedXPosition + 'px';
         }
         else if (pressedKeys.includes('ArrowLeft')) {
             if (!alreadySetState && !isJumping) {
@@ -383,7 +385,8 @@ function avatarMovement(timeDelta) {
                 alreadySetState = true;
             }
             AVATAR.style.transform = 'scaleX(1)';
-            AVATAR.style.left = AVATAR.offsetLeft - maxMovementSpeed * timeDelta + 'px';
+            avatarComputedXPosition -= maxMovementSpeed * timeDelta;
+            AVATAR.style.left = avatarComputedXPosition + 'px';
         }
     }
     else if (!isJumping) {
@@ -394,7 +397,7 @@ function avatarMovement(timeDelta) {
 
 var isJumping = false;
 var floor = AVATAR.offsetTop;
-var yVelocity = maxMovementSpeed * 5.5;
+var yVelocity = maxMovementSpeed * 2.5;
 var avatarComputedYPosition = AVATAR.offsetTop;
 function avatarJump(timeDelta) {
     avatarComputedYPosition -= yVelocity * timeDelta;
