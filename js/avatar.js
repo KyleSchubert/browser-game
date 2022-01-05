@@ -51,7 +51,7 @@ function getWeaponWalkType(id) {
     }
 }
 
-function testing() {
+function initializeAvatar() {
     let body = 2000;
     let head = 12000;
     let face = 20000;
@@ -335,31 +335,37 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
 }
 
 $(() => {
-    testing();
+    initializeAvatar();
 });
 
-function avatarWalk() {
-    if (avatarMoving) {
-        bodyState = walkType;
-        headState = walkType;
-        requestAnimationFrame(() => {
-            if (leftArrowPressed) {
-                if (AVATAR.style.transform == 'scaleX(-1)') {
-                    AVATAR.style.left = AVATAR.offsetLeft + 6 + 'px';
-                }
-                AVATAR.style.transform = 'scaleX(1)';
-                AVATAR.style.left = AVATAR.offsetLeft - 3 + 'px';
-            }
-            else {
-                if (AVATAR.style.transform == 'scaleX(1)') {
-                    AVATAR.style.left = AVATAR.offsetLeft - 6 + 'px';
-                }
-                AVATAR.style.transform = 'scaleX(-1)';
-                AVATAR.style.left = AVATAR.offsetLeft + 3 + 'px';
-            }
-            setTimeout(() => {
-                avatarWalk();
-            }, 20);
-        });
+function setState(state) {
+    if (bodyState != state) {
+        bodyState = state;
+        headState = state;
+        scheduleReplace('body', 0, avatarAnimate);
     }
+}
+
+const movementKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
+const maxMovementSpeed = 0.08;
+function avatarMovement(timeDelta) {
+    if (movementKeys.some((element) => pressedKeys.includes(element))) {
+        if (pressedKeys.includes('ArrowDown')) {
+            setState('prone');
+        }
+        else if (pressedKeys.includes('ArrowRight')) {
+            setState(walkType);
+            AVATAR.style.transform = 'scaleX(-1)';
+            AVATAR.style.left = AVATAR.offsetLeft + maxMovementSpeed * timeDelta + 'px';
+        }
+        else if (pressedKeys.includes('ArrowLeft')) {
+            setState(walkType);
+            AVATAR.style.transform = 'scaleX(1)';
+            AVATAR.style.left = AVATAR.offsetLeft - maxMovementSpeed * timeDelta + 'px';
+        }
+    }
+    else {
+        setState('stand1');
+    }
+    scheduleToGameLoop(0, avatarMovement, [], 'movement');
 }

@@ -457,94 +457,45 @@ function dialogProceed() {
     closeSmallDialogBox();
 }
 
-var rightArrowPressed = false;
-var leftArrowPressed = false;
-var isCrouching = false;
-var isOnLadder = false;
-var isJumping = false;
-$(document).keydown(function(event) {
-    if (event.key === 'z') { // ONLY used to  pick up  currentHoveredDropItem
-        if (currentHoveredDropItem) {
-            lootItem(currentHoveredDropItem);
-        }
+var pressedKeys = [];
+document.addEventListener('keydown', (event) => {
+    if (!pressedKeys.includes(event.key)) {
+        pressedKeys.push(event.key);
     }
-    else if (event.key === 'ArrowRight' && !event.originalEvent.repeat) {
-        rightArrowPressed = true;
-        if (!avatarMoving && !leftArrowPressed && !isCrouching && !isOnLadder && !isJumping) {
-            avatarMoving = true;
-            avatarWalk();
-            scheduleReplace('body', 0, avatarAnimate);
-        }
+});
+
+document.addEventListener('keyup', (event) => {
+    if (pressedKeys.includes(event.key)) {
+        pressedKeys.splice(pressedKeys.indexOf(event.key), 1);
     }
-    else if (event.key === 'ArrowLeft' && !event.originalEvent.repeat) {
-        leftArrowPressed = true;
-        if (!avatarMoving && !rightArrowPressed && !isCrouching && !isOnLadder && !isJumping) {
-            avatarMoving = true;
-            avatarWalk();
-            scheduleReplace('body', 0, avatarAnimate);
-        }
+});
+
+function beingToggled(key) {
+    if (!pressedKeys.includes(key)) {
+        toggledKeys[key] = false;
     }
-    else if (event.key === 'ArrowDown' && !event.originalEvent.repeat) {
-        if (!isJumping) {
-            if (isOnLadder) {
-                // do later
-            }
-            else {
-                avatarMoving = false;
-                isCrouching = true;
-                bodyState = 'prone';
-                headState = 'prone';
-                scheduleReplace('body', 0, avatarAnimate);
-            }
-        }
-    }
-    else if (event.key === 'x') { // TESTING
-        processSkill(61001000);
-    }
-    else if (event.key === 'i') { // TESTING
+    return (!toggledKeys[key] && pressedKeys.includes(key));
+}
+
+var toggledKeys = {'i': false, 'ArrowLeft': false, 'ArrowRight': false, 'ArrowDown': false};
+function checkForToggleKeys() {
+    if (beingToggled('i')) {
+        toggledKeys['i'] = true;
         if (!(document.getElementById('inventoryArea').classList.contains('inventory-closing') || document.getElementById('inventoryArea').classList.contains('inventory-opening'))) {
             $('.openInventoryButton').eq(0).click();
         }
     }
-});
+    scheduleToGameLoop(0, checkForToggleKeys, [], 'interfacing');
+}
 
-$(document).keyup(function(event) {
-    if (event.key === 'ArrowRight') {
-        rightArrowPressed = false;
-        if (!leftArrowPressed) {
-            avatarMoving = false;
-            bodyState = 'stand1';
-            headState = 'stand1';
-            scheduleReplace('body', 0, avatarAnimate);
+function checkForPressedKeys() {
+    if (pressedKeys.includes('z')) {
+        if (currentHoveredDropItem) {
+            lootItem(currentHoveredDropItem);
         }
     }
-    else if (event.key === 'ArrowLeft') {
-        leftArrowPressed = false;
-        if (!rightArrowPressed) {
-            avatarMoving = false;
-            bodyState = 'stand1';
-            headState = 'stand1';
-            scheduleReplace('body', 0, avatarAnimate);
-        }
+    if (pressedKeys.includes('x')) {
+        processSkill(61001000);
     }
-    else if (event.key === 'ArrowDown') {
-        if (!isJumping) {
-            if (isOnLadder) {
-                // do later
-            }
-            else {
-                if (rightArrowPressed || leftArrowPressed) {
-                    isCrouching = false;
-                    avatarMoving = true;
-                    avatarWalk();
-                }
-                else {
-                    isCrouching = false;
-                    bodyState = 'stand1';
-                    headState = 'stand1';
-                }
-                scheduleReplace('body', 0, avatarAnimate);
-            }
-        }
-    }
-});
+    scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
+}

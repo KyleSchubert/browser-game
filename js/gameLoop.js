@@ -5,8 +5,8 @@ var gameLoop = {
     skill: [],
     damageNumber: [],
     body: [],
-    head: [],
-    avatar: [],
+    interfacing: [],
+    movement: [],
     other: []
 };
 
@@ -20,24 +20,37 @@ function scheduleReplace(category, index, callback, data=[], delay=0) {
     locationToSchedule[index] = [performance.now() + delay - start, callback, data];
 }
 
-function gameLoopParseCallback(callback, data) {
-    callback.apply(null, data);
-}
-
 const isBelow = (currentValue) =>  currentValue - (performance.now() - start) < 0;
 function gameLoopAdvance(timeStamp) {
     let timeDelta = timeStamp - oldTimeStamp;
     oldTimeStamp = timeStamp;
     Object.keys(gameLoop).forEach((key) => {
-        for (let i=gameLoop[key].length-1;i>=0;i--) {
-            let scheduledThing = gameLoop[key][i];
-            if (isBelow(scheduledThing[0])) {
-                scheduledThing[1].apply(null, scheduledThing[2]);
-                gameLoop[key].splice(i, 1);
+        if (key == 'movement') { // things that need  timeDelta
+            for (let i=gameLoop[key].length-1;i>=0;i--) {
+                let scheduledThing = gameLoop[key][i];
+                if (isBelow(scheduledThing[0])) {
+                    scheduledThing[2].unshift(timeDelta);
+                    scheduledThing[1].apply(null, scheduledThing[2]);
+                    gameLoop[key].splice(i, 1);
+                }
             }
         }
+        else {
+            for (let i=gameLoop[key].length-1;i>=0;i--) {
+                let scheduledThing = gameLoop[key][i];
+                if (isBelow(scheduledThing[0])) {
+                    scheduledThing[1].apply(null, scheduledThing[2]);
+                    gameLoop[key].splice(i, 1);
+                }
+            }
+        } 
     });
     requestAnimationFrame(gameLoopAdvance);
 }
 
-$(gameLoopAdvance());
+$(() => {
+    scheduleToGameLoop(0, checkForToggleKeys, [], 'interfacing');
+    scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
+    scheduleToGameLoop(0, avatarMovement, [], 'movement');
+    gameLoopAdvance();
+});
