@@ -95,7 +95,7 @@ function avatarDealWithUnusedParts(id, dataSource, state, frame) {
     });
     dataSource[id][state][frame].forEach((part) => {
         let partName = part[0][0];
-        if (id == 12000 && partName == 'accessoryOverHair') { // the other kinds of ears (dont want these)
+        if ((id == 12000 && partName == 'accessoryOverHair') || (id == 12000 && partName == 'backAccessoryOverHead')) { // the other kinds of ears (dont want these)
             return;
         }
         itemsUnusedParts.splice(itemsUnusedParts.indexOf(partName), 1);
@@ -120,22 +120,26 @@ function tempMoveFace() {
 
 const SMALL_UNIT_OF_TIME = 10;
 var avatarEquipmentFrameRecords = {};
-function avatarAnimate(reverse=false, frame=0) { // the part needs to already be on the avatar
+function avatarAnimate(reverse=false, frame=0, showOneFrame=false) { // the part needs to already be on the avatar
     avatarDealWithUnusedParts(2000, bodyData, bodyState, frame);
     if (headState in bodyData[12000]) {
         if (bodyData[12000][headState].length == 1) { // stuff that needs to be updated when they get moved
             avatarDealWithUnusedParts(12000, bodyData, headState, 0);
         }
-        else if (headState in bodyDelays[12000]) {
-            if (bodyDelays[12000][headState].length == 0) {
-                avatarDealWithUnusedParts(12000, bodyData, headState, 0);
-            }
+        else {
+            avatarDealWithUnusedParts(12000, bodyData, headState, frame);
         }
     }
     tempMoveFace();
+    if (bodyState == 'swingTF' && frame == 0) {
+        allAvatarParts['20000']['face'].style.visibility = 'hidden';
+    }
+    else {
+        allAvatarParts['20000']['face'].style.visibility = 'visible';
+    }
     Object.keys(avatarEquipmentFrameRecords).forEach((id) => {
         let realFrame = frame;
-        if (allData[id][bodyState].length != 3) {
+        if (allData[id][bodyState].length != bodyData['2000'][bodyState].length) {
             realFrame = avatarEquipmentFrameRecords[id][1];
         }
         if (bodyState in allData[id]) {
@@ -152,35 +156,37 @@ function avatarAnimate(reverse=false, frame=0) { // the part needs to already be
             return;
         }
         avatarDealWithUnusedParts(id, allData, bodyState, realFrame);
-        if (allData[id][bodyState].length != 3) {
+        if (allData[id][bodyState].length != bodyData['2000'][bodyState].length) {
             if (realFrame == allData[id][bodyState].length-1) {
                 realFrame = -1;
             }
             avatarEquipmentFrameRecords[id] = [false, realFrame+1];
         }
     });
-    let delay = bodyDelays[2000][bodyState][frame];
-    if (bodyState == 'stand1' || bodyState == 'stand2' || bodyState == 'alert') { // cyclic animation
-        if (frame == bodyData[2000][bodyState].length-1) {
-            scheduleToGameLoop(delay, avatarAnimate, [true, frame-1], 'body');
-        }
-        else {
-            if (frame == 0) {
-                reverse = false;
-            }
-            if (reverse) {
+    if (!showOneFrame) {
+        let delay = bodyDelays[2000][bodyState][frame];
+        if (bodyState == 'stand1' || bodyState == 'stand2' || bodyState == 'alert') { // cyclic animation
+            if (frame == bodyData[2000][bodyState].length-1) {
                 scheduleToGameLoop(delay, avatarAnimate, [true, frame-1], 'body');
             }
             else {
-                scheduleToGameLoop(delay, avatarAnimate, [false, frame+1], 'body');
+                if (frame == 0) {
+                    reverse = false;
+                }
+                if (reverse) {
+                    scheduleToGameLoop(delay, avatarAnimate, [true, frame-1], 'body');
+                }
+                else {
+                    scheduleToGameLoop(delay, avatarAnimate, [false, frame+1], 'body');
+                }
             }
         }
-    }
-    else {
-        if (frame == bodyData[2000][bodyState].length-1) {
-            frame = -1; // restart the animation
+        else {
+            if (frame == bodyData[2000][bodyState].length-1) {
+                frame = -1; // restart the animation
+            }
+            scheduleToGameLoop(delay, avatarAnimate, [false, frame+1], 'body');
         }
-        scheduleToGameLoop(delay, avatarAnimate, [false, frame+1], 'body');
     }
 }
 
@@ -278,7 +284,7 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
     if (mapSpots.includes('brow')) {
         brow[0] = maps['brow'][0];
         brow[1] = maps['brow'][1];
-        if (partName == 'head') {
+        if (partName == 'head' || partName == 'backHead') {
             headBrow[0] = brow[0];
             headBrow[1] = brow[1];
         }
@@ -288,11 +294,11 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
     if (mapSpots.includes('neck')) {
         neck[0] = maps['neck'][0];
         neck[1] = maps['neck'][1];
-        if (partName == 'body') {
+        if (partName == 'body' || partName == 'backBody') {
             bodyNeck[0] = neck[0];
             bodyNeck[1] = neck[1];
         }
-        if (partName == 'head') {
+        if (partName == 'head' || partName == 'backHead') {
             headNeck[0] = neck[0];
             headNeck[1] = neck[1];
         }
@@ -300,7 +306,7 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
     if (mapSpots.includes('hand')) {
         hand[0] = maps['hand'][0];
         hand[1] = maps['hand'][1];
-        if (partName == 'arm') {
+        if (partName == 'arm' || partName == 'armBelowHead' || partName == 'armBelowHeadOverMailChest' || partName == 'armOverHair' || partName == 'armOverHairBelowWeapon') {
             armHand[0] = hand[0];
             armHand[1] = hand[1];
         }
@@ -310,7 +316,7 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
     if (mapSpots.includes('handMove')) {
         handMove[0] = maps['handMove'][0];
         handMove[1] = maps['handMove'][1];
-        if (partName == 'lHand') {
+        if (partName == 'lHand' || partName == 'handBelowWeapon' || partName == 'handOverHair') {
             leftHandMove[0] = handMove[0];
             leftHandMove[1] = handMove[1];
         }
@@ -320,11 +326,11 @@ function positionOneAvatarPart(part) { // converted to JS from pascal and slight
     if (mapSpots.includes('navel')) {
         navel[0] = maps['navel'][0];
         navel[1] = maps['navel'][1];
-        if (partName == 'arm') {
+        if (partName == 'arm' || partName == 'armBelowHead' || partName == 'armBelowHeadOverMailChest' || partName == 'armOverHair' || partName == 'armOverHairBelowWeapon') {
             armNavel[0] = navel[0];
             armNavel[1] = navel[1];
         }
-        if (partName == 'body') {
+        if (partName == 'body' || partName == 'backBody') {
             bodyNavel[0] = navel[0];
             bodyNavel[1] = navel[1];
         }
@@ -338,20 +344,28 @@ $(() => {
     initializeAvatar();
 });
 
-function setState(state) {
-    if (bodyState != state) {
+function setState(state, frame=0, showOneFrame=false) {
+    if (bodyState != state || showOneFrame) {
         bodyState = state;
-        headState = state;
-        scheduleReplace('body', 0, avatarAnimate);
+        if (state in bodyData['12000']) { // the head does not have any data for any skills, for example
+            headState = state;
+        }
+        if (gameLoop.body.length > 0) {
+            scheduleReplace('body', 0, avatarAnimate, [false, frame, showOneFrame]);
+        }
+        else {
+            scheduleToGameLoop(0, avatarAnimate, [false, frame, showOneFrame], 'body');
+        }
     }
 }
 
+var isUsingSkill = false;
 const movementKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
 const maxMovementSpeed = 0.20;
 const gravity = 0.0012;
 var avatarComputedXPosition = AVATAR.offsetLeft;
 function avatarMovement(timeDelta) {
-    if (movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && !isJumping)) {
+    if ((movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && !isJumping))  && !isUsingSkill) {
         let alreadySetState = false;
         if (pressedKeys.includes(' ') && !isJumping && !pressedKeys.includes('ArrowDown')) {
             if (!alreadySetState) {
@@ -389,10 +403,13 @@ function avatarMovement(timeDelta) {
             AVATAR.style.left = avatarComputedXPosition + 'px';
         }
     }
-    else if (!isJumping) {
+    else if (!isJumping  && !isUsingSkill) {
         setState('stand1');
+        alreadySetState = true;
     }
-    scheduleToGameLoop(0, avatarMovement, [], 'movement');
+    if (alreadySetState) {
+        scheduleToGameLoop(0, avatarMovement, [], 'movement');
+    }
 }
 
 var isJumping = false;

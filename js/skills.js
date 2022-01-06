@@ -4,14 +4,13 @@ var realSkill = 0;
 var realSkillData = {};
 var cannotUse = [];
 var previousSequentialSkillIndex = 0;
+var attackSpeedBonus = 1 - .25;
 function processSkill(skill) {
     if (cannotUse.includes(skill)) {
         return;
     }
     cannotUse.push(skill);
-    setTimeout(() => {
-        removeItemOnce(cannotUse, skill);
-    }, classSkills[skill].reuseWaitTime);
+    scheduleToGameLoop(classSkills[skill].reuseWaitTime * attackSpeedBonus, removeItemOnce, [cannotUse, skill], 'skill');
     previousSkill = usedSkill;
     usedSkill = skill;
     let skillType = classSkills[skill].type;
@@ -39,21 +38,72 @@ function useAttackSkill(skill, widthStyle, heightStyle) {
     let div = document.createElement('div');
     div.style.backgroundImage = 'url(./skills/effect/' + skill + '.png)';
     div.style.width = widthStyle + 'px';
-    let width = widthStyle / 2;
     div.style.height = heightStyle + 'px';
-    let height = heightStyle / 2;
     div.style.position = 'absolute';
-    div.style.left = SQUAREposX - width - $('#gameArea').position()['left'] + 'px';
-    div.style.top = SQUAREposY - height + 'px';
+    //div.style.left = SQUAREposX - width - $('#gameArea').position()['left'] + 'px';
+    //div.style.top = SQUAREposY - height + 'px';
+    let leftBound = 0;
+    let rightBound = 0;
+    if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+        div.style.left = AVATAR.offsetLeft + 'px';
+        leftBound = AVATAR.offsetLeft;
+        rightBound = AVATAR.offsetLeft + widthStyle;
+    }
+    else {
+        div.style.left = AVATAR.offsetLeft - widthStyle + 'px';
+        leftBound = AVATAR.offsetLeft - widthStyle;
+        rightBound = AVATAR.offsetLeft;
+    }
+    div.style.top = AVATAR.offsetTop - 100 + 'px';
+    div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
     let gameArea = document.getElementById('gameArea');
     gameArea.appendChild(div);
     playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
-    const leftBound = SQUAREposX - width;
-    const rightBound = SQUAREposX + width;
-    const topBound = SQUAREposY - height;
-    const bottomBound = SQUAREposY + height;
+    const topBound = AVATAR.offsetTop - 100 - heightStyle;
+    const bottomBound = AVATAR.offsetTop - 100 + heightStyle;
     checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
     genericSpritesheetAnimation([div], 0, classSkills[usedSkill].delays);
+    if (gameLoop.skillMovements.length > 0) {
+        isUsingSkill = false;
+        gameLoop.skillMovements = [];
+        avatarComputedXPosition += -lastSkillXChange;
+        AVATAR.style.left = avatarComputedXPosition + 'px';
+        avatarComputedYPosition -= -lastSkillYChange;
+        AVATAR.style.top = avatarComputedYPosition + 'px';
+    }
+    let totalDelay = 0;
+    isUsingSkill = true;
+    lastSkillXChange = 0;
+    lastSkillYChange = 0;
+    classSkills[skill].action.forEach((frameData) => {
+        let frameDelay = frameData[2] * attackSpeedBonus;
+        scheduleToGameLoop(totalDelay, skillActionAnimation, [frameData[0], frameData[1], frameData[3]], 'skillMovements');
+        if (frameDelay < 0) { // does this happen before the attack? maybe
+            return;
+        }
+        else {
+            totalDelay += frameDelay;
+        }
+    });
+    scheduleToGameLoop(totalDelay, () => {
+        isUsingSkill = false;
+        avatarComputedXPosition += -lastSkillXChange;
+        AVATAR.style.left = avatarComputedXPosition + 'px';
+        avatarComputedYPosition -= -lastSkillYChange;
+        AVATAR.style.top = avatarComputedYPosition + 'px';
+    }, [], 'skillMovements');
+}
+
+var lastSkillXChange = 0;
+var lastSkillYChange = 0;
+function skillActionAnimation(state, frameOfState, avatarPositionChange) {
+    setState(state, frameOfState, true);
+    avatarComputedXPosition += avatarPositionChange[0] - lastSkillXChange;
+    AVATAR.style.left = avatarComputedXPosition + 'px';
+    avatarComputedYPosition -= avatarPositionChange[1] - lastSkillYChange;
+    AVATAR.style.top = avatarComputedYPosition + 'px';
+    lastSkillXChange = avatarPositionChange[0];
+    lastSkillYChange = avatarPositionChange[1];
 }
 
 function hitTest(left, top, reason) {

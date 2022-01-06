@@ -27,8 +27,9 @@ const classSkills = {
         type: 'attackSequence',
         mpCon: '0',
         ball: {},
+        action: [['swingT3', 0, 90, [-1, 0]], ['swingT3', 1, 90, [-6, 0]], ['swingT3', 2, 90, [-7, 0]], ['swingT3', 2, 90, [-15, 0]], ['swingT3', 2, 90, [-15, 0]], ['swingT3', 2, 120, [-15, 0]]],
         delays: [90, 90, 90, 90],
-        reuseWaitTime: 320,
+        reuseWaitTime: 425,
         finalForm: {},
         hitDelays: [90, 90, 90, 90, 90, 90],
         hitDimensions: [187, 131],
@@ -46,6 +47,7 @@ const classSkills = {
         type: 'ballEmitter',
         mpCon: '6+Math.ceil(x/5)',
         ball: {'ballDelay': 90, 'ballDelay1': 90, 'ballDelay2': 90},
+        action: [['swingT1', 0, -90, [5, 0]], ['swingT1', 0, -120, [6, 0]], ['swingT1', 1, 90, [-37, 0]], ['swingT1', 2, 90, [-39, 0]], ['swingT1', 2, 90, [-40, 0]], ['swingT1', 2, 90, [-41, 0]]],
         delays: [210, 90, 90, 90, 90],
         reuseWaitTime: 507,
         finalForm: {},
@@ -55,6 +57,25 @@ const classSkills = {
         requirementText: '',
         hitDescriptions: ['MP Cost: {6+Math.ceil(x/5)}, Damage: {110+3*x}%, Number of Attacks: 2, Max Enemies Hit: 6'],
         usedVariables: {'mpCon': '6+Math.ceil(x/5)', 'attackCount': '2', 'mobCount': '6', 'damage': '110+3*x', 'bulletCount': '1'},
+        computedVars: {}
+    },
+    61001002: {
+        className: 'Kaiser',
+        skillName: 'Air Lift',
+        tier: 1,
+        maxLevel: 15,
+        type: 'jump',
+        mpCon: '25-x',
+        ball: {},
+        delays: [60, 60, 60, 60, 60],
+        reuseWaitTime: 267,
+        finalForm: {},
+        hitDelays: [],
+        hitDimensions: [],
+        description: 'Grants an increase to Speed and an extra mid-air jump.',
+        requirementText: '',
+        hitDescriptions: ['MP Cost: {25-x}, Set Jump Distance, Max Speed: +{5+x}, Speed: +{5+x}'],
+        usedVariables: {'mpCon': '25-x', 'speedMax': '5+x', 'psdSpeed': '5+x'},
         computedVars: {}
     },
     61000003: {
@@ -75,5 +96,11 @@ const classSkills = {
         hitDescriptions: ['DEF: +{20*x}, Knockback Resistance: +{4*x}%'],
         usedVariables: {'mpCon': '0', 'pddX': '20*x', 'prop': '4*x'},
         computedVars: {}
+    },
+    61001004: {
+        action: [['stabOF', 2, 90, [-2, 0]], ['stabOF', 2, 90, [-4, 0]], ['stabOF', 2, 90, [-6, 0]], ['stabOF', 2, 90, [-6, 0]], ['stabOF', 2, 90, [-6, 0]], ['stabOF', 2, 120, [-6, 0]]]
+    },
+    61001005: {
+        action: [['swingTF', 2, 90, [6, 0]], ['swingTF', 3, 90, [2, 0]], ['swingTF', 3, 90, [1, 0]], ['swingTF', 3, 90, [1, 0]], ['swingTF', 3, 90, [1, 0]], ['swingTF', 3, 120, [1, 0]]]
     }
 };
