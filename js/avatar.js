@@ -70,8 +70,8 @@ function removeItemFromAvatar(id) {
     Object.keys(allAvatarParts[id]).forEach((key) => {
         allAvatarParts[id][key].remove();
     });
-    delete avatarEquipmentFrameRecords[lastEquipmentPerVisualSlot[slot]];
-    delete allAvatarParts[lastEquipmentPerVisualSlot[slot]];
+    delete avatarEquipmentFrameRecords[id];
+    delete allAvatarParts[id];
 }
 
 function makeTestPixel(x, y, color='red', name='') {
