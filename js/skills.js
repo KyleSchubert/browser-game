@@ -44,15 +44,16 @@ function useAttackSkill(skill, widthStyle, heightStyle) {
     //div.style.top = SQUAREposY - height + 'px';
     let leftBound = 0;
     let rightBound = 0;
+    let totalOffsetLeft = document.getElementById('gameArea').offsetLeft + AVATAR.offsetLeft;
     if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
         div.style.left = AVATAR.offsetLeft + 'px';
-        leftBound = AVATAR.offsetLeft;
-        rightBound = AVATAR.offsetLeft + widthStyle;
+        leftBound = totalOffsetLeft;
+        rightBound = totalOffsetLeft + widthStyle;
     }
     else {
         div.style.left = AVATAR.offsetLeft - widthStyle + 'px';
-        leftBound = AVATAR.offsetLeft - widthStyle;
-        rightBound = AVATAR.offsetLeft;
+        leftBound = totalOffsetLeft - widthStyle;
+        rightBound = totalOffsetLeft;
     }
     div.style.top = AVATAR.offsetTop - 100 + 'px';
     div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
