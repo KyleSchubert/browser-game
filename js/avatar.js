@@ -139,9 +139,6 @@ function avatarAnimate(reverse=false, frame=0, showOneFrame=false) { // the part
     }
     Object.keys(avatarEquipmentFrameRecords).forEach((id) => {
         let realFrame = frame;
-        if (allData[id][bodyState].length != bodyData['2000'][bodyState].length) {
-            realFrame = avatarEquipmentFrameRecords[id][1];
-        }
         if (bodyState in allData[id]) {
             if (allData[id][bodyState].length == 1) { // stuff that needs to be updated when they get moved
                 avatarDealWithUnusedParts(id, allData, bodyState, 0);
@@ -154,6 +151,9 @@ function avatarAnimate(reverse=false, frame=0, showOneFrame=false) { // the part
                 partDiv.style.visibility = 'hidden';
             });
             return;
+        }
+        if (allData[id][bodyState].length != bodyData['2000'][bodyState].length) {
+            realFrame = avatarEquipmentFrameRecords[id][1];
         }
         avatarDealWithUnusedParts(id, allData, bodyState, realFrame);
         if (allData[id][bodyState].length != bodyData['2000'][bodyState].length) {
