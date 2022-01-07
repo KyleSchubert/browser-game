@@ -159,9 +159,16 @@ Storage.prototype.getObject = function(key) {
 // me
 $(() => {
     let data = window.localStorage.getObject('character');
-
     if (data) {
+        let oldCharacter = character;
         character = data;
+        Object.keys(oldCharacter.stats).forEach((stat) => {
+            if (!(stat in character.stats)) {
+                character.stats[stat] = 1;
+                character.compoundedStats[stat] = 1;
+                getCompoundedStats(stat);
+            }
+        });
         updateExpBar();
         makeSkillCards();
         if (character.info.skillPoints[0] > 1) {

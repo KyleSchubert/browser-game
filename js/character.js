@@ -23,6 +23,8 @@ var character = {
         61001101: 0
     },
     stats: { // stats from skills and allocated points
+        physicalAttack: 1,
+        magicAttack: 1,
         strength: 5,
         dexterity: 5,
         intelligence: 5,
@@ -35,6 +37,8 @@ var character = {
         accuracy: 0
     },
     compoundedStats: { // values from stats combined with gear and any unaccounted multipliers
+        physicalAttack: 1,
+        magicAttack: 1,
         strength: 5,
         dexterity: 5,
         intelligence: 5,
@@ -163,6 +167,11 @@ function updateOneCharacterDisplay(subject) {
     }
 }
 
-const classMainStat = {
-    'Kaiser': 'strength'
+const classData = {
+    'Kaiser': {
+        mainStat: 'strength',
+        subStat: 'dexterity',
+        validWeapons: 'Two-Handed Sword',
+        attackStat: 'physicalAttack'
+    }
 };

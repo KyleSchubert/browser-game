@@ -126,43 +126,47 @@ function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
 function rollDamageToMob(skill=0) {
     let damage = 0;
     let damageMult = 1.00;
+    let weaponMult = 1;
     if (skill != 0) {
         damageMult = realSkillData['damageMult'];
     }
-    if (jQuery.isEmptyObject(character.equipment[16])) {
-        weaponType = 'strength';
-    }
-    else {
+    if (!jQuery.isEmptyObject(character.equipment[16])) {
         switch (itemsInEquipmentSlots[16].exactType) {
+            case 'Katara':
+                weaponMult = 1.00;
+                break;
             case 'One-Handed Sword':
             case 'One-Handed Axe':
             case 'One-Handed Blunt Weapon':
+            case 'Staff':
+            case 'Wand':
+            case 'Gauntlet':
+                weaponMult = 1.20;
+                break;
+            case 'Bow':
+            case 'Dagger':
+                weaponMult = 1.30;
+                break;
             case 'Two-Handed Sword':
             case 'Two-Handed Axe':
             case 'Two-Handed Blunt':
-                weaponType = 'strength';
+            case 'Scepter':
+                weaponMult = 1.34;
                 break;
-            case 'Bow':
             case 'Gun':
             case 'Spear':
             case 'Pole Arm':
-                weaponType = 'dexterity';
+                weaponMult = 1.50;
                 break;
-            case 'Wand':
-            case 'Staff':
-            case 'Scepter':
             case 'Arm Cannon':
-                weaponType = 'intelligence';
-                break;
-            case 'Katara':
             case 'Claw':
-            case 'Gauntlet':
-            case 'Dagger':
-                weaponType = 'luck';
-                break;
+                weaponMult = 1.75;
         }
     }
-    baseDamage = character.compoundedStats[weaponType] * damageMult;
+    let mainStat = character.compoundedStats[classData[character.info.class].mainStat];
+    let subStat = character.compoundedStats[classData[character.info.class].subStat];
+    let characterAttackStat = character.compoundedStats[classData[character.info.class].attackStat];
+    baseDamage = (4*mainStat + subStat) * weaponMult * damageMult * (characterAttackStat/100);
     damage = randomIntFromInterval(baseDamage * 0.8, baseDamage * 1.2);
     return damage;
 }
