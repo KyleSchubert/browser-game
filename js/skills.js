@@ -236,6 +236,12 @@ function makeSkillCards() {
                 }
                 document.getElementById('skillPoints').innerHTML = character.info.skillPoints[skillTier];
                 event.currentTarget.previousElementSibling.innerHTML = character.skillLevels[skill];
+                if (classSkills[skill].type == 'passive') {
+                    Object.keys(getPassiveSkillStats(skill)).forEach((stat) => {
+                        getOneCompoundedStat(stat);
+                        updateOneCharacterDisplay(stat);
+                    });
+                }
             }
         });
         bottomInfo.appendChild(allocateButton);
@@ -335,4 +341,25 @@ function makeSkillPointsAllocateable() {
             target.classList.remove('clickable');
         }
     });
+}
+
+function getAllocatedPassiveSkills() {
+    let skills = [];
+    Object.keys(character.skillLevels).forEach((skillId) => {
+        if (classSkills[skillId].type == 'passive' && character.skillLevels[skillId] >= 1) {
+            skills.push(skillId);
+        }
+    });
+    return skills;
+}
+
+function getPassiveSkillStats(skillId) {
+    let data = {};
+    Object.keys(passiveSkillVars[skillId]).forEach((stat) => {
+        let equation = classSkills[skillId].usedVariables[stat];
+        let statValue = classSkills[skillId].computedVars[equation];
+        let statMeaning = passiveSkillVars[skillId][stat];
+        data[statMeaning] = statValue;
+    });
+    return data;
 }

@@ -27,6 +27,12 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
         wantPercent = false;
     }
     value = character.stats[stat];
+    getAllocatedPassiveSkills().forEach((skillId) => {
+        let statBonuses = getPassiveSkillStats(skillId);
+        if (stat in statBonuses) {
+            value += statBonuses[stat];
+        }
+    });
     if (stat in relatedStats) {
         values = [];
         relatedStats[stat].forEach((x) => values.push(character.compoundedStats[x]));

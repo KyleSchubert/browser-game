@@ -168,6 +168,9 @@ function rollDamageToMob(skill=0) {
     let characterAttackStat = character.compoundedStats[classData[character.info.class].attackStat];
     baseDamage = (4*mainStat + subStat) * weaponMult * damageMult * (characterAttackStat/100);
     damage = randomIntFromInterval(baseDamage * 0.8, baseDamage * 1.2);
+    if (damage < 1) {
+        damage = 1;
+    }
     return damage;
 }
 
