@@ -181,7 +181,7 @@ $('.statButton').on('click', (event) => {
 
 $('#autoAllocateButton').on('click', (event) => {
     if (character.info.attributePoints > 0) {
-        allocatedStat = classMainStat[character.info.class];
+        allocatedStat = classData[character.info.class].mainStat;
         character.stats[allocatedStat] += character.info.attributePoints;
         character.info.attributePoints = 0;
         updateCharacterDisplay();

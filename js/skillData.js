@@ -1,5 +1,5 @@
 const skillsPerClass = {
-    'Kaiser': [[61001000, 61001101, 61000003], [], [], [], [], []]
+    'Kaiser': [[61001000, 61001101, 61001002, 61000003], [], [], [], [], []]
 };
 
 // I have to manually type these

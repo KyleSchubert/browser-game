@@ -172,6 +172,9 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
 function makeSkillCards() {
     let currentSelectedSkillTab = document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value');
     skillsPerClass[character.info.class][currentSelectedSkillTab].forEach((skill) => {
+        if (!character.skillLevels[skill]) { // example: if the game updated and a skill was added, someone might not have it
+            character.skillLevels[skill] = 0;
+        }
         let skillInfoHolder = document.createElement('div');
         skillInfoHolder.classList = ['skillInfoHolder'];
         let tooltip = makeSkillTooltip(skill);
