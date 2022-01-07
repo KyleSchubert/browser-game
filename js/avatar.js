@@ -350,6 +350,9 @@ function setState(state, frame=0, showOneFrame=false) {
         if (state in bodyData['12000']) { // the head does not have any data for any skills, for example
             headState = state;
         }
+        Object.keys(avatarEquipmentFrameRecords).forEach((itemId) => {
+            avatarEquipmentFrameRecords[itemId] = [false, 0];
+        });
         if (gameLoop.body.length > 0) {
             scheduleReplace('body', 0, avatarAnimate, [false, frame, showOneFrame]);
         }

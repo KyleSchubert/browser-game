@@ -86,7 +86,7 @@ function regeneration() {
     }
     updateOneCharacterDisplay('hp');
     updateOneCharacterDisplay('mp');
-    setTimeout(regeneration, 850);
+    scheduleToGameLoop(850, regeneration);
 }
 
 $(() => {
