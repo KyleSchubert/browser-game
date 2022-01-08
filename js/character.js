@@ -63,8 +63,29 @@ function gainExperience(amount) {
             character.info.attributePoints += 5;
             leveledUp = true;
             let whichTierGetsSkillPoints = 0;
-            if (character.info.level < 10) {
-                whichTierGetsSkillPoints = 0;
+            if (character.info.level > 10) {
+                whichTierGetsSkillPoints = 1;
+            }
+            else if (character.info.level > 29) {
+                whichTierGetsSkillPoints = 2;
+            }
+            else if (character.info.level > 59) {
+                whichTierGetsSkillPoints = 3;
+            }
+            else if (character.info.level > 99) {
+                whichTierGetsSkillPoints = 4;
+            }
+            if (character.info.level > 10) {
+                skillTabs[1].style.visibility = '';
+            }
+            if (character.info.level > 30) {
+                skillTabs[2].style.visibility = '';
+            }
+            if (character.info.level > 60) {
+                skillTabs[3].style.visibility = '';
+            }
+            if (character.info.level > 100) {
+                skillTabs[4].style.visibility = '';
             }
             character.info.skillPoints[whichTierGetsSkillPoints] += 3;
             if (whichTierGetsSkillPoints == document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value')) {

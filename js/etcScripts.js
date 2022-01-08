@@ -179,6 +179,19 @@ $(() => {
     else {
         makeSkillCards();
     }
+    let skillTabs = document.getElementsByClassName('skillTab');
+    if (character.info.level > 10) {
+        skillTabs[1].style.visibility = '';
+    }
+    if (character.info.level > 30) {
+        skillTabs[2].style.visibility = '';
+    }
+    if (character.info.level > 60) {
+        skillTabs[3].style.visibility = '';
+    }
+    if (character.info.level > 100) {
+        skillTabs[4].style.visibility = '';
+    }
     data = window.localStorage.getObject('inventory');
     if (data) {
         inventory = data;
@@ -266,4 +279,10 @@ function createLine(x1, y1, x2, y2) {
     var alpha = Math.PI - Math.atan2(-b, a);
 
     return createLineElement(x, y, c, alpha);
+}
+
+function addMissingSkillPoints() {
+    character.info.skillPoints[1] = (character.info.level) * 3;
+    character.info.skillPoints[2] = (character.info.level-29) * 3;
+    character.info.skillPoints[3] = (character.info.level-59) * 3;
 }

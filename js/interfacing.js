@@ -499,3 +499,13 @@ function checkForPressedKeys() {
     }
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
 }
+
+$('.skillTab').on('click', (event) => {
+    document.getElementsByClassName('selectedSkillTab')[0].classList = ['skillTab'];
+    event.currentTarget.classList = ['skillTab selectedSkillTab'];
+    removeAllChildNodes(document.getElementById('skillContentAreaBottomPart'));
+    let skillTier = event.currentTarget.getAttribute('value');
+    document.getElementById('skillPoints').innerHTML = character.info.skillPoints[skillTier];
+    makeSkillCards();
+    makeSkillPointsAllocateable();
+});
