@@ -494,7 +494,7 @@ function checkForPressedKeys() {
             lootItem(currentHoveredDropItem);
         }
     }
-    if (pressedKeys.includes('x')) {
+    if (pressedKeys.includes('x') && character.skillLevels[61001000] >= 1) {
         processSkill(61001000);
     }
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');

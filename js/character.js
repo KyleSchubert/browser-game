@@ -77,6 +77,7 @@ function gainExperience(amount) {
             else if (character.info.level > 99) {
                 whichTierGetsSkillPoints = 4;
             }
+            let skillTabs = document.getElementsByClassName('skillTab');
             if (character.info.level > 10) {
                 skillTabs[1].style.visibility = '';
             }
