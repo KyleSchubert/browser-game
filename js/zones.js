@@ -17,7 +17,13 @@ var zoneConnections = {
     15: [{l: 78, t: 162, dest: 14}, {l: 600, t: 265, dest: 16}],
     16: [{l: 78, t: 162, dest: 15}, {l: 600, t: 265, dest: 17}],
     17: [{l: 78, t: 162, dest: 16}, {l: 600, t: 265, dest: 18}],
-    18: [{l: 78, t: 162, dest: 17}, {l: 600, t: 265, dest: 19}]
+    18: [{l: 78, t: 162, dest: 17}, {l: 600, t: 265, dest: 19}],
+    19: [{l: 78, t: 162, dest: 18}, {l: 600, t: 265, dest: 20}],
+    20: [{l: 78, t: 162, dest: 19}, {l: 600, t: 265, dest: 21}],
+    21: [{l: 78, t: 162, dest: 20}, {l: 600, t: 265, dest: 22}],
+    22: [{l: 78, t: 162, dest: 21}, {l: 600, t: 265, dest: 23}],
+    23: [{l: 78, t: 162, dest: 22}, {l: 600, t: 265, dest: 24}],
+    24: [{l: 78, t: 162, dest: 23}, {l: 600, t: 265, dest: 25}]
 };
 
 var zoneMobs = {
@@ -38,7 +44,13 @@ var zoneMobs = {
     15: ['helmet pepe'],
     16: ['pepe'],
     17: ['white yeti and king pepe'],
-    18: ['mutant ribbon pig']
+    18: ['possibly-evil seal'],
+    19: ['possibly-evil walrus'],
+    20: ['warmer bot'],
+    21: ['turnipy'],
+    22: ['wraith'],
+    23: ['dyle'],
+    24: ['mutant ribbon pig']
 };
 
 var currentZone = 1;
