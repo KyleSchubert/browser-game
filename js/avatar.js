@@ -400,23 +400,33 @@ function avatarMovement(timeDelta) {
                 alreadySetState = true;
             }
         }
-        else if (pressedKeys.includes('ArrowRight')) {
+        else if (pressedKeys.includes('ArrowRight') && avatarComputedXPosition < 1079) {
             if (!alreadySetState && !isJumping) {
                 setState(walkType);
                 alreadySetState = true;
             }
             AVATAR.style.transform = 'scaleX(-1)';
-            avatarComputedXPosition += maxMovementSpeed * timeDelta;
+            if (avatarComputedXPosition + maxMovementSpeed * timeDelta > 1079) {
+                avatarComputedXPosition = 1079;
+            }
+            else {
+                avatarComputedXPosition += maxMovementSpeed * timeDelta;
+            }
             AVATAR.style.left = avatarComputedXPosition + 'px';
             isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
         }
-        else if (pressedKeys.includes('ArrowLeft')) {
+        else if (pressedKeys.includes('ArrowLeft') && avatarComputedXPosition > 0) {
             if (!alreadySetState && !isJumping) {
                 setState(walkType);
                 alreadySetState = true;
             }
             AVATAR.style.transform = 'scaleX(1)';
-            avatarComputedXPosition -= maxMovementSpeed * timeDelta;
+            if (avatarComputedXPosition - maxMovementSpeed * timeDelta < 0) {
+                avatarComputedXPosition = 0;
+            } 
+            else {
+                avatarComputedXPosition -= maxMovementSpeed * timeDelta;
+            }
             AVATAR.style.left = avatarComputedXPosition + 'px';
             isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
         }
