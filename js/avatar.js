@@ -367,19 +367,32 @@ const movementKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
 const maxMovementSpeed = 0.20;
 const gravity = 0.0012;
 var avatarComputedXPosition = AVATAR.offsetLeft;
+var isFalling = true;
+var isJumping = false;
+var jumpPower = 2.7;
+var yVelocity = 0;
+var lastFloorY = 0;
+var canDoubleJump = false;
+var doubleJumped = false;
+var avatarComputedYPosition = AVATAR.offsetTop;
 function avatarMovement(timeDelta) {
-    if ((movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && !isJumping))  && !isUsingSkill) {
+    if (isJumping && !pressedKeys.includes(' ') && !doubleJumped) {
+        canDoubleJump = true;
+    }
+    if ((movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && (!isJumping || canDoubleJump)))  && !isUsingSkill) {
         let alreadySetState = false;
-        if (pressedKeys.includes(' ') && !isJumping && !pressedKeys.includes('ArrowDown')) {
+        if (pressedKeys.includes(' ') && (!isJumping || canDoubleJump) && !pressedKeys.includes('ArrowDown')) {
             if (!alreadySetState) {
                 setState('jump');
                 alreadySetState = true;
             }
+            if (canDoubleJump) {
+                doubleJumped = true;
+                canDoubleJump = false;
+            }
             isJumping = true;
-            floor = AVATAR.offsetTop;
             avatarComputedYPosition = AVATAR.offsetTop;
-            yVelocity = maxMovementSpeed * 2.5;
-            scheduleToGameLoop(0, avatarJump, [], 'movement');
+            yVelocity = maxMovementSpeed * jumpPower;
         }
         if (pressedKeys.includes('ArrowDown')) {
             if (!alreadySetState && !isJumping) {
@@ -395,6 +408,7 @@ function avatarMovement(timeDelta) {
             AVATAR.style.transform = 'scaleX(-1)';
             avatarComputedXPosition += maxMovementSpeed * timeDelta;
             AVATAR.style.left = avatarComputedXPosition + 'px';
+            isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
         }
         else if (pressedKeys.includes('ArrowLeft')) {
             if (!alreadySetState && !isJumping) {
@@ -404,30 +418,77 @@ function avatarMovement(timeDelta) {
             AVATAR.style.transform = 'scaleX(1)';
             avatarComputedXPosition -= maxMovementSpeed * timeDelta;
             AVATAR.style.left = avatarComputedXPosition + 'px';
+            isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
         }
     }
     else if (!isJumping  && !isUsingSkill) {
         setState('stand1');
         alreadySetState = true;
     }
+    if (!isFalling) {
+        isFalling = (yVelocity < 0);
+    }
+    else {
+        isJumping = true;
+    }
+    if (yVelocity != 0 || isFalling) {
+        lastFloorY = getFirstPlatformBelow();
+        avatarComputedYPosition -= yVelocity * timeDelta;
+        AVATAR.style.top = avatarComputedYPosition + 'px';
+        yVelocity -= gravity * timeDelta;
+
+    }
+    if (isFalling) {
+        if (avatarComputedYPosition >= lastFloorY) {
+            isFalling = false;
+            isJumping = false;
+            yVelocity = 0;
+            avatarComputedYPosition = lastFloorY;
+            AVATAR.style.top = avatarComputedYPosition + 'px';
+            doubleJumped = false;
+            canDoubleJump = false;
+        }
+    }
     if (alreadySetState) {
         scheduleToGameLoop(0, avatarMovement, [], 'movement');
     }
 }
 
-var isJumping = false;
-var floor = AVATAR.offsetTop;
-var yVelocity = maxMovementSpeed * 2.5;
-var avatarComputedYPosition = AVATAR.offsetTop;
-function avatarJump(timeDelta) {
-    avatarComputedYPosition -= yVelocity * timeDelta;
-    AVATAR.style.top = avatarComputedYPosition + 'px';
-    yVelocity -= gravity * timeDelta;
-    if (parseInt(AVATAR.style.top) >= floor) {
-        isJumping = false;
-        AVATAR.style.top = floor + 'px';
+function getFirstPlatformBelow() {
+    let posX = avatarComputedXPosition;
+    let posY = avatarComputedYPosition;
+    let closestY = 999999999;
+    let finalY = 0;
+    zonePlatforms.forEach((coords) => {
+        if (between(posX, coords[0], coords[2])) {
+            if (coords[1] == coords[3]) {
+                if (coords[1] < closestY && coords[1] >= posY) {
+                    closestY = coords[1];
+                }
+                if (coords[1] > finalY) {
+                    finalY = coords[1];
+                }
+            }
+        }
+    });
+    if (closestY == 999999999 && finalY != 0) {
+        closestY = finalY;
     }
-    if (isJumping) {
-        scheduleToGameLoop(0, avatarJump, [], 'movement');
+    return closestY;
+}
+
+function debugAvatar() {
+    for (let i=-2;i<=2;i++) { // standing point at (0, 0)
+        if (i == 0) {
+            makeTestPixel(i, 0, 'blue');
+            makeTestPixel(i, 1, 'blue');
+        }
+        else {
+            makeTestPixel(i, 0);
+            makeTestPixel(i, 1);
+        }
+    }
+    for (let i=-1;i>=-60;i--) { // hurt-box (line)
+        makeTestPixel(0, i, 'red');
     }
 }

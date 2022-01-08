@@ -24,6 +24,9 @@ function scheduleReplace(category, index, callback, data=[], delay=0) {
 const isBelow = (currentValue) =>  currentValue - (performance.now() - start) < 0;
 function gameLoopAdvance(timeStamp) {
     let timeDelta = timeStamp - oldTimeStamp;
+    if (!timeDelta) {
+        timeDelta = 1;
+    }
     oldTimeStamp = timeStamp;
     Object.keys(gameLoop).forEach((key) => {
         if (key == 'movement') { // things that need  timeDelta

@@ -43,6 +43,25 @@ var zoneMobs = {
 
 var currentZone = 1;
 
+var zonePlatforms = [
+    [0, 769, 1079, 769],
+    [0, 594, 227, 594],
+    [264, 546, 818, 546],
+    [0, 298, 375, 298],
+    [338, 398, 741, 398],
+    [779, 398, 819, 398],
+    [411, 251, 669, 251],
+    [704, 298, 818, 298],
+    [854, 350, 1079, 350]
+];
+
+function debugZonePlatforms() {
+    let gameArea = document.getElementById('gameArea');
+    zonePlatforms.forEach((array) => {
+        gameArea.appendChild(createLine.apply(null, array));
+    });
+}
+
 function loadPortals() {
     $('.portal').remove();
     zoneConnections[currentZone].forEach(function(portalData) {
@@ -110,3 +129,11 @@ $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(
         $('#superBlocker').removeClass('unfadeToBlack');
     }
 });
+
+function loadPlatforms() {
+    return;
+}
+
+function loadLaddersAndVines() {
+    return;
+}
