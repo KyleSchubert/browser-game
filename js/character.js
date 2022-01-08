@@ -23,6 +23,7 @@ var character = {
         61001101: 0
     },
     stats: { // stats from skills and allocated points
+        mastery: 0,
         physicalAttack: 1,
         magicAttack: 1,
         strength: 5,
@@ -37,6 +38,7 @@ var character = {
         accuracy: 0
     },
     compoundedStats: { // values from stats combined with gear and any unaccounted multipliers
+        mastery: 0,
         physicalAttack: 1,
         magicAttack: 1,
         strength: 5,

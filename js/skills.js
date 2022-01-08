@@ -215,7 +215,7 @@ function makeSkillCards() {
         allocateButton.setAttribute('value', skill);
         $(allocateButton).on('click', (event) => {
             let skill = event.currentTarget.getAttribute('value');
-            let skillTier = parseInt(document.getElementsByClassName('selectedSkillTab')[0].innerHTML);
+            let skillTier = document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value');
             if (character.skillLevels[skill] < classSkills[skill].maxLevel && character.info.skillPoints[skillTier] > 0) {
                 character.skillLevels[skill]++;
                 let target = document.querySelector('.tooltipBottomArea[value="' + skill + '"]');
@@ -361,6 +361,9 @@ function getPassiveSkillStats(skillId) {
     Object.keys(passiveSkillVars[skillId]).forEach((stat) => {
         let equation = classSkills[skillId].usedVariables[stat];
         let statValue = classSkills[skillId].computedVars[equation];
+        if (!statValue) {
+            statValue = parseInt(equation);
+        }
         let statMeaning = passiveSkillVars[skillId][stat];
         data[statMeaning] = statValue;
     });

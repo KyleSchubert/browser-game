@@ -15,7 +15,15 @@ const attackSequences = {
 
 var passiveSkillVars = {
     structureExample: {'pddX': 'defense', 'w': 'targetSkill', 'p': 'attCountX'},
-    61000003: {'pddX': 'defense'}
+    61000003: {'pddX': 'defense'},
+    60000221: {},
+    60001217: {'padX': 'physicalAttack'},
+    60001216: {'pddX': 'defense'},
+    61100009: {'damR': 'physicalAttack'}, //FOR NOW
+    61100008: {'padX': 'physicalAttack'},
+    61100005: {'pddX': 'defense'},
+    61100007: {'mhpR': 'maxHp', 'strX': 'strength'},
+    61100006: {'mastery': 'mastery'}
 };
 
 const classSkills = {
