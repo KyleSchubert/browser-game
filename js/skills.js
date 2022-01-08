@@ -294,10 +294,12 @@ function makeSkillTooltip(skill) {
         bottomArea.appendChild(currentLevelText);
         writeSkillHitDescription(bottomArea, skill, character.skillLevels[skill]);
     }
-    let nextLevelText = document.createElement('div');
-    nextLevelText.innerHTML = '[Next level: ' + (character.skillLevels[skill]+1) + ']';
-    bottomArea.appendChild(nextLevelText);
-    writeSkillHitDescription(bottomArea, skill, character.skillLevels[skill]+1);
+    if (character.skillLevels[skill] < classSkills[skill].maxLevel) {
+        let nextLevelText = document.createElement('div');
+        nextLevelText.innerHTML = '[Next level: ' + (character.skillLevels[skill]+1) + ']';
+        target.appendChild(nextLevelText);
+        writeSkillHitDescription(target, skill, character.skillLevels[skill]+1);
+    }
     tooltip.appendChild(bottomArea);
     return tooltip;
 }
