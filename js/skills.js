@@ -1,5 +1,6 @@
 var previousSkill = 0;
 var usedSkill = 0;
+var usedSkillSuffixes = {'effect': '', 'hit': ''};
 var realSkill = 0;
 var realSkillData = {};
 var cannotUse = [];
@@ -24,10 +25,16 @@ function processSkill(skill) {
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
         let damageVariable = attackSkillVars[usedSkill][1][previousSequentialSkillIndex];
         let equation = classSkills[usedSkill].usedVariables[damageVariable];
-        let damageMult = classSkills[usedSkill].computedVars[equation] / 100;
+        let damageMult = classSkills[usedSkill].computedVars[equation];
         let targetsVariable = attackSkillVars[usedSkill][2][previousSequentialSkillIndex];
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
         realSkillData = {'lines': lines, 'damageMult': damageMult, 'targets': targets};
+        let bonuses = getSkillBonuses(skill);
+        Object.keys(bonuses).forEach((key) => {
+            realSkillData[key] += bonuses[key];
+        });
+        realSkillData['damageMult'] /= 100;
+        setSkillSuffixesAndDimensions(skill);
         let skillDimensions = attackSequences[skill][index][1];
         previousSequentialSkillIndex = index;
         useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1]);
@@ -36,7 +43,7 @@ function processSkill(skill) {
 
 function useAttackSkill(skill, widthStyle, heightStyle) {
     let div = document.createElement('div');
-    div.style.backgroundImage = 'url(./skills/effect/' + skill + '.png)';
+    div.style.backgroundImage = 'url(./skills/effect/' + skill + usedSkillSuffixes['effect'] + '.png)';
     div.style.width = widthStyle + 'px';
     div.style.height = heightStyle + 'px';
     div.style.position = 'absolute';
@@ -110,7 +117,7 @@ function skillActionAnimation(state, frameOfState, avatarPositionChange) {
 function hitTest(left, top, reason) {
     let hitDimensions = classSkills[usedSkill].hitDimensions;
     let div = document.createElement('div');
-    div.style.backgroundImage = 'url(./skills/hit/' + usedSkill + '.png)';
+    div.style.backgroundImage = 'url(./skills/hit/' + usedSkill + usedSkillSuffixes['hit'] + '.png)';
     div.style.width = hitDimensions[0] + 'px';
     div.style.height = hitDimensions[1] + 'px';
     div.style.position = 'absolute';
@@ -320,6 +327,26 @@ function skillEquationManager(source, level, skill) {
     return source;
 }
 
+function skillOnlyLoadComputedVars(skill) {
+    let level = character.skillLevels[skill];
+    let repeatCount = classSkills[skill].hitDescriptions.length;
+    for (let i=0; i<repeatCount; i++) {
+        let textSource = classSkills[skill].hitDescriptions[i];
+        while (textSource.search('{.+?}') != -1) {
+            originalEquation = textSource.match('{.+?}')[0];
+            equation = originalEquation.slice(1, -1);
+            let value = eval(equation.replace('x', level));
+            if (character.skillLevels[skill] == level) {
+                classSkills[skill].computedVars[equation] = value;
+                if (equation == classSkills[skill].usedVariables.mpCon) {
+                    classSkills[skill].mpCon = value;
+                }
+            }
+            textSource = textSource.replace('{' + equation + '}', value);
+        }
+    }
+}
+
 function writeSkillHitDescription(elementToAppendTo, skill, level) {
     let repeatCount = 1;
     if (classSkills[skill].type == 'attackSequence') {
@@ -370,4 +397,57 @@ function getPassiveSkillStats(skillId) {
         data[statMeaning] = statValue;
     });
     return data;
+}
+
+function getSkillBonuses(skillId) {
+    let skillType = classSkills[skillId].type;
+    let bonuses = {};
+    if (skillType == 'attackSequence') {
+        bonuses = {'lines': 0, 'damageMult': 0, 'targets': 0};
+        if (skillId in skillsThatGetEnhanced) {
+            Object.keys(skillsThatGetEnhanced[skillId]).forEach((passiveSkillId) => {
+                skillOnlyLoadComputedVars(passiveSkillId);
+                if (passiveSkillId in character.skillLevels && character.skillLevels[passiveSkillId] >= 1) {
+                    Object.keys(bonuses).forEach((stat) => {
+                        if (stat in skillsThatGetEnhanced[skillId][passiveSkillId]['stats']) {
+                            let statMeaning = skillsThatGetEnhanced[skillId][passiveSkillId]['stats'][stat];
+                            let statFormula = classSkills[passiveSkillId].usedVariables[statMeaning];
+                            let statValue = classSkills[passiveSkillId].computedVars[statFormula];
+                            bonuses[stat] += statValue;
+                        }
+                    });
+                }
+            });
+        }
+    }
+    return bonuses;
+}
+
+function setSkillSuffixesAndDimensions(skillId) {
+    if (skillId in skillsThatGetEnhanced) {
+        let keys = Object.keys(skillsThatGetEnhanced[skillId]);
+        let gotHit = false;
+        let gotEffect = false;
+        for (let i=keys.length-1;i>=0;i--) {
+            if (gotHit && gotEffect) {
+                break;
+            }
+            if (character.skillLevels[keys[i]] >= 1) {
+                if ('effect' in skillsThatGetEnhanced[skillId][keys[i]] && !gotEffect) {
+                    usedSkillSuffixes['effect'] = skillsThatGetEnhanced[skillId][keys[i]]['effect'];
+                    if (classSkills[skillId].type == 'attackSequence') {
+                        for (let j=0;j<attackSequences[skillId].length;j++) {
+                            attackSequences[skillId][j][1] = skillsThatGetEnhanced[skillId][keys[i]].effectDimensions[j];
+                        }
+                    }
+                    gotEffect = true;
+                }
+                if ('hit' in skillsThatGetEnhanced[skillId][keys[i]] && !gotHit) {
+                    usedSkillSuffixes['hit'] = skillsThatGetEnhanced[skillId][keys[i]]['hit'];
+                    classSkills[skillId].hitDimensions = skillsThatGetEnhanced[skillId][keys[i]]['hitDimensions'];
+                    gotHit = true;
+                }
+            }
+        }
+    }
 }

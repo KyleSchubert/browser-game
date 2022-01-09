@@ -19,11 +19,17 @@ var passiveSkillVars = {
     60000221: {},
     60001217: {'padX': 'physicalAttack'},
     60001216: {'pddX': 'defense'},
-    61100009: {'damR': 'physicalAttack'}, //FOR NOW
+    61100009: {},
     61100008: {'padX': 'physicalAttack'},
     61100005: {'pddX': 'defense'},
     61100007: {'mhpR': 'maxHp', 'strX': 'strength'},
     61100006: {'mastery': 'mastery'}
+};
+
+var skillsThatGetEnhanced = {
+    61001000: {
+        61100009: {'stats': {'damageMult': 'damR'}, 'effect': 'CharLevel30effect', 'hit': 'CharLevel30hit0', 'effectDimensions': [[352,170], [369,138], [335,219]], 'hitDimensions': [237,131]}
+    }
 };
 
 const classSkills = {

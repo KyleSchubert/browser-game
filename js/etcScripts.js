@@ -175,6 +175,9 @@ $(() => {
             document.getElementById('skillPoints').innerHTML = character.info.skillPoints[0];
             makeSkillPointsAllocateable();
         }
+        Object.keys(character.skillLevels).forEach((skill) => {
+            skillOnlyLoadComputedVars(skill);
+        });
     }
     else {
         makeSkillCards();
