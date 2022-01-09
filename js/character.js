@@ -18,7 +18,7 @@ var character = {
         currentMp: 20
     },
     skillLevels: {
-        61001000: 1,
+        61001000: 0,
         61000003: 0,
         61001101: 0
     },
