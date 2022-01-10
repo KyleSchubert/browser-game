@@ -497,6 +497,9 @@ function checkForPressedKeys() {
     if (pressedKeys.includes('x') && character.skillLevels[61001000] >= 1) {
         processSkill(61001000);
     }
+    if (pressedKeys.includes('c') && character.skillLevels[61001101] >= 1) {
+        processSkill(61001101);
+    }
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
 }
 

@@ -6,8 +6,9 @@ var realSkillData = {};
 var cannotUse = [];
 var previousSequentialSkillIndex = 0;
 var attackSpeedBonus = 1 - .25;
+var skillDoneWaiting = true; // this is for letting the player combo to another skill
 function processSkill(skill) {
-    if (cannotUse.includes(skill)) {
+    if (cannotUse.includes(skill) || !skillDoneWaiting) {
         return;
     }
     cannotUse.push(skill);
@@ -21,6 +22,7 @@ function processSkill(skill) {
             index = previousSequentialSkillIndex + 1;
         }
         realSkill = attackSequences[skill][index][0];
+        let origin = attackSequences[skill][index][2];
         let linesVariable = attackSkillVars[usedSkill][0][previousSequentialSkillIndex];
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
         let damageVariable = attackSkillVars[usedSkill][1][previousSequentialSkillIndex];
@@ -37,11 +39,32 @@ function processSkill(skill) {
         setSkillSuffixesAndDimensions(skill);
         let skillDimensions = attackSequences[skill][index][1];
         previousSequentialSkillIndex = index;
-        useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1]);
+        useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1], skillType, origin);
+    }
+    else if (skillType == 'ballEmitter') {
+        let origin = attackSkillEffects[usedSkill].origin;
+        let linesVariable = attackSkillVars[usedSkill][0];
+        let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
+        let damageVariable = attackSkillVars[usedSkill][1];
+        let equation = classSkills[usedSkill].usedVariables[damageVariable];
+        let damageMult = classSkills[usedSkill].computedVars[equation];
+        let targetsVariable = attackSkillVars[usedSkill][2];
+        let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
+        let bulletsVariable = attackSkillVars[usedSkill][3];
+        let bullets = parseInt(classSkills[usedSkill].usedVariables[bulletsVariable]);
+        realSkillData = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'bullets': bullets};
+        let bonuses = getSkillBonuses(skill);
+        Object.keys(bonuses).forEach((key) => {
+            realSkillData[key] += bonuses[key];
+        });
+        realSkillData['damageMult'] /= 100;
+        setSkillSuffixesAndDimensions(skill);
+        let skillDimensions = attackSkillEffects[usedSkill].dimensions;
+        useAttackSkill(usedSkill, skillDimensions[0], skillDimensions[1], skillType, origin);
     }
 }
 
-function useAttackSkill(skill, widthStyle, heightStyle) {
+function useAttackSkill(skill, widthStyle, heightStyle, skillType, origin) {
     let div = document.createElement('div');
     div.style.backgroundImage = 'url(./skills/effect/' + skill + usedSkillSuffixes['effect'] + '.png)';
     div.style.width = widthStyle + 'px';
@@ -53,23 +76,28 @@ function useAttackSkill(skill, widthStyle, heightStyle) {
     let rightBound = 0;
     let totalOffsetLeft = document.getElementById('gameArea').offsetLeft + AVATAR.offsetLeft;
     if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-        div.style.left = AVATAR.offsetLeft + 'px';
-        leftBound = totalOffsetLeft;
-        rightBound = totalOffsetLeft + widthStyle;
+        div.style.left = AVATAR.offsetLeft + origin[0] - widthStyle + 'px';
+        leftBound = totalOffsetLeft + origin[0] - widthStyle;
+        rightBound = totalOffsetLeft + origin[0];
     }
     else {
-        div.style.left = AVATAR.offsetLeft - widthStyle + 'px';
-        leftBound = totalOffsetLeft - widthStyle;
-        rightBound = totalOffsetLeft;
+        div.style.left = AVATAR.offsetLeft - origin[0] + 'px';
+        leftBound = totalOffsetLeft - origin[0];
+        rightBound = totalOffsetLeft - origin[0] + widthStyle;
     }
-    div.style.top = AVATAR.offsetTop - 100 + 'px';
+    div.style.top = AVATAR.offsetTop - origin[1] + 'px';
     div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
     let gameArea = document.getElementById('gameArea');
     gameArea.appendChild(div);
     playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
-    const topBound = AVATAR.offsetTop - 100 - heightStyle;
-    const bottomBound = AVATAR.offsetTop - 100 + heightStyle;
-    checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
+    if (skillType == 'ballEmitter') {
+        
+    }
+    else {
+        const topBound = AVATAR.offsetTop - origin[1] - heightStyle;
+        const bottomBound = AVATAR.offsetTop - origin[1] + heightStyle;
+        checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
+    }
     genericSpritesheetAnimation([div], 0, classSkills[usedSkill].delays);
     if (gameLoop.skillMovements.length > 0) {
         isUsingSkill = false;
@@ -81,6 +109,7 @@ function useAttackSkill(skill, widthStyle, heightStyle) {
     }
     let totalDelay = 0;
     isUsingSkill = true;
+    skillDoneWaiting = false;
     lastSkillXChange = 0;
     lastSkillYChange = 0;
     classSkills[skill].action.forEach((frameData) => {
@@ -92,6 +121,10 @@ function useAttackSkill(skill, widthStyle, heightStyle) {
         else {
             totalDelay += frameDelay;
         }
+    });
+    let nextSkillCanBeUsedDelay = totalDelay * 0.8;
+    scheduleToGameLoop(nextSkillCanBeUsedDelay, () => {
+        skillDoneWaiting = true;
     });
     scheduleToGameLoop(totalDelay, () => {
         isUsingSkill = false;
@@ -106,12 +139,17 @@ var lastSkillXChange = 0;
 var lastSkillYChange = 0;
 function skillActionAnimation(state, frameOfState, avatarPositionChange) {
     setState(state, frameOfState, true);
-    avatarComputedXPosition += avatarPositionChange[0] - lastSkillXChange;
+    let reverse = 1;
+    if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+        reverse = -1;
+    }
+    avatarComputedXPosition += reverse * avatarPositionChange[0] - lastSkillXChange;
     AVATAR.style.left = avatarComputedXPosition + 'px';
-    avatarComputedYPosition -= avatarPositionChange[1] - lastSkillYChange;
+    console.log(avatarComputedXPosition);
+    avatarComputedYPosition -= reverse * avatarPositionChange[1] - lastSkillYChange;
     AVATAR.style.top = avatarComputedYPosition + 'px';
-    lastSkillXChange = avatarPositionChange[0];
-    lastSkillYChange = avatarPositionChange[1];
+    lastSkillXChange = reverse * avatarPositionChange[0];
+    lastSkillYChange = reverse * avatarPositionChange[1];
 }
 
 function hitTest(left, top, reason) {
@@ -424,6 +462,8 @@ function getSkillBonuses(skillId) {
 }
 
 function setSkillSuffixesAndDimensions(skillId) {
+    usedSkillSuffixes['hit'] = '';
+    usedSkillSuffixes['effect'] = '';
     if (skillId in skillsThatGetEnhanced) {
         let keys = Object.keys(skillsThatGetEnhanced[skillId]);
         let gotHit = false;

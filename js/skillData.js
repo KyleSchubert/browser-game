@@ -10,7 +10,11 @@ var attackSkillVars = {
 };
 
 const attackSequences = {
-    61001000: [[61001000,[283,167]], [61001004,[363,129]], [61001005,[335,209]]]
+    61001000: [[61001000,[283,167],[267,118]], [61001004,[363,129],[259,104]], [61001005,[335,209],[289,147]]]
+};
+
+const attackSkillEffects = {
+    61001101: {delays: [210,90,90,90,90], dimensions: [389,295], origin: [210, 176]}
 };
 
 var passiveSkillVars = {
@@ -117,13 +121,13 @@ const classSkills = {
         maxLevel: 25,
         type: 'ballEmitter',
         mpCon: '6+Math.ceil(x/5)',
-        ball: {'ballDelay': 90, 'ballDelay1': 90, 'ballDelay2': 90},
+        ball: {'dimensions': [104,63], 'delays': [90,90,90]},
         action: [['swingT1', 0, -90, [5, 0]], ['swingT1', 0, -120, [6, 0]], ['swingT1', 1, 90, [-37, 0]], ['swingT1', 2, 90, [-39, 0]], ['swingT1', 2, 90, [-40, 0]], ['swingT1', 2, 90, [-41, 0]]],
         delays: [210, 90, 90, 90, 90],
         reuseWaitTime: 507,
         finalForm: {},
         hitDelays: [90, 90, 90, 90, 90],
-        hitDimensions: [124, 113],
+        hitDimensions: [160, 130],
         description: 'Blast forward with warrior spirit.',
         requirementText: '',
         hitDescriptions: ['MP Cost: {6+Math.ceil(x/5)}, Damage: {110+3*x}%, Number of Attacks: 2, Max Enemies Hit: 6'],
