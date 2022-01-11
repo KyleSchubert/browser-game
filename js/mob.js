@@ -75,8 +75,18 @@ function mobGifSetup(name) { // name in any case
     return div;
 }
 
-function mobDamageEvent(event, skill=0, damageNumberLocation=[]) {
+var blockedSoundGroups = []; // to prevent stacking sounds when hitting a bunch of enemies
+function mobDamageEvent(event, soundGroupNumber=-1, skill=0, damageNumberLocation=[]) {
     let damageRoll = 1;
+    if (soundGroupNumber >= 0) {
+        if (!blockedSoundGroups.includes(soundGroupNumber)) {
+            blockedSoundGroups.push(soundGroupNumber);
+            playSound(sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]);
+            scheduleToGameLoop(1, () => {
+                removeItemOnce(blockedSoundGroups, soundGroupNumber);
+            });
+        }
+    }
     if (skill == 0) { // default attack AKA click
         damageRoll = rollDamageToMob(skill);
         damageNumbers(damageRoll, parseInt($(event).css('left')) + parseInt($(event).css('width')) / 2, -parseInt($(event).css('height')) + marginToAccountFor - 20);

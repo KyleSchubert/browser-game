@@ -145,7 +145,6 @@ function skillActionAnimation(state, frameOfState, avatarPositionChange) {
     }
     avatarComputedXPosition += reverse * avatarPositionChange[0] - lastSkillXChange;
     AVATAR.style.left = avatarComputedXPosition + 'px';
-    console.log(avatarComputedXPosition);
     avatarComputedYPosition -= reverse * avatarPositionChange[1] - lastSkillYChange;
     AVATAR.style.top = avatarComputedYPosition + 'px';
     lastSkillXChange = reverse * avatarPositionChange[0];
@@ -185,6 +184,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
     let trueRight = skillHitData['right'];
     let hitGroup = document.createElement('div');
     let mobHits = 0;
+    let groupNumber = randomIntFromInterval(0, 2000000000000);
     for (const entry of entries) {
         if (mobHits == realSkillData['targets']) {
             break;
@@ -201,13 +201,13 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                 || between(skillHitData['top'], bounds['top'], bounds['bottom'])
                 || between(skillHitData['bottom'], bounds['top'], bounds['bottom']))
         ) {
-            mobDamageEvent(entry.target, realSkill, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]);
+            let data = [entry.target, groupNumber, realSkill, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]];
+            scheduleToGameLoop(0, mobDamageEvent, data, 'damageNumber');
             hitGroup.appendChild(hitTest(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
             mobHits++;
         }
     }
     if (hitGroup.hasChildNodes()) {
-        playSound(sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]);
         document.getElementById('gameArea').appendChild(hitGroup);
         genericSpritesheetAnimation(hitGroup.children, 0, classSkills[usedSkill].hitDelays, deleteGroupWhenDone=true);
     }
