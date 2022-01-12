@@ -81,7 +81,7 @@ function mobDamageEvent(event, soundGroupNumber=-1, skill=0, damageNumberLocatio
     if (soundGroupNumber >= 0) {
         if (!blockedSoundGroups.includes(soundGroupNumber)) {
             blockedSoundGroups.push(soundGroupNumber);
-            playSound(sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]);
+            playSound(realSkillData[skill].sound);
             scheduleToGameLoop(1, () => {
                 removeItemOnce(blockedSoundGroups, soundGroupNumber);
             });
@@ -96,7 +96,7 @@ function mobDamageEvent(event, soundGroupNumber=-1, skill=0, damageNumberLocatio
         damageRoll = rollDamageToMob(skill);
         damageNumbers(damageRoll, damageNumberLocation[0], damageNumberLocation[1] - damageTopLocation);
         //damageTopLocation += 32;
-        for (let i=1; i<realSkillData.lines; i++) {
+        for (let i=1; i<realSkillData[skill].lines; i++) {
             let damage = rollDamageToMob(skill);
             damageRoll += damage;
             let parameters = [damage, damageNumberLocation[0], damageNumberLocation[1] - (damageTopLocation+32*i)];
@@ -138,7 +138,7 @@ function rollDamageToMob(skill=0) {
     let damageMult = 1.00;
     let weaponMult = 1;
     if (skill != 0) {
-        damageMult = realSkillData['damageMult'];
+        damageMult = realSkillData[skill]['damageMult'];
     }
     if (!jQuery.isEmptyObject(character.equipment[16])) {
         switch (itemsInEquipmentSlots[16].exactType) {

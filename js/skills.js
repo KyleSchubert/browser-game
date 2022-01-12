@@ -30,12 +30,12 @@ function processSkill(skill) {
         let damageMult = classSkills[usedSkill].computedVars[equation];
         let targetsVariable = attackSkillVars[usedSkill][2][previousSequentialSkillIndex];
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
-        realSkillData = {'lines': lines, 'damageMult': damageMult, 'targets': targets};
+        realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
         let bonuses = getSkillBonuses(skill);
         Object.keys(bonuses).forEach((key) => {
-            realSkillData[key] += bonuses[key];
+            realSkillData[realSkill][key] += bonuses[key];
         });
-        realSkillData['damageMult'] /= 100;
+        realSkillData[realSkill]['damageMult'] /= 100;
         setSkillSuffixesAndDimensions(skill);
         let skillDimensions = attackSequences[skill][index][1];
         previousSequentialSkillIndex = index;
@@ -53,12 +53,12 @@ function processSkill(skill) {
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
         let bulletsVariable = attackSkillVars[usedSkill][3];
         let bullets = parseInt(classSkills[usedSkill].usedVariables[bulletsVariable]);
-        realSkillData = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'bullets': bullets};
+        realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'bullets': bullets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
         let bonuses = getSkillBonuses(skill);
         Object.keys(bonuses).forEach((key) => {
-            realSkillData[key] += bonuses[key];
+            realSkillData[realSkill][key] += bonuses[key];
         });
-        realSkillData['damageMult'] /= 100;
+        realSkillData[realSkill]['damageMult'] /= 100;
         setSkillSuffixesAndDimensions(skill);
         let skillDimensions = attackSkillEffects[usedSkill].dimensions;
         useAttackSkill(usedSkill, skillDimensions[0], skillDimensions[1], skillType, origin);
@@ -183,7 +183,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
     let groupNumber = randomIntFromInterval(0, 2000000000000);
     let gameArea = document.getElementById('gameArea');
     for (const entry of entries) {
-        if (mobHits == realSkillData['targets']) {
+        if (mobHits == realSkillData[realSkill]['targets']) {
             break;
         }
         const bounds = entry.boundingClientRect;
