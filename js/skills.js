@@ -202,7 +202,11 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
             let skillType = classSkills[usedSkill].type;
             if (skillType == 'ballEmitter') {
                 let gameArea = document.getElementById('gameArea');
-                let startX = AVATAR.offsetLeft + 70;
+                let facingDirectionMult = 1;
+                if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                    facingDirectionMult = -1;
+                }
+                let startX = AVATAR.offsetLeft - facingDirectionMult*70;
                 let startY = AVATAR.offsetTop - 90;
                 let endX = bounds['left'] - skillHitData['leftOffset'] + bounds['width']/2;
                 let endY = bounds['top'] + bounds['height']/2;
@@ -217,6 +221,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                 subject.style.width = ballDimensions[0] + 'px';
                 subject.style.height = ballDimensions[1] + 'px';
                 subject.style.position = 'absolute';
+                subject.style.backgroundPositionX = '0px';
                 let ballCoords = [startX - ballDimensions[0]/2, startY - ballDimensions[1]/2];
                 subject.style.left = ballCoords[0] + 'px';
                 subject.style.top =  ballCoords[1] + 'px';
@@ -228,7 +233,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                 }
                 gameArea.appendChild(subject);
                 let ballDelays = classSkills[usedSkill].ball.delays;
-                scheduleToGameLoop(0, animateBallEmitter, [subject, ballCoords, ballDelays, [endX-startX, endY-startY], delay], 'movement');
+                scheduleToGameLoop(0, animateBallEmitter, [ballDimensions[0], subject, ballCoords, ballDelays, [endX-startX, endY-startY], delay, ballDelays[0]], 'movement');
                 scheduleToGameLoop(delay, (someElement) => {
                     someElement.style.visibility = '';
                 }, [hit], 'skill');
@@ -259,12 +264,20 @@ function getBallEmitterAngle(startX, startY, endX, endY) {
     return angle;
 }
 
-function animateBallEmitter(timeDelta, subject, coords, skillDelays, distanceToEnd, destroyTime, elapsedTime=0) {
+function animateBallEmitter(timeDelta, offset, subject, coords, skillDelays, distanceToEnd, destroyTime, nextFrameTime, frame=0, elapsedTime=0) {
     elapsedTime += timeDelta;
     subject.style.left = (coords[0] + distanceToEnd[0] * (elapsedTime/destroyTime)) + 'px';
     subject.style.top = (coords[1] + distanceToEnd[1] * (elapsedTime/destroyTime)) + 'px';
+    if (elapsedTime > nextFrameTime) {
+        subject.style.backgroundPositionX = (parseInt(subject.style.backgroundPositionX) - offset) + 'px';
+        frame++;
+        if (frame == skillDelays.length) {
+            frame = 0;
+        }
+        nextFrameTime += skillDelays[frame];
+    }
     if (elapsedTime < destroyTime) {
-        scheduleToGameLoop(0, animateBallEmitter, [subject, coords, skillDelays, distanceToEnd, destroyTime, elapsedTime], 'movement');
+        scheduleToGameLoop(0, animateBallEmitter, [offset, subject, coords, skillDelays, distanceToEnd, destroyTime, nextFrameTime, frame, elapsedTime], 'movement');
     }
     else {
         subject.remove();
