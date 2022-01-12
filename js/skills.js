@@ -42,6 +42,7 @@ function processSkill(skill) {
         useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1], skillType, origin);
     }
     else if (skillType == 'ballEmitter') {
+        realSkill = usedSkill;
         let origin = attackSkillEffects[usedSkill].origin;
         let linesVariable = attackSkillVars[usedSkill][0];
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
@@ -90,14 +91,9 @@ function useAttackSkill(skill, widthStyle, heightStyle, skillType, origin) {
     let gameArea = document.getElementById('gameArea');
     gameArea.appendChild(div);
     playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
-    if (skillType == 'ballEmitter') {
-        
-    }
-    else {
-        const topBound = AVATAR.offsetTop - origin[1] - heightStyle;
-        const bottomBound = AVATAR.offsetTop - origin[1] + heightStyle;
-        checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
-    }
+    const topBound = AVATAR.offsetTop - origin[1] - heightStyle;
+    const bottomBound = AVATAR.offsetTop - origin[1] + heightStyle;
+    checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
     genericSpritesheetAnimation([div], 0, classSkills[usedSkill].delays);
     if (gameLoop.skillMovements.length > 0) {
         isUsingSkill = false;
@@ -151,7 +147,7 @@ function skillActionAnimation(state, frameOfState, avatarPositionChange) {
     lastSkillYChange = reverse * avatarPositionChange[1];
 }
 
-function hitTest(left, top, reason) {
+function hitEffect(left, top, reason) {
     let hitDimensions = classSkills[usedSkill].hitDimensions;
     let div = document.createElement('div');
     div.style.backgroundImage = 'url(./skills/hit/' + usedSkill + usedSkillSuffixes['hit'] + '.png)';
@@ -185,6 +181,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
     let hitGroup = document.createElement('div');
     let mobHits = 0;
     let groupNumber = randomIntFromInterval(0, 2000000000000);
+    let gameArea = document.getElementById('gameArea');
     for (const entry of entries) {
         if (mobHits == realSkillData['targets']) {
             break;
@@ -201,18 +198,78 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                 || between(skillHitData['top'], bounds['top'], bounds['bottom'])
                 || between(skillHitData['bottom'], bounds['top'], bounds['bottom']))
         ) {
+            let delay = 0;
+            let skillType = classSkills[usedSkill].type;
+            if (skillType == 'ballEmitter') {
+                let gameArea = document.getElementById('gameArea');
+                let startX = AVATAR.offsetLeft + gameArea.offsetLeft + 70;
+                let startY = AVATAR.offsetTop - 90;
+                let endX = bounds['left'] - skillHitData['leftOffset'] + bounds['width']/2;
+                let endY = bounds['top'] + bounds['height']/2;
+                let speed = 0.4;
+                delay = getBallEmitterHitDelay(speed, startX, startY, endX, endY);
+                let hit = hitEffect(endX, endY);
+                hit.style.visibility = 'hidden';
+                gameArea.appendChild(hit);
+                let subject = document.createElement('div');
+                let ballDimensions = classSkills[usedSkill].ball.dimensions;
+                subject.style.backgroundImage = 'url(./skills/ball/' + usedSkill + '.png)';
+                subject.style.width = ballDimensions[0] + 'px';
+                subject.style.height = ballDimensions[1] + 'px';
+                subject.style.position = 'absolute';
+                let ballCoords = [startX - ballDimensions[0]/2, startY - ballDimensions[1]/2];
+                subject.style.left = ballCoords[0] + 'px';
+                subject.style.top =  ballCoords[1] + 'px';
+                if (startX < endX) {
+                    subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)+3.14) + 'rad)';
+                }
+                else {
+                    subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)) + 'rad)';
+                }
+                gameArea.appendChild(subject);
+                let ballDelays = classSkills[usedSkill].ball.delays;
+                scheduleToGameLoop(0, animateBallEmitter, [subject, ballCoords, ballDelays, [endX-startX, endY-startY], delay], 'movement');
+                scheduleToGameLoop(delay, (someElement) => {
+                    someElement.style.visibility = '';
+                }, [hit], 'skill');
+                scheduleToGameLoop(delay, genericSpritesheetAnimation, [[hit], 0, classSkills[usedSkill].hitDelays]);
+            }
+            else {
+                hitGroup.appendChild(hitEffect(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
+            }
             let data = [entry.target, groupNumber, realSkill, [bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']]];
-            scheduleToGameLoop(0, mobDamageEvent, data, 'damageNumber');
-            hitGroup.appendChild(hitTest(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
+            scheduleToGameLoop(delay, mobDamageEvent, data, 'damageNumber');
             mobHits++;
         }
     }
     if (hitGroup.hasChildNodes()) {
-        document.getElementById('gameArea').appendChild(hitGroup);
+        gameArea.appendChild(hitGroup);
         genericSpritesheetAnimation(hitGroup.children, 0, classSkills[usedSkill].hitDelays, deleteGroupWhenDone=true);
     }
     hitCheckObserver.disconnect();
 });
+
+function getBallEmitterHitDelay(speed, startX, startY, endX, endY) {
+    let distance = Math.sqrt(Math.abs(endX-startX) ** 2 + Math.abs(endY-startY) ** 2);
+    return (distance / speed);
+}
+
+function getBallEmitterAngle(startX, startY, endX, endY) {
+    let angle = Math.atan((endY-startY) / (endX-startX));
+    return angle;
+}
+
+function animateBallEmitter(timeDelta, subject, coords, skillDelays, distanceToEnd, destroyTime, elapsedTime=0) {
+    elapsedTime += timeDelta;
+    subject.style.left = (coords[0] + distanceToEnd[0] * (elapsedTime/destroyTime)) + 'px';
+    subject.style.top = (coords[1] + distanceToEnd[1] * (elapsedTime/destroyTime)) + 'px';
+    if (elapsedTime < destroyTime) {
+        scheduleToGameLoop(0, animateBallEmitter, [subject, coords, skillDelays, distanceToEnd, destroyTime, elapsedTime], 'movement');
+    }
+    else {
+        subject.remove();
+    }
+}
 
 function makeSkillCards() {
     let currentSelectedSkillTab = document.getElementsByClassName('selectedSkillTab')[0].getAttribute('value');
