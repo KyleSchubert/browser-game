@@ -202,7 +202,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
             let skillType = classSkills[usedSkill].type;
             if (skillType == 'ballEmitter') {
                 let gameArea = document.getElementById('gameArea');
-                let startX = AVATAR.offsetLeft + gameArea.offsetLeft + 70;
+                let startX = AVATAR.offsetLeft + 70;
                 let startY = AVATAR.offsetTop - 90;
                 let endX = bounds['left'] - skillHitData['leftOffset'] + bounds['width']/2;
                 let endY = bounds['top'] + bounds['height']/2;
