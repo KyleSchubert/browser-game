@@ -14,7 +14,11 @@ const attackSequences = {
 };
 
 const attackSkillEffects = {
-    61001101: {delays: [210,90,90,90,90], dimensions: [389,295], origin: [210, 176]}
+    61001101: {delays: [210,90,90,90,90], dimensions: [389,295], origin: [210,176]}
+};
+
+const jumpSkillEffects = {
+    61001002: {dimensions: [322,119], origin: [108,103]}
 };
 
 var passiveSkillVars = {

@@ -365,12 +365,15 @@ function setState(state, frame=0, showOneFrame=false) {
 var isUsingSkill = false;
 const movementKeys = ['ArrowLeft', 'ArrowRight', 'ArrowDown'];
 const maxMovementSpeed = 0.20;
+var maxXAcceleration = 0.02;
 const gravity = 0.0012;
 var avatarComputedXPosition = AVATAR.offsetLeft;
 var isFalling = true;
 var isJumping = false;
-var jumpPower = 2.7;
+var jumpPower = 2.4;
 var yVelocity = 0;
+var xVelocity = 0;
+var xAcceleration = 0;
 var lastFloorY = 0;
 var canDoubleJump = false;
 var doubleJumped = false;
@@ -386,13 +389,40 @@ function avatarMovement(timeDelta) {
                 setState('jump');
                 alreadySetState = true;
             }
+            let jumpMult = 1;
+            if (pressedKeys.includes('ArrowUp')) {
+                jumpMult = 1.5;
+            }
             if (canDoubleJump) {
                 doubleJumped = true;
+                let div = document.createElement('div');
+                div.style.width = jumpSkillEffects[61001002].dimensions[0] + 'px';
+                div.style.height = jumpSkillEffects[61001002].dimensions[1] + 'px';
+                div.style.backgroundImage = 'url(./skills/effect/61001002.png)';
+                div.style.backgroundPositionX = '0px';
+                div.style.position = 'absolute';
+                let origin = jumpSkillEffects[61001002].origin;
+                div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+                if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                    div.style.left = AVATAR.offsetLeft + origin[0] - jumpSkillEffects[61001002].dimensions[0] + 'px';
+                    xVelocity = 2.4*maxMovementSpeed;
+                }
+                else {
+                    div.style.left = AVATAR.offsetLeft - origin[0] + 'px';
+                    xVelocity = -2.4*maxMovementSpeed;
+                }
+                div.style.top = AVATAR.offsetTop - origin[1] - 36 + 'px';
+                document.getElementById('gameArea').appendChild(div);
+                genericSpritesheetAnimation([div], 0, classSkills[61001002].delays);
+                playSound(sounds[allSoundFiles.indexOf('61001002.mp3')]);
                 canDoubleJump = false;
+                yVelocity = maxMovementSpeed * jumpMult * jumpPower * 0.6;
+            }
+            else {
+                yVelocity = maxMovementSpeed * jumpMult * jumpPower;
             }
             isJumping = true;
             avatarComputedYPosition = AVATAR.offsetTop;
-            yVelocity = maxMovementSpeed * jumpPower;
         }
         if (pressedKeys.includes('ArrowDown')) {
             if (!alreadySetState && !isJumping) {
@@ -406,14 +436,15 @@ function avatarMovement(timeDelta) {
                 alreadySetState = true;
             }
             AVATAR.style.transform = 'scaleX(-1)';
-            if (avatarComputedXPosition + maxMovementSpeed * timeDelta > 1079) {
-                avatarComputedXPosition = 1079;
-            }
-            else {
-                avatarComputedXPosition += maxMovementSpeed * timeDelta;
+            if (!isJumping) {
+                if (xAcceleration < maxXAcceleration) {
+                    xAcceleration += 0.002;
+                }
+                else {
+                    xAcceleration = 0.02;
+                }
             }
             AVATAR.style.left = avatarComputedXPosition + 'px';
-            isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
         }
         else if (pressedKeys.includes('ArrowLeft') && avatarComputedXPosition > 0) {
             if (!alreadySetState && !isJumping) {
@@ -421,19 +452,64 @@ function avatarMovement(timeDelta) {
                 alreadySetState = true;
             }
             AVATAR.style.transform = 'scaleX(1)';
-            if (avatarComputedXPosition - maxMovementSpeed * timeDelta < 0) {
-                avatarComputedXPosition = 0;
-            } 
-            else {
-                avatarComputedXPosition -= maxMovementSpeed * timeDelta;
+            if (!isJumping) {
+                if (xAcceleration > -maxXAcceleration) {
+                    xAcceleration -= 0.002;
+                }
+                else {
+                    if (!doubleJumped) {
+                        xAcceleration = -0.02;
+                    }
+                }
             }
             AVATAR.style.left = avatarComputedXPosition + 'px';
-            isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
         }
     }
     else if (!isJumping  && !isUsingSkill) {
         setState('stand1');
         alreadySetState = true;
+    }
+    if (xAcceleration != 0) {
+        if (between(xVelocity+xAcceleration*timeDelta, -maxMovementSpeed, maxMovementSpeed)) {
+            xVelocity += xAcceleration * timeDelta;
+        }
+        else if (!doubleJumped) {
+            if (xVelocity + xAcceleration * timeDelta > maxMovementSpeed) {
+                xVelocity = maxMovementSpeed;
+            }
+            else {
+                xVelocity = -maxMovementSpeed;
+            }
+        }
+        if (Math.abs(xAcceleration) < 0.0001) {
+            xAcceleration = 0;
+        }
+        xAcceleration *= 0.9 ** timeDelta;
+    }
+    if (xVelocity != 0) {
+        isFalling = (getFirstPlatformBelow() != avatarComputedYPosition);
+        if (avatarComputedXPosition + xVelocity * timeDelta > 1079) {
+            avatarComputedXPosition = 1079;
+            xVelocity = 0;
+            xAcceleration = 0;
+        } 
+        else if (avatarComputedXPosition + xVelocity * timeDelta < 0) {
+            avatarComputedXPosition = 0;
+            xVelocity = 0;
+            xAcceleration = 0;
+        } 
+        else {
+            avatarComputedXPosition += xVelocity * timeDelta;
+        }
+        AVATAR.style.left = avatarComputedXPosition + 'px';
+        if (isUsingSkill || (pressedKeys.includes('ArrowRight') && xVelocity < 0) || (pressedKeys.includes('ArrowLeft') && xVelocity > 0) || (!(pressedKeys.includes('ArrowLeft') || pressedKeys.includes('ArrowRight')))) {
+            if (!isFalling) {
+                xVelocity *= 0.97 ** timeDelta;
+            }
+        }
+        if (Math.abs(xVelocity) < 0.0001) {
+            xVelocity = 0;
+        }
     }
     if (!isFalling) {
         isFalling = (yVelocity < 0);
