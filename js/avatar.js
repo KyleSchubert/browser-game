@@ -370,6 +370,7 @@ const gravity = 0.0012;
 var avatarComputedXPosition = AVATAR.offsetLeft;
 var isFalling = true;
 var isJumping = false;
+var isUsingMovementAttackSkill = false;
 var jumpPower = 2.4;
 var yVelocity = 0;
 var xVelocity = 0;
@@ -461,7 +462,7 @@ function avatarMovement(timeDelta) {
         if (between(xVelocity+xAcceleration*timeDelta, -maxMovementSpeed, maxMovementSpeed)) {
             xVelocity += xAcceleration * timeDelta;
         }
-        else if (!doubleJumped) {
+        else if (!(doubleJumped || isUsingMovementAttackSkill)) {
             if (xVelocity + xAcceleration * timeDelta > maxMovementSpeed) {
                 xVelocity = maxMovementSpeed;
             }
@@ -491,7 +492,7 @@ function avatarMovement(timeDelta) {
         }
         AVATAR.style.left = avatarComputedXPosition + 'px';
         if (isUsingSkill || (pressedKeys.includes('ArrowRight') && xVelocity < 0) || (pressedKeys.includes('ArrowLeft') && xVelocity > 0) || (!(pressedKeys.includes('ArrowLeft') || pressedKeys.includes('ArrowRight')))) {
-            if (!isFalling) {
+            if (!isFalling || isUsingMovementAttackSkill) {
                 xVelocity *= 0.97 ** timeDelta;
             }
         }
@@ -504,6 +505,9 @@ function avatarMovement(timeDelta) {
     }
     else {
         isJumping = true;
+    }
+    if (isUsingMovementAttackSkill) {
+        yVelocity = 0;
     }
     if (yVelocity != 0 || isFalling) {
         lastFloorY = getFirstPlatformBelow();

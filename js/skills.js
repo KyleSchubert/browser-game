@@ -40,7 +40,20 @@ function processSkill(skill) {
         previousSequentialSkillIndex = index;
         useAttackSkill(realSkill);
     }
-    else if (skillType == 'ballEmitter') {
+    else if (skillType == 'buff') {
+        playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')]);
+        setSkillSuffixesAndDimensions(usedSkill);
+        positionAndAnimateSkillEffects(usedSkill);
+    }
+    else {
+        if (usedSkill == 61101101) { // an attack skill that moves the avatar
+            isUsingMovementAttackSkill = true;
+            let facingDirectionMult = 1;
+            if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                facingDirectionMult = -1;
+            }
+            xVelocity -= facingDirectionMult * 8;
+        }
         realSkill = usedSkill;
         let linesVariable = attackSkillVars[usedSkill][0];
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
@@ -49,9 +62,12 @@ function processSkill(skill) {
         let damageMult = classSkills[usedSkill].computedVars[equation];
         let targetsVariable = attackSkillVars[usedSkill][2];
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
-        let bulletsVariable = attackSkillVars[usedSkill][3];
-        let bullets = parseInt(classSkills[usedSkill].usedVariables[bulletsVariable]);
-        realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'bullets': bullets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
+        realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
+        if (skillType == 'ballEmitter') {
+            let bulletsVariable = attackSkillVars[usedSkill][3];
+            let bullets = parseInt(classSkills[usedSkill].usedVariables[bulletsVariable]);
+            realSkillData['bullets'] = bullets;    
+        }
         let bonuses = getSkillBonuses(skill);
         Object.keys(bonuses).forEach((key) => {
             realSkillData[realSkill][key] += bonuses[key];
@@ -111,7 +127,11 @@ function useAttackSkill(skill) {
     lastSkillYChange = 0;
     classSkills[skill].action.forEach((frameData) => {
         let frameDelay = frameData[2] * attackSpeedBonus;
-        scheduleToGameLoop(totalDelay, skillActionAnimation, [frameData[0], frameData[1], frameData[3]], 'skillMovements');
+        let frameAvatarMovement = [0,0];
+        if (frameData.length >= 4) {
+            frameAvatarMovement = frameData[3];
+        }
+        scheduleToGameLoop(totalDelay, skillActionAnimation, [frameData[0], frameData[1], frameAvatarMovement], 'skillMovements');
         if (frameDelay < 0) { // does this happen before the attack? maybe
             return;
         }
@@ -123,6 +143,11 @@ function useAttackSkill(skill) {
     scheduleToGameLoop(nextSkillCanBeUsedDelay, () => {
         skillDoneWaiting = true;
     });
+    if (usedSkill == 61101101) { // an attack skill that moves the avatar
+        scheduleToGameLoop(totalDelay, () => {
+            isUsingMovementAttackSkill = false;
+        });
+    }
     scheduleToGameLoop(totalDelay, () => {
         isUsingSkill = false;
         avatarComputedXPosition += -lastSkillXChange;
@@ -134,7 +159,7 @@ function useAttackSkill(skill) {
 
 var lastSkillXChange = 0;
 var lastSkillYChange = 0;
-function skillActionAnimation(state, frameOfState, avatarPositionChange) {
+function skillActionAnimation(state, frameOfState, avatarPositionChange=[0,0]) {
     setState(state, frameOfState, true);
     let reverse = 1;
     if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {

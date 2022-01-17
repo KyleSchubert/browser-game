@@ -4,7 +4,8 @@ const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
 
 const allSoundFiles = ['pickup.wav', 'BtMouseOver.mp3', 'BuyShopItem.mp3', 'DlgNotice.mp3', 'MenuDown.mp3', 'MenuUp.mp3', 'Tab.mp3', 'DragEnd.mp3', 'DragStart.mp3', 
-    'levelup.mp3', '61001000hit.mp3', '61001000use.mp3', '61001004use.mp3', '61001005use.mp3', '61001101use.mp3', '61001101hit.mp3', '61001002.mp3'];
+    'levelup.mp3', '61001000hit.mp3', '61001000use.mp3', '61001004use.mp3', '61001005use.mp3', '61001101use.mp3', '61001101hit.mp3', '61001002.mp3', '61101002hit.mp3',
+    '61101002use.mp3', '61101004use.mp3', '61101100use.mp3', '61101101hit.mp3', '61101101use.mp3'];
 
 var sounds = [];
 

@@ -500,6 +500,18 @@ function checkForPressedKeys() {
     if (pressedKeys.includes('c') && character.skillLevels[61001101] >= 1) {
         processSkill(61001101);
     }
+    if (pressedKeys.includes('a') && character.skillLevels[61101002] >= 1) {
+        processSkill(61101002);
+    }
+    if (pressedKeys.includes('s') && character.skillLevels[61101004] >= 1) {
+        processSkill(61101004);
+    }
+    if (pressedKeys.includes('d') && character.skillLevels[61101100] >= 1) {
+        processSkill(61101100);
+    }
+    if (pressedKeys.includes('f') && character.skillLevels[61101101] >= 1) {
+        processSkill(61101101);
+    }
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
 }
 

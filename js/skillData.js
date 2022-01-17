@@ -6,7 +6,10 @@ const skillsPerClass = {
 var attackSkillVars = {
     structureExample: [['attackCount'], ['damage'], ['mobCount'], ['bulletCount']],
     61001000: [['attackCount', 'v', 'z'], ['damage', 'u', 'y'], ['mobCount', 's', 'w']],
-    61001101: [['attackCount'], ['damage'], ['mobCount'], ['bulletCount']]
+    61001101: [['attackCount'], ['damage'], ['mobCount'], ['bulletCount']],
+    61101100: [['attackCount'], ['damage'], ['mobCount']],
+    61101101: [['attackCount'], ['damage'], ['mobCount']],
+    61101002: [['attackCount'], ['damage'], ['bulletCount'], ['cooltime']]
 };
 
 const attackSequences = {
@@ -173,7 +176,7 @@ const classSkills = {
         maxLevel: 20,
         TYPE: 'flyingSwords',
         mpCon: '20+Math.ceil(x/2)',
-        effects: {'61101002effect': [[196, 217], [120, 215], [60, 90, 90, 90, 90, 90, 90, 90, 90, 90]], '61101002effect0': [[194, 358], [96, 213], [60, 90, 90, 90, 90, 90, 90, 90, 90, 90, 60]]},
+        effects: {'61101002effect': [[196, 217], [120, 215], [60, 90, 90, 90, 90, 90, 90, 90, 90, 90]], '61101002effect0': [[168, 256], [83, 162], [60, 90, 90, 90, 90, 90, 90, 90, 90, 90, 60]]},
         LTRB: [-400, -400, 400, 200],
         action: [['alert', 0, 180]],
         reuseWaitTime: 773,
@@ -190,7 +193,7 @@ const classSkills = {
         maxLevel: 20,
         TYPE: 'buff',
         mpCon: '10+x',
-        effects: {'61101004effect': [[375, 827], [203, 428], [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]]},
+        effects: {'61101004effect': [[313, 555], [172, 292], [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]]},
         action: [['alert', 0, 150], ['alert', 1, 150], ['alert', 2, 420], ['swingT1', 1, 360]],
         reuseWaitTime: 1200,
         description: 'Draw out inner strength to temporarily increase Attack Power and Speed.',
