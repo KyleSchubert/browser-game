@@ -1,12 +1,13 @@
 var previousSkill = 0;
 var usedSkill = 0;
-var usedSkillSuffixes = {'effect': '', 'hit': ''};
+var usedSkillSuffixes = {'effects': '', 'hit': ''};
 var realSkill = 0;
 var realSkillData = {};
 var cannotUse = [];
 var previousSequentialSkillIndex = 0;
 var attackSpeedBonus = 1 - .25;
 var skillDoneWaiting = true; // this is for letting the player combo to another skill
+var debugSkillBounds = false;
 function processSkill(skill) {
     if (cannotUse.includes(skill) || !skillDoneWaiting) {
         return;
@@ -15,20 +16,19 @@ function processSkill(skill) {
     scheduleToGameLoop(classSkills[skill].reuseWaitTime * attackSpeedBonus, removeItemOnce, [cannotUse, skill], 'skill');
     previousSkill = usedSkill;
     usedSkill = skill;
-    let skillType = classSkills[skill].type;
+    let skillType = classSkills[skill].TYPE;
     if (skillType == 'attackSequence') {
         let index = 0;
         if (previousSkill == skill && previousSequentialSkillIndex != attackSequences[skill].length-1) {
             index = previousSequentialSkillIndex + 1;
         }
         realSkill = attackSequences[skill][index][0];
-        let origin = attackSequences[skill][index][2];
-        let linesVariable = attackSkillVars[usedSkill][0][previousSequentialSkillIndex];
+        let linesVariable = attackSkillVars[usedSkill][0][index];
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
-        let damageVariable = attackSkillVars[usedSkill][1][previousSequentialSkillIndex];
+        let damageVariable = attackSkillVars[usedSkill][1][index];
         let equation = classSkills[usedSkill].usedVariables[damageVariable];
         let damageMult = classSkills[usedSkill].computedVars[equation];
-        let targetsVariable = attackSkillVars[usedSkill][2][previousSequentialSkillIndex];
+        let targetsVariable = attackSkillVars[usedSkill][2][index];
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
         realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
         let bonuses = getSkillBonuses(skill);
@@ -37,13 +37,11 @@ function processSkill(skill) {
         });
         realSkillData[realSkill]['damageMult'] /= 100;
         setSkillSuffixesAndDimensions(skill);
-        let skillDimensions = attackSequences[skill][index][1];
         previousSequentialSkillIndex = index;
-        useAttackSkill(realSkill, skillDimensions[0], skillDimensions[1], skillType, origin);
+        useAttackSkill(realSkill);
     }
     else if (skillType == 'ballEmitter') {
         realSkill = usedSkill;
-        let origin = attackSkillEffects[usedSkill].origin;
         let linesVariable = attackSkillVars[usedSkill][0];
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
         let damageVariable = attackSkillVars[usedSkill][1];
@@ -60,41 +58,44 @@ function processSkill(skill) {
         });
         realSkillData[realSkill]['damageMult'] /= 100;
         setSkillSuffixesAndDimensions(skill);
-        let skillDimensions = attackSkillEffects[usedSkill].dimensions;
-        useAttackSkill(usedSkill, skillDimensions[0], skillDimensions[1], skillType, origin);
+        useAttackSkill(usedSkill);
     }
 }
 
-function useAttackSkill(skill, widthStyle, heightStyle, skillType, origin) {
-    let div = document.createElement('div');
-    div.style.backgroundImage = 'url(./skills/effect/' + skill + usedSkillSuffixes['effect'] + '.png)';
-    div.style.width = widthStyle + 'px';
-    div.style.height = heightStyle + 'px';
-    div.style.position = 'absolute';
-    //div.style.left = SQUAREposX - width - $('#gameArea').position()['left'] + 'px';
-    //div.style.top = SQUAREposY - height + 'px';
+function useAttackSkill(skill) {
+    if (usedSkillSuffixes['effects'].includes('CharLevel')) {
+        Object.keys(classSkills[skill].effects).forEach((skillEffect) => {
+            if (skillEffect.includes(usedSkillSuffixes['effects'])) {
+                positionAndAnimateOneSkillEffect(skillEffect, classSkills[skill].effects[skillEffect]);
+            }
+        });
+    }
+    else {
+        positionAndAnimateSkillEffects(skill);
+    }
+    playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
+    let LTRB = classSkills[skill].LTRB;
     let leftBound = 0;
     let rightBound = 0;
     let totalOffsetLeft = document.getElementById('gameArea').offsetLeft + AVATAR.offsetLeft;
     if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-        div.style.left = AVATAR.offsetLeft + origin[0] - widthStyle + 'px';
-        leftBound = totalOffsetLeft + origin[0] - widthStyle;
-        rightBound = totalOffsetLeft + origin[0];
+        rightBound = totalOffsetLeft - LTRB[0];
+        leftBound = totalOffsetLeft - LTRB[2];
     }
     else {
-        div.style.left = AVATAR.offsetLeft - origin[0] + 'px';
-        leftBound = totalOffsetLeft - origin[0];
-        rightBound = totalOffsetLeft - origin[0] + widthStyle;
+        leftBound = totalOffsetLeft + LTRB[0];
+        rightBound = totalOffsetLeft + LTRB[2];
     }
-    div.style.top = AVATAR.offsetTop - origin[1] + 'px';
-    div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
-    let gameArea = document.getElementById('gameArea');
-    gameArea.appendChild(div);
-    playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
-    const topBound = AVATAR.offsetTop - origin[1] - heightStyle;
-    const bottomBound = AVATAR.offsetTop - origin[1] + heightStyle;
+    const topBound = AVATAR.offsetTop + LTRB[1];
+    const bottomBound = AVATAR.offsetTop + LTRB[3];
+    if (debugSkillBounds) {
+        let gameArea = document.getElementById('gameArea');
+        gameArea.appendChild(createLine(leftBound, topBound, rightBound, topBound));
+        gameArea.appendChild(createLine(leftBound, bottomBound, rightBound, bottomBound));
+        gameArea.appendChild(createLine(leftBound, topBound, leftBound, bottomBound));
+        gameArea.appendChild(createLine(rightBound, topBound, rightBound, bottomBound));
+    }
     checkHit(leftBound, rightBound, bottomBound, topBound, document.getElementById('gameArea').offsetLeft);
-    genericSpritesheetAnimation([div], 0, classSkills[usedSkill].delays);
     if (gameLoop.skillMovements.length > 0) {
         isUsingSkill = false;
         gameLoop.skillMovements = [];
@@ -148,8 +149,11 @@ function skillActionAnimation(state, frameOfState, avatarPositionChange) {
 }
 
 function hitEffect(left, top, reason) {
-    let hitDimensions = classSkills[usedSkill].hitDimensions;
+    let hitDimensions = classSkills[usedSkill].hit[0];
     let div = document.createElement('div');
+    if (!(usedSkillSuffixes['hit'].includes('hit0'))) {
+        usedSkillSuffixes['hit'] += 'hit0';
+    }
     div.style.backgroundImage = 'url(./skills/hit/' + usedSkill + usedSkillSuffixes['hit'] + '.png)';
     div.style.width = hitDimensions[0] + 'px';
     div.style.height = hitDimensions[1] + 'px';
@@ -199,7 +203,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                 || between(skillHitData['bottom'], bounds['top'], bounds['bottom']))
         ) {
             let delay = 0;
-            let skillType = classSkills[usedSkill].type;
+            let skillType = classSkills[usedSkill].TYPE;
             if (skillType == 'ballEmitter') {
                 let gameArea = document.getElementById('gameArea');
                 let facingDirectionMult = 1;
@@ -212,12 +216,13 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                 let endY = bounds['top'] + bounds['height']/2;
                 let speed = 0.4;
                 delay = getBallEmitterHitDelay(speed, startX, startY, endX, endY);
-                let hit = hitEffect(endX, endY);
-                hit.style.visibility = 'hidden';
-                gameArea.appendChild(hit);
+                let hitDiv = hitEffect(endX, endY);
+                hitDiv.style.visibility = 'hidden';
+                gameArea.appendChild(hitDiv);
                 let subject = document.createElement('div');
-                let ballDimensions = classSkills[usedSkill].ball.dimensions;
-                subject.style.backgroundImage = 'url(./skills/ball/' + usedSkill + '.png)';
+                let ball = classSkills[usedSkill].ball[Object.keys(classSkills[usedSkill].ball)[0]];
+                let ballDimensions = ball[0];
+                subject.style.backgroundImage = 'url(./skills/ball/' + usedSkill + 'ball.png)';
                 subject.style.width = ballDimensions[0] + 'px';
                 subject.style.height = ballDimensions[1] + 'px';
                 subject.style.position = 'absolute';
@@ -232,12 +237,12 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
                     subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)) + 'rad)';
                 }
                 gameArea.appendChild(subject);
-                let ballDelays = classSkills[usedSkill].ball.delays;
+                let ballDelays = ball[2];
                 scheduleToGameLoop(0, animateBallEmitter, [ballDimensions[0], subject, ballCoords, ballDelays, [endX-startX, endY-startY], delay, ballDelays[0]], 'movement');
                 scheduleToGameLoop(delay, (someElement) => {
                     someElement.style.visibility = '';
-                }, [hit], 'skill');
-                scheduleToGameLoop(delay, genericSpritesheetAnimation, [[hit], 0, classSkills[usedSkill].hitDelays]);
+                }, [hitDiv], 'skill');
+                scheduleToGameLoop(delay, genericSpritesheetAnimation, [[hitDiv], 0, classSkills[usedSkill].hit[1]]);
             }
             else {
                 hitGroup.appendChild(hitEffect(bounds['left']-skillHitData['leftOffset']+bounds['width']/2, bounds['top']+bounds['height']/2));
@@ -249,7 +254,7 @@ const hitCheckObserver = new IntersectionObserver((entries) => {
     }
     if (hitGroup.hasChildNodes()) {
         gameArea.appendChild(hitGroup);
-        genericSpritesheetAnimation(hitGroup.children, 0, classSkills[usedSkill].hitDelays, deleteGroupWhenDone=true);
+        genericSpritesheetAnimation(hitGroup.children, 0, classSkills[usedSkill].hit[1], deleteGroupWhenDone=true);
     }
     hitCheckObserver.disconnect();
 });
@@ -354,7 +359,7 @@ function makeSkillCards() {
                 }
                 document.getElementById('skillPoints').innerHTML = character.info.skillPoints[skillTier];
                 event.currentTarget.previousElementSibling.innerHTML = character.skillLevels[skill];
-                if (classSkills[skill].type == 'passive') {
+                if (classSkills[skill].TYPE == 'passive') {
                     Object.keys(getPassiveSkillStats(skill)).forEach((stat) => {
                         getOneCompoundedStat(stat);
                         updateOneCharacterDisplay(stat);
@@ -457,7 +462,7 @@ function skillOnlyLoadComputedVars(skill) {
 
 function writeSkillHitDescription(elementToAppendTo, skill, level) {
     let repeatCount = 1;
-    if (classSkills[skill].type == 'attackSequence') {
+    if (classSkills[skill].TYPE == 'attackSequence') {
         repeatCount = attackSkillVars[skill][0].length;
     }
     for (let i=0; i<repeatCount; i++) {
@@ -486,7 +491,7 @@ function makeSkillPointsAllocateable() {
 function getAllocatedPassiveSkills() {
     let skills = [];
     Object.keys(character.skillLevels).forEach((skillId) => {
-        if (classSkills[skillId].type == 'passive' && character.skillLevels[skillId] >= 1) {
+        if (classSkills[skillId].TYPE == 'passive' && character.skillLevels[skillId] >= 1) {
             skills.push(skillId);
         }
     });
@@ -508,7 +513,7 @@ function getPassiveSkillStats(skillId) {
 }
 
 function getSkillBonuses(skillId) {
-    let skillType = classSkills[skillId].type;
+    let skillType = classSkills[skillId].TYPE;
     let bonuses = {};
     if (skillType == 'attackSequence') {
         bonuses = {'lines': 0, 'damageMult': 0, 'targets': 0};
@@ -533,7 +538,7 @@ function getSkillBonuses(skillId) {
 
 function setSkillSuffixesAndDimensions(skillId) {
     usedSkillSuffixes['hit'] = '';
-    usedSkillSuffixes['effect'] = '';
+    usedSkillSuffixes['effects'] = '';
     if (skillId in skillsThatGetEnhanced) {
         let keys = Object.keys(skillsThatGetEnhanced[skillId]);
         let gotHit = false;
@@ -543,21 +548,43 @@ function setSkillSuffixesAndDimensions(skillId) {
                 break;
             }
             if (character.skillLevels[keys[i]] >= 1) {
-                if ('effect' in skillsThatGetEnhanced[skillId][keys[i]] && !gotEffect) {
-                    usedSkillSuffixes['effect'] = skillsThatGetEnhanced[skillId][keys[i]]['effect'];
-                    if (classSkills[skillId].type == 'attackSequence') {
-                        for (let j=0;j<attackSequences[skillId].length;j++) {
-                            attackSequences[skillId][j][1] = skillsThatGetEnhanced[skillId][keys[i]].effectDimensions[j];
-                        }
-                    }
+                if ('effects' in skillsThatGetEnhanced[skillId][keys[i]] && !gotEffect) {
+                    usedSkillSuffixes['effects'] = skillsThatGetEnhanced[skillId][keys[i]].effects;
                     gotEffect = true;
                 }
                 if ('hit' in skillsThatGetEnhanced[skillId][keys[i]] && !gotHit) {
-                    usedSkillSuffixes['hit'] = skillsThatGetEnhanced[skillId][keys[i]]['hit'];
-                    classSkills[skillId].hitDimensions = skillsThatGetEnhanced[skillId][keys[i]]['hitDimensions'];
+                    usedSkillSuffixes['hit'] = skillsThatGetEnhanced[skillId][keys[i]].hit;
+                    classSkills[skillId].hit[0] = skillsThatGetEnhanced[skillId][keys[i]].hitDimensions;
                     gotHit = true;
                 }
             }
         }
     }
+}
+
+function positionAndAnimateSkillEffects(skill=0, additionalOffsets=[0,0]) {
+    Object.keys(classSkills[skill].effects).forEach((effectName) => {
+        positionAndAnimateOneSkillEffect(effectName, classSkills[skill].effects[effectName], additionalOffsets);
+    });
+}
+
+function positionAndAnimateOneSkillEffect(effectName='', skillEffect=[], additionalOffsets=[0,0]) {
+    let div = document.createElement('div');
+    div.style.position = 'absolute';
+    div.style.backgroundPositionX = '0px';
+    div.style.backgroundImage = 'url(./skills/effect/' + effectName + '.png)';
+    let dimensions = skillEffect[0];
+    div.style.width = dimensions[0] + 'px';
+    div.style.height = dimensions[1] + 'px';
+    let origin = skillEffect[1];
+    div.style.top = AVATAR.offsetTop - origin[1] + additionalOffsets[1] + 'px';
+    div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+    if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+        div.style.left = AVATAR.offsetLeft + origin[0] - dimensions[0] + additionalOffsets[0] + 'px';
+    }
+    else {
+        div.style.left = AVATAR.offsetLeft - origin[0] + additionalOffsets[0] + 'px';
+    }
+    document.getElementById('gameArea').appendChild(div);
+    genericSpritesheetAnimation([div], 0, skillEffect[2]);
 }

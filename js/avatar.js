@@ -395,26 +395,14 @@ function avatarMovement(timeDelta) {
             }
             if (canDoubleJump) {
                 doubleJumped = true;
-                let div = document.createElement('div');
-                div.style.width = jumpSkillEffects[61001002].dimensions[0] + 'px';
-                div.style.height = jumpSkillEffects[61001002].dimensions[1] + 'px';
-                div.style.backgroundImage = 'url(./skills/effect/61001002.png)';
-                div.style.backgroundPositionX = '0px';
-                div.style.position = 'absolute';
-                let origin = jumpSkillEffects[61001002].origin;
-                div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+                positionAndAnimateSkillEffects(61001002, [0, -36]);
+                playSound(sounds[allSoundFiles.indexOf('61001002.mp3')]);
                 if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-                    div.style.left = AVATAR.offsetLeft + origin[0] - jumpSkillEffects[61001002].dimensions[0] + 'px';
                     xVelocity = 2.4*maxMovementSpeed;
                 }
                 else {
-                    div.style.left = AVATAR.offsetLeft - origin[0] + 'px';
                     xVelocity = -2.4*maxMovementSpeed;
                 }
-                div.style.top = AVATAR.offsetTop - origin[1] - 36 + 'px';
-                document.getElementById('gameArea').appendChild(div);
-                genericSpritesheetAnimation([div], 0, classSkills[61001002].delays);
-                playSound(sounds[allSoundFiles.indexOf('61001002.mp3')]);
                 canDoubleJump = false;
                 yVelocity = maxMovementSpeed * jumpMult * jumpPower * 0.6;
             }
