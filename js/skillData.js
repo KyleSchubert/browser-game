@@ -31,6 +31,7 @@ var passiveSkillVars = {
 
 var skillsThatGetEnhanced = {
     61001000: {
+        61001000: {stats: {}, effects: 'CharLevel10effect', hit: 'CharLevel10hit0', hitDimensions: [237,131]},
         61100009: {stats: {'damageMult': 'damR'}, effects: 'CharLevel30effect', hit: 'CharLevel30hit0', hitDimensions: [237,131]}
     }
 };
@@ -72,7 +73,7 @@ const classSkills = {
     61001000: {
         className: 'Kaiser',
         skillName: 'Dragon Slash',
-        maxLevel: 20,
+        maxLevel: 25,
         TYPE: 'attackSequence',
         mpCon: 0,
         effects: {'61001000CharLevel10effect': [[283, 167], [253, 126], [90, 90, 90, 90]], '61001000CharLevel100effect': [[349, 168], [264, 116], [90, 90, 90, 90]], '61001000CharLevel30effect': [[352, 170], [267, 118], [90, 90, 90, 90]], '61001000CharLevel60effect': [[349, 168], [264, 116], [90, 90, 90, 90]], '61001000effect': [[283, 167], [253, 126], [90, 90, 90, 90]]},
@@ -89,7 +90,7 @@ const classSkills = {
     61001004: {
         className: 'Kaiser',
         skillName: 'Dragon Slash',
-        maxLevel: 20,
+        maxLevel: 25,
         TYPE: 'attackSequence',
         mpCon: 0,
         effects: {'61001004CharLevel10effect': [[363, 129], [247, 99], [90, 90, 90, 90]], '61001004CharLevel100effect': [[363, 133], [259, 104], [90, 90, 90, 90]], '61001004CharLevel30effect': [[369, 138], [261, 104], [90, 90, 90, 90]], '61001004CharLevel60effect': [[363, 133], [259, 104], [90, 90, 90, 90]], '61001004effect': [[363, 129], [247, 99], [90, 90, 90, 90]]},
