@@ -515,12 +515,15 @@ function checkForPressedKeys() {
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
 }
 
+var skillTierNames = ['Kaiser Basics', 'Kaiser 1', 'Kaiser 2', 'Kaiser 3', 'Kaiser 4', 'Kaiser 5'];
 $('.skillTab').on('click', (event) => {
     document.getElementsByClassName('selectedSkillTab')[0].classList = ['skillTab'];
     event.currentTarget.classList = ['skillTab selectedSkillTab'];
     removeAllChildNodes(document.getElementById('skillContentAreaBottomPart'));
     let skillTier = event.currentTarget.getAttribute('value');
     document.getElementById('skillPoints').innerHTML = character.info.skillPoints[skillTier];
+    document.getElementById('skillContentAreaTabName').innerHTML = skillTierNames[skillTier];
+    document.getElementById('skillBookPictureHolder').firstElementChild.src = './files/book' + skillTier + '.png';
     makeSkillCards();
     makeSkillPointsAllocateable();
 });
