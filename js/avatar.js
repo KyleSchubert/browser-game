@@ -570,3 +570,28 @@ function debugAvatar() {
         makeTestPixel(0, i, 'red');
     }
 }
+
+function drawAnItemWithoutAnimating(id, state, frame, x, y, rotationAngle) { // flyingSwords uses this, for example
+    let groupOfParts = [];
+    let partDiv = document.createElement('div');
+    allData[id][state][frame].forEach((partData) => {
+        let partXOffset = partData[0][1];
+        partDiv.style.backgroundPositionX = '-' + partXOffset + 'px';
+        let partName = partData[0][0];
+        let fileDir = './item/' + id + '/' + partName + '.png';
+        partDiv.style.backgroundImage = 'url(' + fileDir + ')';
+        let partDimensions = allGroupDimensionsAndUnitDimensions[id][partName];
+        partDiv.style.width = partDimensions[1] + 'px';
+        partDiv.style.position = 'absolute';
+        partDiv.style.height = partDimensions[0][1] + 'px';
+        partDiv.style.zIndex = avatarZIndexOrder.indexOf(partData[0][0]);
+        partDiv.style.left = -(x + partDimensions[1] / 2) + 'px';
+        partDiv.style.top = -(y + partDimensions[0][1] / 2) + 'px';
+        partDiv.style.transform = 'rotate(' + rotationAngle + 'deg) scaleX(-1)';
+        let wrapperForPotentialAnimations = document.createElement('div');
+        wrapperForPotentialAnimations.appendChild(partDiv);
+        AVATAR.appendChild(wrapperForPotentialAnimations);
+        groupOfParts.push(wrapperForPotentialAnimations);
+    });
+    return groupOfParts;
+}

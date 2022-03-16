@@ -458,6 +458,28 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
 }
 
+.specialHoveringAnimation {
+    animation-name: specialHovering;
+    animation-timing-function: linear;
+    animation-duration: 2100ms;
+    animation-iteration-count: infinite;
+}
+
+@keyframes specialHovering {
+    0% {
+        transform: translateY(0px);
+        animation-timing-function: ease-in-out;
+    }
+    50% {
+        transform: translateY(-12px);
+        animation-timing-function: ease-in-out;
+    }
+    100% {
+        transform: translateY(0px);
+        animation-timing-function: ease-in;
+    }
+}
+
 .levelUpGif {
     position: absolute;
     pointer-events: none;

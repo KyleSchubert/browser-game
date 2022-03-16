@@ -45,6 +45,9 @@ function processSkill(skill) {
         setSkillSuffixesAndDimensions(usedSkill);
         positionAndAnimateSkillEffects(usedSkill);
     }
+    else if (skillType == 'flyingSwords') {
+        flyingSwords();
+    }
     else {
         if (usedSkill == 61101101) { // an attack skill that moves the avatar
             isUsingMovementAttackSkill = true;
@@ -612,4 +615,26 @@ function positionAndAnimateOneSkillEffect(effectName='', skillEffect=[], additio
     }
     document.getElementById('gameArea').appendChild(div);
     genericSpritesheetAnimation([div], 0, skillEffect[2]);
+}
+
+flyingSwordsAreUp = false;
+function flyingSwords() {
+    if (flyingSwordsAreUp) {
+        flyingSwordsAreUp = false;
+    }
+    else {
+        flyingSwordsAreUp = true;
+        group1 = drawAnItemWithoutAnimating(1402179, 'stand1', 0, 0, 140, 135);
+        group1.forEach((part) => {
+            part.classList.add('specialHoveringAnimation');
+        })
+        group2 = drawAnItemWithoutAnimating(1402179, 'stand1', 0, -50, 110, 135);
+        group2.forEach((part) => {
+            part.classList.add('specialHoveringAnimation');
+        })
+        group3 = drawAnItemWithoutAnimating(1402179, 'stand1', 0, 50, 110, 135);
+        group3.forEach((part) => {
+            part.classList.add('specialHoveringAnimation');
+        })
+    }
 }
