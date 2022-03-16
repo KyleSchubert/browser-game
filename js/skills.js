@@ -46,7 +46,9 @@ function processSkill(skill) {
         positionAndAnimateSkillEffects(usedSkill);
     }
     else if (skillType == 'flyingSwords') {
+        playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')]);
         flyingSwords();
+        positionAndAnimateSkillEffects(usedSkill);
     }
     else {
         if (usedSkill == 61101101) { // an attack skill that moves the avatar
@@ -619,22 +621,39 @@ function positionAndAnimateOneSkillEffect(effectName='', skillEffect=[], additio
 
 flyingSwordsAreUp = false;
 function flyingSwords() {
+    let positions = [
+        [0, 140],
+        [-50, 110],
+        [50, 110]
+    ];
     if (flyingSwordsAreUp) {
         flyingSwordsAreUp = false;
     }
     else {
         flyingSwordsAreUp = true;
-        group1 = drawAnItemWithoutAnimating(1402179, 'stand1', 0, 0, 140, 135);
-        group1.forEach((part) => {
-            part.classList.add('specialHoveringAnimation');
-        })
-        group2 = drawAnItemWithoutAnimating(1402179, 'stand1', 0, -50, 110, 135);
-        group2.forEach((part) => {
-            part.classList.add('specialHoveringAnimation');
-        })
-        group3 = drawAnItemWithoutAnimating(1402179, 'stand1', 0, 50, 110, 135);
-        group3.forEach((part) => {
-            part.classList.add('specialHoveringAnimation');
-        })
+        positions.forEach((someCoords) => {
+            group = drawAnItemWithoutAnimating(1402179, 'stand1', 0, someCoords[0], someCoords[1], 135);
+            group.forEach((part) => {
+                part.classList.add('specialHoveringAnimation');
+            });
+            let div = document.createElement('div');
+            div.style.position = 'absolute';
+            div.style.backgroundPositionX = '0px';
+            div.style.backgroundImage = 'url(./skills/forceAtom/forxeAtom2atom1parentAtom.png)';
+            let dimensions = skillEffect[0];
+            div.style.width = dimensions[0] + 'px';
+            div.style.height = dimensions[1] + 'px';
+            let origin = skillEffect[1];
+            div.style.top = AVATAR.offsetTop - origin[1] + additionalOffsets[1] + 'px';
+            div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+            if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                div.style.left = AVATAR.offsetLeft + origin[0] - dimensions[0] + additionalOffsets[0] + 'px';
+            }
+            else {
+                div.style.left = AVATAR.offsetLeft - origin[0] + additionalOffsets[0] + 'px';
+            }
+            document.getElementById('gameArea').appendChild(div);
+            genericSpritesheetAnimation([div], 0, skillEffect[2]);
+        });
     }
 }
