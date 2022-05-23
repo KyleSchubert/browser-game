@@ -631,29 +631,73 @@ function flyingSwords() {
     }
     else {
         flyingSwordsAreUp = true;
+        let swordCount = 0;
         positions.forEach((someCoords) => {
             group = drawAnItemWithoutAnimating(1402179, 'stand1', 0, someCoords[0], someCoords[1], 135);
-            group.forEach((part) => {
-                part.classList.add('specialHoveringAnimation');
-            });
+            let additionalOffsets = [0, -64];
+            additionalOffsets[0] -= someCoords[0];
+            additionalOffsets[1] -= someCoords[1];
+            let additionalOffsets2 = [-40, -57];
+            additionalOffsets2[0] -= someCoords[0];
+            additionalOffsets2[1] -= someCoords[1];
+            directionDependentXOffset = 0;
+            directionDependentXOffset2 = 0;
+            if (swordCount == 1) {
+                directionDependentXOffset -= 100;
+                directionDependentXOffset2 -= 100;
+            }
+            if (swordCount == 2) {
+                directionDependentXOffset += 100;
+                directionDependentXOffset2 += 100;
+            }
+            swordCount++;
+            // flames
             let div = document.createElement('div');
             div.style.position = 'absolute';
             div.style.backgroundPositionX = '0px';
-            div.style.backgroundImage = 'url(./skills/forceAtom/forxeAtom2atom1parentAtom.png)';
-            let dimensions = skillEffect[0];
-            div.style.width = dimensions[0] + 'px';
-            div.style.height = dimensions[1] + 'px';
-            let origin = skillEffect[1];
-            div.style.top = AVATAR.offsetTop - origin[1] + additionalOffsets[1] + 'px';
+            div.style.backgroundImage = 'url(./skills/forceAtom/forceAtom2atom1parentAtom.png)';
+            let particleDimensions = classSkills[61101002].particles.dimensions.forceAtom2atom1parentAtom;
+            div.style.width = particleDimensions[0] + 'px';
+            div.style.height = particleDimensions[1] + 'px';
+            let origin = classSkills[61101002].particles.origins.forceAtom2atom1parentAtom;
+            //div.style.top = AVATAR.offsetTop - origin[1] + additionalOffsets[1] + 'px';
+            div.style.top = origin[1] + additionalOffsets[1] + 'px';
             div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
             if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-                div.style.left = AVATAR.offsetLeft + origin[0] - dimensions[0] + additionalOffsets[0] + 'px';
+                div.style.left = origin[0] - particleDimensions[0] + additionalOffsets[0] + 'px';
             }
             else {
-                div.style.left = AVATAR.offsetLeft - origin[0] + additionalOffsets[0] + 'px';
+                div.style.left = -7 - origin[0] - additionalOffsets[0] - directionDependentXOffset + 'px';
             }
-            document.getElementById('gameArea').appendChild(div);
-            genericSpritesheetAnimation([div], 0, skillEffect[2]);
+            // tip
+            div.style.transform += 'rotate(90deg)';
+            let div2 = document.createElement('div');
+            div2.style.position = 'absolute';
+            div2.style.backgroundPositionX = '0px';
+            div2.style.backgroundImage = 'url(./skills/forceAtom/forceAtom2atom1parentAtomAdd1effect.png)';
+            let particleDimensions2 = classSkills[61101002].particles.dimensions.forceAtom2atom1parentAtomAdd1effect;
+            div2.style.width = particleDimensions2[0] + 'px';
+            div2.style.height = particleDimensions2[1] + 'px';
+            let origin2 = classSkills[61101002].particles.origins.forceAtom2atom1parentAtomAdd1effect;
+            //div2.style.top = AVATAR.offsetTop - origin2[1] + additionalOffsets2[1] + 'px';
+            div2.style.top = origin2[1] + additionalOffsets2[1] + 'px';
+            div2.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+            div2.style.zIndex = 69;
+            if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                div2.style.left = origin2[0] - particleDimensions2[0] + additionalOffsets2[0] + 'px';
+            }
+            else {
+                div2.style.left = -7 - origin2[0] - additionalOffsets2[0] - directionDependentXOffset2 + 'px';
+            }
+            div2.style.transform += 'rotate(90deg)';
+            group.forEach((part) => {
+                part.classList.add('specialHoveringAnimation');
+                part.appendChild(div);
+                part.appendChild(div2);
+            });
+            //document.getElementById('avatarAreaNew').appendChild(div);
+            genericSpritesheetAnimation([div], 0, classSkills[61101002].particles.delays.forceAtom2atom1parentAtom, false, true);
+            genericSpritesheetAnimation([div2], 0, classSkills[61101002].particles.delays.forceAtom2atom1parentAtomAdd1effect, false, true);
         });
     }
 }

@@ -120,15 +120,21 @@ function updateCharacterDisplay() {
 }
 
 const levelUpGifTimings = [500, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90];
-function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhenDone=false) {
+function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhenDone=false, infiniteLooping=false) {
+    let beforeFrame = frame;
     if (frame >= timings.length) {
-        if (deleteGroupWhenDone) {
-            animations[0].parentElement.remove();
+        if (infiniteLooping) {
+            frame = 0;
         }
         else {
-            animations[0].remove();
+            if (deleteGroupWhenDone) {
+                animations[0].parentElement.remove();
+            }
+            else {
+                animations[0].remove();
+            }
+            return;
         }
-        return;
     }
     Array.from(animations).forEach((animation) => {
         if (frame == 0) {
@@ -138,7 +144,7 @@ function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhen
             animation.style.backgroundPositionX = parseInt(animation.style.backgroundPositionX) - parseInt(animation.style.width) + 'px';
         }
     });
-    let data = [animations, frame+1, timings, deleteGroupWhenDone];
+    let data = [animations, frame+1, timings, deleteGroupWhenDone, infiniteLooping];
     scheduleToGameLoop(timings[frame], genericSpritesheetAnimation, data);
 }
 
