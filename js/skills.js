@@ -636,6 +636,7 @@ function flyingSwords() {
             elem.style.top = AVATAR.offsetTop + 'px';
             elem.style.position = 'absolute';
             elem.style.zIndex = 3;
+            elem.style.pointerEvents = 'none';
             elem.style.transform = AVATAR.style.transform || 'scaleX(-1)';
             GAME_AREA.appendChild(elem);
         });
