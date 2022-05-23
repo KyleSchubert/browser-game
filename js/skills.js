@@ -628,6 +628,20 @@ function flyingSwords() {
     ];
     if (flyingSwordsAreUp) {
         flyingSwordsAreUp = false;
+        let theElements = document.getElementsByClassName('flyingSword');
+        let GAME_AREA = document.getElementById('gameArea');
+        Array.from(theElements).forEach((elem) => {
+            elem.classList.remove('specialHoveringAnimation');
+            elem.style.left = AVATAR.offsetLeft + 'px';
+            elem.style.top = AVATAR.offsetTop + 'px';
+            elem.style.position = 'absolute';
+            elem.style.zIndex = 3;
+            elem.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+            GAME_AREA.appendChild(elem);
+        });
+        while (theElements.length > 0) {
+            theElements[0].classList.remove('flyingSword');
+        }
     }
     else {
         flyingSwordsAreUp = true;
@@ -691,7 +705,7 @@ function flyingSwords() {
             }
             div2.style.transform += 'rotate(90deg)';
             group.forEach((part) => {
-                part.classList.add('specialHoveringAnimation');
+                part.classList.add('specialHoveringAnimation', 'flyingSword');
                 part.appendChild(div);
                 part.appendChild(div2);
             });

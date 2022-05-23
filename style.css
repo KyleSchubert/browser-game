@@ -280,6 +280,7 @@ input[type=number]::-webkit-inner-spin-button {
     width: 412px;
     top: -10px;
     flex-shrink: 0;
+    z-index: 4;
 }
 
 .infoRow .infoRow, .infoRow .infoColumn {
@@ -495,6 +496,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     top: 236px;
     left: 836px;
+    z-index: 3;
 }
 
 #bottomScreenArea {
@@ -502,6 +504,7 @@ input[type=number]::-webkit-inner-spin-button {
     width: 200px;
     height: 100px;
     top: 864px;
+    z-index: 3;
 }
 
 #skillMenuButton {
@@ -528,6 +531,7 @@ input[type=number]::-webkit-inner-spin-button {
     overflow-y: hidden;
     align-items: end;
     justify-content: end;
+    z-index: 3;
 }
 
 #gainTextStream div {
@@ -1357,6 +1361,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     flex-shrink: 0;
     width: 280px;
+    z-index: 4;
 }
 
 #moreInventoryButtonsArea {
@@ -1500,6 +1505,7 @@ input[type=number]::-webkit-inner-spin-button {
     height: 12px;
     bottom: 0px;
     text-align: center;
+    z-index: 3;
 }
 
 #expDivisions {
@@ -1590,22 +1596,6 @@ input[type=number]::-webkit-inner-spin-button {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0;
-}
-
-.holder {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    width: 280px;
-    z-index: -1;
-}
-
-.tab-outline-helper {
-    z-index: -1;
-    padding-bottom: 4px;
-    width: 106px;
-    height: 40px;
-    background: linear-gradient(to bottom, #A4A4A4 90%, #BBBBBB 92%, #CCCCCC 93%, #FFFFFF 95%);
 }
 
 #etcDeveloperStuff {
