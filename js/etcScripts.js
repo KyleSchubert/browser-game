@@ -289,3 +289,9 @@ function addMissingSkillPoints() {
     character.info.skillPoints[2] = (character.info.level-29) * 3;
     character.info.skillPoints[3] = (character.info.level-59) * 3;
 }
+
+// me
+// the problem is css's transform: rotation thing starts at the top and goes clockwise rather than starting at the right and going counter-clockwise
+function angleFixer(angle) { // input a normal angle and get back a transform:rotation angle.
+    return - ((90 + angle) % 360) + 180; // all of this is in degrees
+}

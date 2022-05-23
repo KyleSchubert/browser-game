@@ -619,6 +619,15 @@ function positionAndAnimateOneSkillEffect(effectName='', skillEffect=[], additio
     genericSpritesheetAnimation([div], 0, skillEffect[2]);
 }
 
+function skillPreplannedHit(target, skill) { // target=element, sound=sound ID, effect=effect ID
+    let location = [target.offsetLeft + target.style.width/2, target.offsetTop + target.style.height/2];
+    let hitDiv = hitEffect(target.offsetLeft + target.style.width/2, target.offsetTop + target.style.height/2);
+    //gameArea.appendChild(hitDiv);
+    //scheduleToGameLoop(0, genericSpritesheetAnimation, [[hitDiv], 0, classSkills[usedSkill].hit[1]]);
+    //scheduleToGameLoop(20, mobDamageEvent, [target, Math.random()*200, skill, [location[0], location[1]-20]], 'damageNumber');
+    return;
+}
+
 flyingSwordsAreUp = false;
 function flyingSwords() {
     let positions = [
@@ -632,13 +641,15 @@ function flyingSwords() {
         let GAME_AREA = document.getElementById('gameArea');
         Array.from(theElements).forEach((elem) => {
             elem.classList.remove('specialHoveringAnimation');
-            elem.style.left = AVATAR.offsetLeft + 'px';
-            elem.style.top = AVATAR.offsetTop + 'px';
+            elem.style.left = parseInt(elem.style.left) + AVATAR.offsetLeft + 'px';
+            elem.style.top = parseInt(elem.style.top) + AVATAR.offsetTop + 'px';
             elem.style.position = 'absolute';
             elem.style.zIndex = 3;
             elem.style.pointerEvents = 'none';
-            elem.style.transform = AVATAR.style.transform || 'scaleX(-1)';
+            elem.style.transform = AVATAR.style.transform;
             GAME_AREA.appendChild(elem);
+            let target = document.getElementsByClassName('mob')[0];
+            moveSKillAlongCurvyPath(elem, target, skillPreplannedHit, [target, 61101002], true);
         });
         while (theElements.length > 0) {
             theElements[0].classList.remove('flyingSword');
@@ -648,13 +659,9 @@ function flyingSwords() {
         flyingSwordsAreUp = true;
         let swordCount = 0;
         positions.forEach((someCoords) => {
-            group = drawAnItemWithoutAnimating(1402179, 'stand1', 0, someCoords[0], someCoords[1], 135);
-            let additionalOffsets = [0, -64];
-            additionalOffsets[0] -= someCoords[0];
-            additionalOffsets[1] -= someCoords[1];
-            let additionalOffsets2 = [-40, -57];
-            additionalOffsets2[0] -= someCoords[0];
-            additionalOffsets2[1] -= someCoords[1];
+            let group = drawAnItemWithoutAnimating(1402179, 'stand1', 0, 0, 0, 135);
+            let additionalOffsets = [-4, -3];
+            let additionalOffsets2 = [-4, -39];
             directionDependentXOffset = 0;
             directionDependentXOffset2 = 0;
             if (swordCount == 1) {
@@ -675,14 +682,13 @@ function flyingSwords() {
             div.style.width = particleDimensions[0] + 'px';
             div.style.height = particleDimensions[1] + 'px';
             let origin = classSkills[61101002].particles.origins.forceAtom2atom1parentAtom;
-            //div.style.top = AVATAR.offsetTop - origin[1] + additionalOffsets[1] + 'px';
-            div.style.top = origin[1] + additionalOffsets[1] + 'px';
+            div.style.top = -particleDimensions[1] / 2 + additionalOffsets[1] + 'px';
             div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
             if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-                div.style.left = origin[0] - particleDimensions[0] + additionalOffsets[0] + 'px';
+                div.style.left = -particleDimensions[0] / 2 + additionalOffsets[0] + 'px';
             }
             else {
-                div.style.left = -7 - origin[0] - additionalOffsets[0] - directionDependentXOffset + 'px';
+                div.style.left = -particleDimensions[0] / 2 + additionalOffsets[0] + 'px';
             }
             // tip
             div.style.transform += 'rotate(90deg)';
@@ -694,25 +700,73 @@ function flyingSwords() {
             div2.style.width = particleDimensions2[0] + 'px';
             div2.style.height = particleDimensions2[1] + 'px';
             let origin2 = classSkills[61101002].particles.origins.forceAtom2atom1parentAtomAdd1effect;
-            //div2.style.top = AVATAR.offsetTop - origin2[1] + additionalOffsets2[1] + 'px';
-            div2.style.top = origin2[1] + additionalOffsets2[1] + 'px';
+            div2.style.top = -particleDimensions2[1] / 2 + additionalOffsets2[1] + 'px';
             div2.style.transform = AVATAR.style.transform || 'scaleX(-1)';
             div2.style.zIndex = 69;
             if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-                div2.style.left = origin2[0] - particleDimensions2[0] + additionalOffsets2[0] + 'px';
+                div2.style.left = -particleDimensions2[0] / 2 + additionalOffsets2[0] + 'px';
             }
             else {
-                div2.style.left = -7 - origin2[0] - additionalOffsets2[0] - directionDependentXOffset2 + 'px';
+                div2.style.left = -particleDimensions2[0] / 2 + additionalOffsets2[0] + 'px';
             }
             div2.style.transform += 'rotate(90deg)';
             group.forEach((part) => {
+                part.style.position = 'absolute';
+                part.style.left = someCoords[0] + 'px';
+                part.style.top = -someCoords[1] + 'px';
                 part.classList.add('specialHoveringAnimation', 'flyingSword');
                 part.appendChild(div);
                 part.appendChild(div2);
+                part.setAttribute('current-angle', 0);
             });
-            //document.getElementById('avatarAreaNew').appendChild(div);
             genericSpritesheetAnimation([div], 0, classSkills[61101002].particles.delays.forceAtom2atom1parentAtom, false, true);
-            genericSpritesheetAnimation([div2], 0, classSkills[61101002].particles.delays.forceAtom2atom1parentAtomAdd1effect, false, true);
         });
     }
+}
+
+// requires an element that is already prepared to be moved (has "position: absolute" and is already at a good starting position)
+// AND it requires the initial orientation to have the pointy end (whatever hits the target) to be at the top
+// AND it requires a 'currentAngle' attribute in the elem
+function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget=false, turnPower=0.01, speed=1, acceleration=0.01) {
+    let targetLocation = [0, 0];
+    if (movingTarget) { // "target" is an element
+        targetLocation = [target.offsetLeft, target.offsetTop+716];
+    }
+    else { // "target" is coordinates
+        targetLocation = target;
+    }
+    if (between(parseFloat(elem.style.left), targetLocation[0] - 5, targetLocation[0] + 5) && 
+            between(parseFloat(elem.style.top), targetLocation[1] - 5, targetLocation[1] + 5)) {
+        scheduleToGameLoop(1, finalCallback, data, 'skill');
+        elem.remove();
+        return;
+    }
+    let currentAngle = elem.getAttribute('current-angle');
+    let targetAngle = Math.atan((targetLocation[0] - elem.offsetLeft) / (targetLocation[1] - elem.offsetTop)) * 57.3; // 57.3 is about 180/pi (rad -> deg)
+    if (elem.offsetTop < targetLocation[1]) {
+        targetAngle -= 180;
+    }
+    elem.setAttribute('target-angle', targetAngle); // for TESTING
+    let nextAngle = 0;
+    if (between(currentAngle, targetAngle-turnPower, targetAngle+turnPower)) {
+        nextAngle = targetAngle;
+    }
+    else {
+        if (currentAngle < targetAngle) {
+            nextAngle = parseInt(currentAngle) + turnPower;
+        }
+        else {
+            nextAngle = parseInt(currentAngle) - turnPower;
+        }
+    }
+    if (elem.style.transform.indexOf('-') == 7) {// if it has the "-" in scaleX -> which means if it is flipped (this is the fast way of checking)
+        elem.style.transform = 'scaleX(-1) rotate(' + nextAngle + 'deg)';
+    }
+    else {
+        elem.style.transform = 'scaleX(1) rotate(' + -nextAngle + 'deg)';
+    }
+    elem.style.left = parseFloat(elem.style.left) - speed * Math.cos(angleFixer(nextAngle) / 57.3) + 'px';
+    elem.style.top = parseFloat(elem.style.top) - speed * Math.sin(angleFixer(nextAngle) / 57.3) + 'px';
+    elem.setAttribute('current-angle', nextAngle);
+    scheduleToGameLoop(1, moveSKillAlongCurvyPath, [elem, target, finalCallback, data, movingTarget, turnPower+0.03, speed+acceleration, acceleration], 'skillMovements');
 }
