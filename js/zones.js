@@ -109,6 +109,7 @@ function canEnterThisZone() {
     return true;
 }
 
+var noKilling = false;
 function changeZones() {
     $(this).off('click');
     this.classList.remove('clickable');
@@ -123,6 +124,7 @@ function changeZones() {
     $('#superBlocker').css('pointer-events', 'all');
     $('#superBlocker').addClass('fadeToBlack');
     $('#superBlocker').css('background', 'rgba(0,0,0,1)');
+    noKilling = true;
     currentZone = this.value;
     gameLoop.mob = [];
 }
@@ -131,6 +133,7 @@ $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(
     $('.mob').remove();
     if ($('#superBlocker').hasClass('fadeToBlack')) { 
         loadPortals();
+        noKilling = false;
         $('#superBlocker').removeClass('fadeToBlack');
         $('#superBlocker').addClass('unfadeToBlack');
     }

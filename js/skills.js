@@ -782,7 +782,7 @@ function flyingSwords() {
 // AND it requires a 'currentAngle' attribute in the elem
 function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget=false, turnPower=0.01, turnAcceleration=0, speed=1, acceleration=0) {
     let targetLocation = [0, 0];
-    if (target.classList.contains('mobDying')) { // if mob died then disappear so it doesnt look weird
+    if (target.classList.contains('mobDying') || noKilling) { // if mob died then disappear so it doesnt look weird
         elem.remove();
         return;
     }
