@@ -47,6 +47,7 @@ function processSkill(skill) {
     }
     else if (skillType == 'buff') {
         playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')]);
+
         setSkillSuffixesAndDimensions(usedSkill);
         positionAndAnimateSkillEffects(usedSkill);
     }
@@ -684,6 +685,10 @@ function flyingSwords() {
         [50, 110]
     ];
     if (flyingSwordsAreUp) {
+        let numberOfMobs = document.getElementsByClassName('mob').length;
+        if (numberOfMobs == 0) {
+            return;
+        }
         flyingSwordsAreUp = false;
         let theElements = document.getElementsByClassName('flyingSword');
         let GAME_AREA = document.getElementById('gameArea');
@@ -696,10 +701,10 @@ function flyingSwords() {
             elem.style.pointerEvents = 'none';
             elem.style.transform = AVATAR.style.transform;
             GAME_AREA.appendChild(elem);
-            let numberOfMobs = document.getElementsByClassName('mob').length;
+            numberOfMobs = document.getElementsByClassName('mob').length; // re-get this value just in case
             let mobNumber = randomIntFromInterval(0, numberOfMobs-1);
             let target = document.getElementsByClassName('mob')[mobNumber];
-            moveSKillAlongCurvyPath(elem, target, skillPreplannedHit, [target, 61101002], true);
+            moveSKillAlongCurvyPath(elem, target, skillPreplannedHit, [target, 61101002], true, 0.01, 0.03, 3, 0.02);
         });
         while (theElements.length > 0) {
             theElements[0].classList.remove('flyingSword');
@@ -731,7 +736,6 @@ function flyingSwords() {
             let particleDimensions = classSkills[61101002].particles.dimensions.forceAtom2atom1parentAtom;
             div.style.width = particleDimensions[0] + 'px';
             div.style.height = particleDimensions[1] + 'px';
-            let origin = classSkills[61101002].particles.origins.forceAtom2atom1parentAtom;
             div.style.top = -particleDimensions[1] / 2 + additionalOffsets[1] + 'px';
             div.style.transform = AVATAR.style.transform || 'scaleX(-1)';
             if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
@@ -749,7 +753,6 @@ function flyingSwords() {
             let particleDimensions2 = classSkills[61101002].particles.dimensions.forceAtom2atom1parentAtomAdd1effect;
             div2.style.width = particleDimensions2[0] + 'px';
             div2.style.height = particleDimensions2[1] + 'px';
-            let origin2 = classSkills[61101002].particles.origins.forceAtom2atom1parentAtomAdd1effect;
             div2.style.top = -particleDimensions2[1] / 2 + additionalOffsets2[1] + 'px';
             div2.style.transform = AVATAR.style.transform || 'scaleX(-1)';
             div2.style.zIndex = 69;
@@ -777,7 +780,7 @@ function flyingSwords() {
 // requires an element that is already prepared to be moved (has "position: absolute" and is already at a good starting position)
 // AND it requires the initial orientation to have the pointy end (whatever hits the target) to be at the top
 // AND it requires a 'currentAngle' attribute in the elem
-function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget=false, turnPower=0.01, speed=1, acceleration=0.01) {
+function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget=false, turnPower=0.01, turnAcceleration=0, speed=1, acceleration=0) {
     let targetLocation = [0, 0];
     if (target.classList.contains('mobDying')) { // if mob died then disappear so it doesnt look weird
         elem.remove();
@@ -822,5 +825,5 @@ function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget
     elem.style.left = parseFloat(elem.style.left) - speed * Math.cos(angleFixer(nextAngle) / 57.3) + 'px';
     elem.style.top = parseFloat(elem.style.top) - speed * Math.sin(angleFixer(nextAngle) / 57.3) + 'px';
     elem.setAttribute('current-angle', nextAngle);
-    scheduleToGameLoop(0, moveSKillAlongCurvyPath, [elem, target, finalCallback, data, movingTarget, turnPower+0.03, speed+acceleration, acceleration], 'skill');
+    scheduleToGameLoop(0, moveSKillAlongCurvyPath, [elem, target, finalCallback, data, movingTarget, turnPower+turnAcceleration, turnAcceleration, speed+acceleration, acceleration], 'skill');
 }

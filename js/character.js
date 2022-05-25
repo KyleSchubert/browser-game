@@ -205,3 +205,8 @@ const classData = {
         attackStat: 'physicalAttack'
     }
 };
+
+var activeBuffs = {
+    '60001217': {type: 'skill'},
+    '61101004': {type: 'skill', duration: 186}
+};
