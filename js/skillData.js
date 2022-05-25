@@ -85,7 +85,8 @@ const classSkills = {
         requirementText: 'Level 20 required to learn Dragon Slash I.',
         hitDescriptions: ['1-hit: Attack up to 8 enemies for {50+x}% damage 3 times', '2-hit: Up to 6 enemies attack for {30+x}% damage 5 times', '3-hit: Up to 6 enemies attack for {40+x}% damage 5 times', 'Final Form: Up to 8 enemies attack for {140+x}% damage 5 times, Up to 10 enemies attack 6 times after 4th job'],
         usedVariables: {'mpCon': '0', 'attackCount': '3', 'mobCount': '8', 'damage': '50+x', 'q2': '140+x', 's2': '5', 'u2': '10', 'v2': '6', 's': '6', 'u': '30+x', 'v': '5', 'w': '6', 'y': '40+x', 'z': '5', 'q': '8'},
-        computedVars: {}
+        computedVars: {},
+        originalSkill: 61001000
     },
     61001004: {
         className: 'Kaiser',
@@ -101,7 +102,8 @@ const classSkills = {
         description: 'Mash the attack key to keep attacking enemies.',
         hitDescriptions: ['Damage: {30+x}%, Max Enemies Hit: 6, Max Hits: 5'],
         usedVariables: {'mpCon': '0', 'attackCount': '5', 'mobCount': '6', 'damage': '30+x'},
-        computedVars: {}
+        computedVars: {},
+        originalSkill: 61001000
     },
     61001005: {
         className: 'Kaiser',
@@ -117,7 +119,8 @@ const classSkills = {
         description: 'Mash the attack key to keep attacking enemies.',
         hitDescriptions: ['Damage: {40+x}%, Max Enemies Hit: 6, Max Hits: 5'],
         usedVariables: {'mpCon': '0', 'attackCount': '5', 'mobCount': '6', 'damage': '40+x'},
-        computedVars: {}
+        computedVars: {},
+        originalSkill: 61001000
     },
     61001101: {
         className: 'Kaiser',
