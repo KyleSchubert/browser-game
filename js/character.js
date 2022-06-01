@@ -220,13 +220,15 @@ function addBuff(buff, type, duration=0, bonuses={}) {
             activeBuffs[buff].duration = duration;
         }
     }
+    else {
+        buffsThatNeedToBeDrawn.push(buff);
+    }
     if (duration == 0) {
         activeBuffs[buff] = {'type': type};
     }
     else {
         activeBuffs[buff] = {'type': type, 'duration': duration};
     }
-    buffsThatNeedToBeDrawn.push(buff);
     getCompoundedStats();
 }
 
