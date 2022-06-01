@@ -20,6 +20,7 @@ const statCoefficients = {
     evasion: 1
 };
 function getOneCompoundedStat(stat) { // updates the compoundStat and also returns it for if I want it (I might)
+    let compoundedMultipliers = 1.00;
     if (statsWithPercentMultipliers.includes('luck')) { // TEMPORARY TESTING
         wantPercent = true;
     }
@@ -32,12 +33,18 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
         if (stat in statBonuses) {
             value += statBonuses[stat];
         }
+        if (stat + 'Percent' in statBonuses) {
+            compoundedMultipliers *= 1 + statBonuses[stat + 'Percent'] / 100;
+        }
     });
     Object.keys(activeBuffs).forEach((buffName) => {
         if (activeBuffs[buffName].type == 'skill') { // stats will not be in the data
             let statBonuses = getPassiveOrBuffSkillStats(buffName, buffSkillVars);
             if (stat in statBonuses) {
                 value += statBonuses[stat];
+            }
+            if (stat + 'Percent' in statBonuses) {
+                compoundedMultipliers *= 1 + statBonuses[stat + 'Percent'] / 100;
             }
         }
         else if (activeBuffs[buffName].type == 'item') {
@@ -57,6 +64,7 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
     [flatValue, percentValue] = getEquipmentStat(stat, wantPercent);
     value += flatValue;
     value *= (1 + percentValue / 100);
+    value *= compoundedMultipliers;
     character.compoundedStats[stat] = value;
     return value;
 }

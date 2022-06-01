@@ -36,7 +36,12 @@ var character = {
         pierce: 0,
         evasion: 0,
         accuracy: 0,
-        attackSpeedBonus: 1
+        attackSpeedBonus: 0,
+        speedBonus: 0,
+        jumpBonus: 0,
+        powerStanceBonus: 0,
+        bossDamageBonus: 0,
+        critChance: 0
     },
     compoundedStats: { // values from stats combined with gear and any unaccounted multipliers
         mastery: 0,
@@ -52,7 +57,12 @@ var character = {
         pierce: 0,
         evasion: 0,
         accuracy: 0,
-        attackSpeedBonus: 1
+        attackSpeedBonus: 0,
+        speedBonus: 0,
+        jumpBonus: 0,
+        powerStanceBonus: 0,
+        bossDamageBonus: 0,
+        critChance: 0
     },
     equipment: []
 };

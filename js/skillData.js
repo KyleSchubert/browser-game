@@ -16,15 +16,16 @@ const attackSequences = {
     61001000: [[61001000], [61001004], [61001005]]
 };
 
+// these do nothing:  mastery, jumpBonus, speedBonus, powerStanceBonus, bossDamageBonus, critChance
 var passiveSkillVars = {
     structureExample: {'pddX': 'defense', 'w': 'targetSkill', 'p': 'attCountX'},
-    61000003: {'pddX': 'defense'}, // has power stance too (which does nothing)
-    60000221: {}, // has attack speed, speed, jump, and power stance (all do nothing)
-    61100009: {}, // need to stay or not? dragon slash 2 (passive thing)
-    61100008: {'padX': 'physicalAttack'}, // boss damage and crit does nothing. also should only work in attacker mode
-    61100005: {'pddX': 'defense'}, // need this bonus to apply only when using defender mode
-    61100007: {'mhpR': 'maxHp', 'strX': 'strength'}, // need to make this one's maxHp be hp%.
-    61100006: {'mastery': 'mastery'} // need to make mastery do something
+    60000221: {'attackSpeedBonus': 'attackSpeedBonus', 'speedBonus': 'speedBonus', 'jumpBonus': 'jumpBonus', 'powerStanceBonus': 'powerStanceBonus'},
+    61000003: {'pddX': 'defense', 'prop': 'powerStanceBonus'},
+    61100005: {'pddX': 'defense'}, // should only work in defender mode
+    61100006: {'mastery': 'mastery'},
+    61100007: {'mhpR': 'hpPercent', 'strX': 'strength'},
+    61100008: {'padX': 'physicalAttack', 'bdR': 'bossDamageBonus', 'cr': 'critChance'}, // should only work in attacker mode
+    61100009: {} // dragon slash 2 (belongs here)
 };
 
 var buffSkillVars = { // just like the others ->  'variable': 'real meaning here'
@@ -49,7 +50,7 @@ const classSkills = {
         mpCon: 0,
         description: 'Fill up your Morph Gauge in battle to transform into a more powerful being.',
         hitDescriptions: ['#cStage 1: #Attack Speed: +1, Speed: +5, Jump: +10, Power Stance Chance: 40%', '#cStage 2: #Attack Speed: +1, Speed: +10, Jump: +20, Power Stance Chance: 80%'],
-        usedVariables: {'mpCon': '0'},
+        usedVariables: {'mpCon': '0', 'attackSpeedBonus': '1', 'speedBonus': '5', 'jumpBonus': '10', 'powerStanceBonus': '40'},
         computedVars: {}
     },
     60001217: {

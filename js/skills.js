@@ -8,12 +8,14 @@ var usedSkillSuffixes = {}; // {skillId: {'effects': '', 'hit': ''}}
 var usedSkillHitDetectionPairs = {}; // {99-999: skillId};  this is for the hitCheckObserver so that a hitCheck can be paired with a certain skill
 var cannotUse = [];
 var previousSequentialSkillIndex = 0;
-var attackSpeedBonus = 1 - .25;
+const attackSpeedValues = [1, 0.9, 0.8, 0.75, 0.7, 0.66, 0.63, 0.6];
+var attackSpeedBonus = 1;
 var skillDoneWaiting = true; // this is for letting the player combo to another skill
 var debugSkillBounds = false;
 
 
 function processSkill(skill) {
+    attackSpeedBonus = attackSpeedValues[character.compoundedStats.attackSpeedBonus];
     if (cannotUse.includes(skill) || !skillDoneWaiting) {
         return;
     }
