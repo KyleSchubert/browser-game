@@ -219,10 +219,7 @@ const classData = {
 };
 
 var buffsThatNeedToBeDrawn = [];
-var activeBuffs = {
-    '60001217': {type: 'skill'},
-    '61101004': {type: 'skill', duration: 186}
-};
+var activeBuffs = {};
 
 function addBuff(buff, type, duration=0, bonuses={}) {
     if (buff in activeBuffs) {
