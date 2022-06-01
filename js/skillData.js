@@ -18,15 +18,19 @@ const attackSequences = {
 
 var passiveSkillVars = {
     structureExample: {'pddX': 'defense', 'w': 'targetSkill', 'p': 'attCountX'},
-    61000003: {'pddX': 'defense'},
-    60000221: {},
-    60001217: {'padX': 'physicalAttack'},
+    61000003: {'pddX': 'defense'}, // has power stance too (which does nothing)
+    60000221: {}, // has attack speed, speed, jump, and power stance (all do nothing)
+    61100009: {}, // need to stay or not? dragon slash 2 (passive thing)
+    61100008: {'padX': 'physicalAttack'}, // boss damage and crit does nothing. also should only work in attacker mode
+    61100005: {'pddX': 'defense'}, // need this bonus to apply only when using defender mode
+    61100007: {'mhpR': 'maxHp', 'strX': 'strength'}, // need to make this one's maxHp be hp%.
+    61100006: {'mastery': 'mastery'} // need to make mastery do something
+};
+
+var buffSkillVars = { // just like the others ->  'variable': 'real meaning here'
     60001216: {'pddX': 'defense'},
-    61100009: {},
-    61100008: {'padX': 'physicalAttack'},
-    61100005: {'pddX': 'defense'},
-    61100007: {'mhpR': 'maxHp', 'strX': 'strength'},
-    61100006: {'mastery': 'mastery'}
+    60001217: {'padX': 'physicalAttack'},
+    61101004: {'indiePad': 'physicalAttack', 'duration': 'time', 'attackSpeedBonus': 'attackSpeedBonus'}
 };
 
 var skillsThatGetEnhanced = {
@@ -207,7 +211,7 @@ const classSkills = {
         reuseWaitTime: 1200,
         description: 'Draw out inner strength to temporarily increase Attack Power and Speed.',
         hitDescriptions: ['MP Cost: {10+x}, Duration: {12*x} sec, Attack Power: +{x}, Attack Speed: +2'],
-        usedVariables: {'mpCon': '10+x', 'indiePad': 'x', 'time': '12*x'},
+        usedVariables: {'mpCon': '10+x', 'indiePad': 'x', 'time': '12*x', 'attackSpeedBonus': '2'},
         computedVars: {}
     },
     61101100: {

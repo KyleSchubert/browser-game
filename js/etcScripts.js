@@ -182,6 +182,11 @@ $(() => {
     else {
         makeSkillCards();
     }
+    data = window.localStorage.getObject('activeBuffs');
+    if (data) {
+        activeBuffs = data;
+        buffsThatNeedToBeDrawn = Object.keys(activeBuffs);
+    }
     let skillTabs = document.getElementsByClassName('skillTab');
     if (character.info.level > 10) {
         skillTabs[1].style.visibility = '';
@@ -241,6 +246,7 @@ $(() => {
 
 function saveAlmostEverything() {
     window.localStorage.setObject('character', character);
+    window.localStorage.setObject('activeBuffs', activeBuffs);
     window.localStorage.setObject('inventory', inventory);
     window.localStorage.setObject('equipment', itemsInEquipmentSlots);
     window.localStorage.setObject('doubloons', doubloons);
@@ -294,4 +300,16 @@ function addMissingSkillPoints() {
 // the problem is css's transform: rotation thing starts at the top and goes clockwise rather than starting at the right and going counter-clockwise
 function angleFixer(angle) { // input a normal angle and get back a transform:rotation angle.
     return - ((90 + angle) % 360) + 180; // all of this is in degrees
+}
+
+// me
+function secondsToReadableTime(seconds) {
+    let minutes = parseInt(seconds / 60);
+    let realSeconds = parseInt(seconds - minutes * 60);
+    if (realSeconds < 10) {
+        return minutes + ':0' + realSeconds;
+    }
+    else {
+        return minutes + ':' + realSeconds;
+    }
 }

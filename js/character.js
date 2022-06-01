@@ -35,7 +35,8 @@ var character = {
         defense: 0,
         pierce: 0,
         evasion: 0,
-        accuracy: 0
+        accuracy: 0,
+        attackSpeedBonus: 1
     },
     compoundedStats: { // values from stats combined with gear and any unaccounted multipliers
         mastery: 0,
@@ -50,7 +51,8 @@ var character = {
         defense: 0,
         pierce: 0,
         evasion: 0,
-        accuracy: 0
+        accuracy: 0,
+        attackSpeedBonus: 1
     },
     equipment: []
 };
@@ -206,7 +208,95 @@ const classData = {
     }
 };
 
+var buffsThatNeedToBeDrawn = [];
 var activeBuffs = {
     '60001217': {type: 'skill'},
     '61101004': {type: 'skill', duration: 186}
 };
+
+function addBuff(buff, type, duration=0, bonuses={}) {
+    if (buff in activeBuffs) {
+        if (duration in activeBuffs[buff]) {
+            activeBuffs[buff].duration = duration;
+        }
+    }
+    if (duration == 0) {
+        activeBuffs[buff] = {'type': type};
+    }
+    else {
+        activeBuffs[buff] = {'type': type, 'duration': duration};
+    }
+    buffsThatNeedToBeDrawn.push(buff);
+    getCompoundedStats();
+}
+
+function removeBuff(buff) {
+    delete activeBuffs[buff];
+    document.getElementById('buff-' + buff).remove();
+    getCompoundedStats();
+}
+
+function makeBuffIconAndInfo(buffName) { // the buff will still be in activeBuffs when this is run
+    let div = document.createElement('div');
+    div.classList.add('buffHolder');
+    div.id = 'buff-' + buffName;
+    let tooltip = document.createElement('span');
+    tooltip.classList = ['textTooltip'];
+    let img = new Image();
+    if (activeBuffs[buffName].type == 'skill') {
+        img.src = './skills/icon/' + buffName + '.png';
+        tooltip.innerHTML = classSkills[buffName].skillName; // since the buffName would be the skillId
+    }
+    $(div).on('mousemove', function(event) {
+        $(event.currentTarget).children('.textTooltip').css({
+            'left': event.pageX +6,
+            'top': event.pageY +6,
+            'visibility': 'visible'
+        });
+    });
+    $(div).on('mouseleave', function(event) {
+        $(event.currentTarget).children('.textTooltip').css({
+            'visibility': 'hidden'
+        });
+    });
+    div.appendChild(tooltip);
+    if ('duration' in activeBuffs[buffName]) {
+        let remainingTime = document.createElement('span');
+        remainingTime.classList = ['numberText buffRemainingTime'];
+        remainingTime.innerHTML = secondsToReadableTime(activeBuffs[buffName].duration);
+        remainingTime.id = 'buffTimer-' + buffName;
+        div.appendChild(remainingTime);
+    }
+    div.appendChild(img); // this being the final thing may still not be enough time for the image to load before being put into the buff
+    return div;
+}
+
+const BUFF_DELAY = 250;
+const BUFF_AREA = document.getElementById('buffArea');
+function handleBuffs() {
+    let allBuffNames = Object.keys(activeBuffs);
+    let newlyDrawnBuffs = [];
+    buffsThatNeedToBeDrawn.forEach((buffName) => {
+        BUFF_AREA.appendChild(makeBuffIconAndInfo(buffName));
+        newlyDrawnBuffs.push(buffName);
+    });
+    newlyDrawnBuffs.forEach((buffName) => {
+        removeItemOnce(buffsThatNeedToBeDrawn, buffName);
+    });
+    allBuffNames.forEach((buffName) => {
+        if ('duration' in activeBuffs[buffName]) {
+            activeBuffs[buffName].duration -= BUFF_DELAY/1000; // close enough to the actual time (who cares if the player gets a little more time with a buff)
+            if (activeBuffs[buffName].duration < 0) {
+                removeBuff(buffName);
+            }
+            else {
+                document.getElementById('buffTimer-' + buffName).innerHTML = secondsToReadableTime(activeBuffs[buffName].duration);
+            }
+        }
+    });
+    scheduleToGameLoop(BUFF_DELAY, handleBuffs, [], 'buffs');
+}
+
+$(() => {
+    scheduleToGameLoop(BUFF_DELAY, handleBuffs, [], 'buffs');
+});

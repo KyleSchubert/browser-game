@@ -8,7 +8,8 @@ var gameLoop = {
     interfacing: [],
     movement: [],
     other: [],
-    skillMovements: []
+    skillMovements: [],
+    buffs: []
 };
 
 function scheduleToGameLoop(delay, callback, data=[], category='other') {

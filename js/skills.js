@@ -47,7 +47,15 @@ function processSkill(skill) {
     }
     else if (skillType == 'buff') {
         playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')]);
-
+        if ('duration' in buffSkillVars[usedSkill]) { // some buffs are toggleable and have no duration
+            let durationVariable = buffSkillVars[usedSkill]['duration'];
+            let equation = classSkills[usedSkill].usedVariables[durationVariable];
+            let durationValue = classSkills[usedSkill].computedVars[equation];
+            addBuff(usedSkill, 'skill', durationValue);
+        }
+        else {
+            addBuff(usedSkill, 'skill');
+        }
         setSkillSuffixesAndDimensions(usedSkill);
         positionAndAnimateSkillEffects(usedSkill);
     }
@@ -571,15 +579,15 @@ function getAllocatedPassiveSkills() {
     return skills;
 }
 
-function getPassiveSkillStats(skillId) {
+function getPassiveOrBuffSkillStats(skillId, varsSource) {
     let data = {};
-    Object.keys(passiveSkillVars[skillId]).forEach((stat) => {
+    Object.keys(varsSource[skillId]).forEach((stat) => {
         let equation = classSkills[skillId].usedVariables[stat];
         let statValue = classSkills[skillId].computedVars[equation];
         if (!statValue) {
             statValue = parseInt(equation);
         }
-        let statMeaning = passiveSkillVars[skillId][stat];
+        let statMeaning = varsSource[skillId][stat];
         data[statMeaning] = statValue;
     });
     return data;

@@ -28,9 +28,23 @@ function getOneCompoundedStat(stat) { // updates the compoundStat and also retur
     }
     value = character.stats[stat];
     getAllocatedPassiveSkills().forEach((skillId) => {
-        let statBonuses = getPassiveSkillStats(skillId);
+        let statBonuses = getPassiveOrBuffSkillStats(skillId, passiveSkillVars);
         if (stat in statBonuses) {
             value += statBonuses[stat];
+        }
+    });
+    Object.keys(activeBuffs).forEach((buffName) => {
+        if (activeBuffs[buffName].type == 'skill') { // stats will not be in the data
+            let statBonuses = getPassiveOrBuffSkillStats(buffName, buffSkillVars);
+            if (stat in statBonuses) {
+                value += statBonuses[stat];
+            }
+        }
+        else if (activeBuffs[buffName].type == 'item') {
+            console.log('+');
+        }
+        else { // everything else will have that info in their data
+            console.log('=');
         }
     });
     if (stat in relatedStats) {

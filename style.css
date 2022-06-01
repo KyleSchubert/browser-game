@@ -503,7 +503,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     width: 200px;
     height: 100px;
-    top: 864px;
+    top: 840px;
     z-index: 3;
 }
 
@@ -599,6 +599,31 @@ input[type=number]::-webkit-inner-spin-button {
     width: 140px;
     left: 20px;
     top: 0px;
+}
+
+#buffArea {
+    position: absolute;
+    display: flex;
+    bottom: 24px;
+    left: 12px;
+}
+
+.buffHolder {
+    display: flex;
+    margin-right: 2px;
+    align-items: center;
+    justify-content: center;
+}
+
+.buffHolder img {
+    border: 1px solid #b0ff9c;
+    border-radius: 6px;
+}
+
+.buffRemainingTime {
+    position: absolute;
+    font-size: 12px !important;
+    bottom: -16px;
 }
 
 .portal {
