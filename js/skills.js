@@ -398,6 +398,11 @@ function makeSkillCards() {
         skillImg.src = "./skills/icon/" + skill + ".png";
         skillImg.style.alignSelf = 'center';
         skillImg.style.marginLeft = '2px';
+        skillImg.setAttribute('value', skill);
+        if (classSkills[skill].TYPE != 'passive' && classSkills[skill].TYPE != 'jump') {
+            skillImg.classList.add('clickable');
+            skillImg.classList.add('keybindableThing');
+        }
         skillInfoHolder.appendChild(skillImg);
         let everythingElse = document.createElement('div');
         everythingElse.style.marginLeft = '4px';

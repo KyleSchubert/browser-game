@@ -171,6 +171,7 @@ $(() => {
         });
         updateExpBar();
         makeSkillCards();
+        makeKeybindableThingsDraggable();
         if (character.info.skillPoints[0] > 1) {
             document.getElementById('skillPoints').innerHTML = character.info.skillPoints[0];
             makeSkillPointsAllocateable();
@@ -181,6 +182,7 @@ $(() => {
     }
     else {
         makeSkillCards();
+        makeKeybindableThingsDraggable();
     }
     data = window.localStorage.getObject('activeBuffs');
     if (data) {

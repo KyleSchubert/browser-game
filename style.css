@@ -283,6 +283,34 @@ input[type=number]::-webkit-inner-spin-button {
     z-index: 4;
 }
 
+#keyboardChangeArea {
+    position: absolute;
+    display: flex;
+    width: 537px;
+    top: 0px;
+    flex-shrink: 0;
+    z-index: 4;
+}
+
+#keyboardChangeButtonArea {
+    position: absolute;
+    border-top: solid var(--inventory-holder-color);
+    display: flex;
+    flex-shrink: 0;
+    width: 100%;
+    left: 4px;
+    top: -10px;
+    z-index: -1;
+}
+
+#keyboardChangeEntireHolder {
+    position: absolute;
+    bottom: 0px;
+    left: 4px;
+    background-color: var(--inventory-holder-color);
+    border-radius: 6px;
+}
+
 .infoRow .infoRow, .infoRow .infoColumn {
     position: relative;
     padding: 0px;
@@ -417,12 +445,17 @@ input[type=number]::-webkit-inner-spin-button {
 
 #statsButtonArea {
     position: absolute;
+    pointer-events: none;
     border-top: solid var(--inventory-holder-color);
     display: flex;
     flex-shrink: 0;
     justify-content: center;
     width: 100%;
     left: 16px;
+}
+
+.openStatsButton {
+    pointer-events: all !important;
 }
 
 @keyframes openTheStatsPanel {
@@ -503,7 +536,7 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     width: 200px;
     height: 100px;
-    top: 840px;
+    top: 836px;
     z-index: 3;
 }
 
@@ -579,6 +612,8 @@ input[type=number]::-webkit-inner-spin-button {
     position: absolute;
     width: 32px;
     height: 32px;
+    transform: scale(1.5);
+    cursor: grab;
 }
 
 .changeableKeybind img {

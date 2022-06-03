@@ -19,6 +19,15 @@ function makeDraggableItemsDraggable() {
                 $(event.currentTarget).css('visibility', 'hidden');
                 $('#draggedItemHolder').css('visibility', 'visible');
                 isSomethingBeingDragged = true;
+                if (inventoryCurrentSelectedTab.innerHTML == 'EQUIP') {
+                    draggedThingType = 'equipItem';
+                }
+                else if (inventoryCurrentSelectedTab.innerHTML == 'USE') {
+                    draggedThingType = 'useItem';
+                }
+                else if (inventoryCurrentSelectedTab.innerHTML == 'ETC') {
+                    draggedThingType = 'etcItem';
+                }
                 $(event.currentTarget).css('pointer-events', 'none');
                 imgLink = $(event.currentTarget).children('img').attr('src');
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
@@ -525,5 +534,299 @@ $('.skillTab').on('click', (event) => {
     document.getElementById('skillContentAreaTabName').innerHTML = skillTierNames[skillTier];
     document.getElementById('skillBookPictureHolder').firstElementChild.src = './files/book' + skillTier + '.png';
     makeSkillCards();
+    makeKeybindableThingsDraggable();
     makeSkillPointsAllocateable();
 });
+
+$('#keyboardChangeArea').on('animationend webkitAnimationEnd oAnimationEnd', () => {
+    if (!$('#keyboardChangeArea').hasClass('inventory-open') && !$('#keyboardChangeArea').hasClass('inventory-closing') && $('#keyboardChangeArea').hasClass('inventory-opening')) {
+        $('#keyboardChangeArea').addClass('inventory-open');
+        $('#keyboardChangeArea').removeClass('inventory-opening');
+    }
+    else {
+        $('#keyboardChangeArea').removeClass('inventory-closing');
+    }
+});
+
+$('#keyboardChangeButtonArea').on('click', () => {
+    if (!$('#keyboardChangeArea').hasClass('inventory-open')) {
+        $('#keyboardChangeArea').addClass('inventory-opening');
+    }
+    else {
+        $('#keyboardChangeArea').addClass('inventory-closing');
+        $('#keyboardChangeArea').removeClass('inventory-open');
+    }
+});
+
+const KEYBIND_LOCATIONS_ON_THE_KEYBOARD = {
+    '`': [31, 30],
+    '1': [81, 30],
+    '2': [130, 30],
+    '3': [179, 30],
+    '4': [229, 30],
+    '5': [279, 30],
+    '6': [328, 30],
+    '7': [378, 30],
+    '8': [428, 30],
+    '9': [477, 30],
+    '0': [527, 30],
+    '-': [576, 30],
+    '=': [626, 30],
+    'q': [105, 79],
+    'w': [154, 79],
+    'e': [204, 79],
+    'r': [254, 79],
+    't': [303, 79],
+    'y': [353, 79],
+    'u': [402, 79],
+    'i': [452, 79],
+    'o': [501, 79],
+    'p': [551, 79],
+    '[': [600, 79],
+    ']': [650, 79],
+    'a': [129, 129],
+    's': [178, 129],
+    'd': [228, 129],
+    'f': [277, 129],
+    'g': [327, 129],
+    'h': [376, 129],
+    'j': [426, 129],
+    'k': [476, 129],
+    'l': [525, 129],
+    ';': [575, 129],
+    "'": [624, 129],
+    'Shift': [[67, 178], [684, 178]],
+    'z': [152, 178],
+    'x': [202, 178],
+    'c': [252, 178],
+    'v': [301, 178],
+    'b': [351, 178],
+    'n': [400, 178],
+    'm': [450, 178],
+    ',': [499, 178],
+    '.': [549, 178],
+    'Ctrl': [[43, 228][712, 228]],
+    'Alt': [[190, 228], [561, 228]],
+    'Space': [373, 228]
+};
+
+function getHoveredKeyboardKey() { // for detecting which keybind they want to put something on (using the picture + click and drag)
+    // there are 5 rows of keys. `1234... -> qwert... -> asdfg... -> shift zxcv... -> ctrl alt space...
+    var key = '';
+    let mouseY = SQUAREposY; // SQUAREposY = cursor Y location
+    let mouseX = SQUAREposX + document.getElementById('gameArea').offsetLeft;
+    if (between(mouseY, 129, 178)) {
+        if (between(mouseX, 26, 75)) {
+            key = '`';
+        }
+        else if (between(mouseX, 76, 124)) {
+            key = '1';
+        }
+        else if (between(mouseX, 125, 173)) {
+            key = '2';
+        }
+        else if (between(mouseX, 174, 223)) {
+            key = '3';
+        }
+        else if (between(mouseX, 224, 273)) {
+            key = '4';
+        }
+        else if (between(mouseX, 274, 322)) {
+            key = '5';
+        }
+        else if (between(mouseX, 323, 372)) {
+            key = '6';
+        }
+        else if (between(mouseX, 373, 422)) {
+            key = '7';
+        }
+        else if (between(mouseX, 423, 471)) {
+            key = '8';
+        }
+        else if (between(mouseX, 472, 521)) {
+            key = '9';
+        }
+        else if (between(mouseX, 522, 570)) {
+            key = '0';
+        }
+        else if (between(mouseX, 571, 620)) {
+            key = '-';
+        }
+        else if (between(mouseX, 621, 670)) {
+            key = '=';
+        }
+    }
+    else if (between(mouseY, 179, 228)) {
+        if (between(mouseX, 100, 148)) {
+            key = 'q';
+        }
+        else if (between(mouseX, 149, 198)) {
+            key = 'w';
+        }
+        else if (between(mouseX, 199, 248)) {
+            key = 'e';
+        }
+        else if (between(mouseX, 249, 297)) {
+            key = 'r';
+        }
+        else if (between(mouseX, 298, 347)) {
+            key = 't';
+        }
+        else if (between(mouseX, 348, 396)) {
+            key = 'y';
+        }
+        else if (between(mouseX, 397, 446)) {
+            key = 'u';
+        }
+        else if (between(mouseX, 447, 495)) {
+            key = 'i';
+        }
+        else if (between(mouseX, 496, 545)) {
+            key = 'o';
+        }
+        else if (between(mouseX, 546, 594)) {
+            key = 'p';
+        }
+        else if (between(mouseX, 595, 644)) {
+            key = '[';
+        }
+        else if (between(mouseX, 645, 694)) {
+            key = ']';
+        }
+    }
+    else if (between(mouseY, 229, 278)) {
+        if (between(mouseX, 124, 172)) {
+            key = 'a';
+        }
+        else if (between(mouseX, 173, 222)) {
+            key = 's';
+        }
+        else if (between(mouseX, 223, 271)) {
+            key = 'd';
+        }
+        else if (between(mouseX, 272, 321)) {
+            key = 'f';
+        }
+        else if (between(mouseX, 322, 370)) {
+            key = 'g';
+        }
+        else if (between(mouseX, 371, 420)) {
+            key = 'h';
+        }
+        else if (between(mouseX, 421, 470)) {
+            key = 'j';
+        }
+        else if (between(mouseX, 471, 519)) {
+            key = 'k';
+        }
+        else if (between(mouseX, 520, 569)) {
+            key = 'l';
+        }
+        else if (between(mouseX, 570, 618)) {
+            key = ';';
+        }
+        else if (between(mouseX, 619, 668)) {
+            key = "'";
+        }
+    }
+    else if (between(mouseY, 279, 328)) {
+        if (between(mouseX, 26, 146)) {
+            key = 'Shift';
+        }
+        else if (between(mouseX, 147, 196)) {
+            key = 'z';
+        }
+        else if (between(mouseX, 197, 246)) {
+            key = 'x';
+        }
+        else if (between(mouseX, 247, 295)) {
+            key = 'c';
+        }
+        else if (between(mouseX, 296, 345)) {
+            key = 'v';
+        }
+        else if (between(mouseX, 346, 394)) {
+            key = 'b';
+        }
+        else if (between(mouseX, 395, 444)) {
+            key = 'n';
+        }
+        else if (between(mouseX, 445, 493)) {
+            key = 'm';
+        }
+        else if (between(mouseX, 494, 543)) {
+            key = ',';
+        }
+        else if (between(mouseX, 544, 593)) {
+            key = '.';
+        }
+        else if (between(mouseX, 643, 768)) { // this gap compared to the previous key is visible on the keyboard
+            key = 'Shift';
+        }
+    }
+    else if (between(mouseY, 329, 378)) {
+        if (between(mouseX, 26, 99)) {
+            key = 'Ctrl';
+        }
+        else if (between(mouseX, 173, 246)) {
+            key = 'Alt';
+        }
+        else if (between(mouseX, 247, 543)) {
+            key = 'Space';
+        }
+        else if (between(mouseX, 544, 618)) {
+            key = 'Alt';
+        }
+        else if (between(mouseX, 694, 768)) {
+            key = 'Ctrl';
+        }
+    }
+    return key;
+}
+
+function addSkillToKeybinds(skill, keybind) {
+
+    return;
+}
+
+$('#keyboardChangeEntireHolder').on('mouseup', (event) => {
+    if (isSomethingBeingDragged) {
+        let targetKey = getHoveredKeyboardKey();
+        if (targetKey == '') { // this means they missed a key or accidentally dragged something onto the keyboard
+            return;
+        }
+        console.log(targetKey);
+        if (draggedThingType == 'skill') {
+            addSkillToKeybinds(draggedSkillId, targetKey);
+        }
+    }
+});
+
+var draggedThingType = 'etcItem';
+var draggedSkillId = '';
+function makeKeybindableThingsDraggable() {
+    $(function() {
+        $('.keybindableThing').draggable({
+            start: function(event) {
+                playSound(sounds[8]); // DragStart.mp3
+                $(event.currentTarget).css('visibility', 'hidden');
+                $('#draggedItemHolder').css('visibility', 'visible');
+                isSomethingBeingDragged = true;
+                draggedThingType = 'skill';
+                draggedSkillId = event.currentTarget.getAttribute('value');
+                let imgLink = $(event.currentTarget).attr('src');
+                $(event.currentTarget).css('pointer-events', 'none');
+                $('#draggedItemHolder').children('img').attr('src', imgLink);
+            },
+            stop: function() {
+                $('#draggedItemHolder').css('visibility', 'hidden');
+                $(this).css('visibility', '');
+                isSomethingBeingDragged = false;
+                $(this).css('pointer-events', 'auto');
+                $(this).css('left', '0px');
+                $(this).css('top', '0px');
+            },
+            containment: 'window'
+        });
+    });
+}
