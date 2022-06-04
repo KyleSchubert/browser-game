@@ -785,7 +785,7 @@ function getHoveredKeyboardKey() { // for detecting which keybind they want to p
 }
 
 function addSkillToKeybinds(skill, keybind) {
-
+    
     return;
 }
 
