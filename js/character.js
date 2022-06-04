@@ -222,6 +222,13 @@ var buffsThatNeedToBeDrawn = [];
 var activeBuffs = {};
 
 function addBuff(buff, type, duration=0, bonuses={}) {
+    if (type == 'skill') {
+        if (buff in oneOrTheOtherSkills) {
+            if (oneOrTheOtherSkills[buff] in activeBuffs) {
+                removeBuff(oneOrTheOtherSkills[buff]);
+            }
+        }
+    }
     if (buff in activeBuffs) {
         if (duration in activeBuffs[buff]) {
             activeBuffs[buff].duration = duration;

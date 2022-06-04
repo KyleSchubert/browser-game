@@ -20,7 +20,12 @@ function processSkill(skill) {
         return;
     }
     cannotUse.push(skill);
-    scheduleToGameLoop(classSkills[skill].reuseWaitTime * attackSpeedBonus, removeItemOnce, [cannotUse, skill], 'skill');
+    if (skillsThatHaveNoAnimations.includes(skill)) {
+        scheduleToGameLoop(1000 * attackSpeedBonus, removeItemOnce, [cannotUse, skill], 'skill');
+    }
+    else {
+        scheduleToGameLoop(classSkills[skill].reuseWaitTime * attackSpeedBonus, removeItemOnce, [cannotUse, skill], 'skill');
+    }
     previousSkill = usedSkill;
     usedSkill = skill;
     let skillType = classSkills[skill].TYPE;
@@ -652,6 +657,9 @@ function setSkillSuffixesAndDimensions(skillId) {
 }
 
 function positionAndAnimateSkillEffects(skill=0, additionalOffsets=[0,0]) {
+    if (skillsThatHaveNoAnimations.includes(skill)) {
+        return;
+    }
     Object.keys(classSkills[skill].effects).forEach((effectName) => {
         positionAndAnimateOneSkillEffect(effectName, classSkills[skill].effects[effectName], additionalOffsets);
     });

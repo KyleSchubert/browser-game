@@ -41,6 +41,10 @@ var skillsThatGetEnhanced = {
     }
 };
 
+var skillsThatHaveNoAnimations = [60001216, 60001217]; // skills like "Realign: Attacker Mode"
+
+var oneOrTheOtherSkills = {60001216: 60001217, 60001217: 60001216}; // buffs like "Realign: Attacker Mode" with "Realign: Defender Mode"
+
 const classSkills = {
     60000221: {
         className: 'Kaiser',

@@ -230,6 +230,25 @@ $(() => {
     if (data) {
         currentZone = data;
     }
+    data = window.localStorage.getObject('keybinds');
+    if (data) {
+        keybindReferences = data;
+        Object.keys(keybindReferences).forEach((key) => {
+            if (keybindReferences[key].type == 'skill') {
+                addSkillToKeybinds(keybindReferences[key].id, key);
+            }
+        });
+    }
+    else {
+        addSkillToKeybinds(60001217, '0');
+        addSkillToKeybinds(60001216, '9');
+        addSkillToKeybinds(61001000, 'x');
+        addSkillToKeybinds(61001101, 'c');
+        addSkillToKeybinds(61101002, 'a');
+        addSkillToKeybinds(61101004, 's');
+        addSkillToKeybinds(61101100, 'd');
+        addSkillToKeybinds(61101101, 'f');
+    }
     loadPortals();
     let amountToSpawn = (MAX_MOBS-$('.mob').length);
     for (i=0; i<amountToSpawn; i++) {
@@ -255,6 +274,7 @@ function saveAlmostEverything() {
     window.localStorage.setObject('storageItems', shopInventories[80002]);
     window.localStorage.setObject('storageStock', shopStocks[80002]);
     window.localStorage.setObject('currentZone', currentZone);
+    window.localStorage.setObject('keybinds', keybindReferences);
     
     console.log('Game saved');
 }

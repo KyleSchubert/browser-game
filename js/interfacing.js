@@ -29,7 +29,7 @@ function makeDraggableItemsDraggable() {
                     draggedThingType = 'etcItem';
                 }
                 $(event.currentTarget).css('pointer-events', 'none');
-                imgLink = $(event.currentTarget).children('img').attr('src');
+                let imgLink = $(event.currentTarget).children('img').attr('src');
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
             },
             stop: function() {
@@ -503,24 +503,27 @@ function checkForPressedKeys() {
             lootItem(currentHoveredDropItem);
         }
     }
-    if (pressedKeys.includes('x') && character.skillLevels[61001000] >= 1) {
-        processSkill(61001000);
-    }
-    if (pressedKeys.includes('c') && character.skillLevels[61001101] >= 1) {
-        processSkill(61001101);
-    }
-    if (pressedKeys.includes('a') && character.skillLevels[61101002] >= 1) {
-        processSkill(61101002);
-    }
-    if (pressedKeys.includes('s') && character.skillLevels[61101004] >= 1) {
-        processSkill(61101004);
-    }
-    if (pressedKeys.includes('d') && character.skillLevels[61101100] >= 1) {
-        processSkill(61101100);
-    }
-    if (pressedKeys.includes('f') && character.skillLevels[61101101] >= 1) {
-        processSkill(61101101);
-    }
+    let endEarly = false;
+    pressedKeys.forEach((someKey) => {
+        if (endEarly) {
+            return;
+        }
+        if (someKey in keybindReferences) {
+            endEarly = true;
+            if (keybindReferences[someKey].type == 'skill') {
+                let id = keybindReferences[someKey].id;
+                if (id in character.skillLevels) { // it should be in there, but if it isn't something strange happened
+                    if (character.skillLevels[id] >= 1) {
+                        processSkill(id);
+                    }
+                }
+                else {
+                    endEarly = false;
+                }
+            }
+        }
+    });
+    
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
 }
 
@@ -605,7 +608,7 @@ const KEYBIND_LOCATIONS_ON_THE_KEYBOARD = {
     'm': [450, 178],
     ',': [499, 178],
     '.': [549, 178],
-    'Ctrl': [[43, 228][712, 228]],
+    'Ctrl': [[43, 228], [712, 228]],
     'Alt': [[190, 228], [561, 228]],
     'Space': [373, 228]
 };
@@ -784,8 +787,42 @@ function getHoveredKeyboardKey() { // for detecting which keybind they want to p
     return key;
 }
 
+var keybindReferences = {}; // example: {'Ctrl': {type: 'skill', id: 61101002}, 'a': {type: 'useItem', id: 2000019}, ...}
+var assignedKeyboardKeys = {}; // example:  {'Ctrl': [element, element],  'a': [element], ...}
 function addSkillToKeybinds(skill, keybind) {
-    
+    if (keybind in assignedKeyboardKeys) {
+        assignedKeyboardKeys[keybind].forEach((someElement) => {
+            someElement.remove();
+        });
+    }
+    keybindReferences[keybind] = {};
+    keybindReferences[keybind]['type'] = 'skill';
+    keybindReferences[keybind]['id'] = skill;
+    assignedKeyboardKeys[keybind] = [];
+    let location = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind];
+    if (keybind == 'Shift' || keybind == 'Ctrl' || keybind == 'Alt') {
+        let div = document.createElement('div');
+        div.classList.add('changeableKeybind');
+        div.style.left = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind][0][0] + 'px';
+        div.style.top = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind][0][1] + 'px';
+        div.style.backgroundImage = 'url(./skills/icon/' + skill + '.png)';
+        let img = new Image();
+        img.src = './files/keyboard/' + keybind + '.png';
+        div.appendChild(img);
+        document.getElementById('keyboardChangeEntireHolder').appendChild(div);
+        assignedKeyboardKeys[keybind].push(div);
+        location = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind][1];
+    }
+    let div = document.createElement('div');
+    div.classList.add('changeableKeybind');
+    div.style.left = location[0] + 'px';
+    div.style.top = location[1] + 'px';
+    div.style.backgroundImage = 'url(./skills/icon/' + skill + '.png)';
+    let img = new Image();
+    img.src = './files/keyboard/' + keybind + '.png';
+    div.appendChild(img);
+    document.getElementById('keyboardChangeEntireHolder').appendChild(div);
+    assignedKeyboardKeys[keybind].push(div);
     return;
 }
 
