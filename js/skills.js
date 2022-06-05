@@ -15,6 +15,7 @@ var debugSkillBounds = false;
 
 
 function processSkill(skill) {
+    skill = parseInt(skill);
     attackSpeedBonus = attackSpeedValues[character.compoundedStats.attackSpeedBonus];
     if (cannotUse.includes(skill) || !skillDoneWaiting) {
         return;

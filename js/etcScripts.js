@@ -234,20 +234,19 @@ $(() => {
     if (data) {
         keybindReferences = data;
         Object.keys(keybindReferences).forEach((key) => {
-            if (keybindReferences[key].type == 'skill') {
-                addSkillToKeybinds(keybindReferences[key].id, key);
-            }
+            addToKeybinds(keybindReferences[key].id, key, keybindReferences[key].type);
         });
     }
     else {
-        addSkillToKeybinds(60001217, '0');
-        addSkillToKeybinds(60001216, '9');
-        addSkillToKeybinds(61001000, 'x');
-        addSkillToKeybinds(61001101, 'c');
-        addSkillToKeybinds(61101002, 'a');
-        addSkillToKeybinds(61101004, 's');
-        addSkillToKeybinds(61101100, 'd');
-        addSkillToKeybinds(61101101, 'f');
+        addToKeybinds(60001217, '0', 'skill');
+        addToKeybinds(60001216, '9', 'skill');
+        addToKeybinds(61001000, 'x', 'skill');
+        addToKeybinds(61001101, 'c', 'skill');
+        addToKeybinds(61101002, 'a', 'skill');
+        addToKeybinds(61101004, 's', 'skill');
+        addToKeybinds(61101100, 'd', 'skill');
+        addToKeybinds(61101101, 'f', 'skill');
+        addToKeybinds('pickUp', 'z', 'function');
     }
     loadPortals();
     let amountToSpawn = (MAX_MOBS-$('.mob').length);

@@ -498,10 +498,8 @@ function checkForToggleKeys() {
 }
 
 function checkForPressedKeys() {
-    if (pressedKeys.includes('z')) {
-        if (currentHoveredDropItem) {
-            lootItem(currentHoveredDropItem);
-        }
+    if (smallDialogBoxOpen) { // this prevents buying stuff and activating skills on your number keys
+        return;
     }
     let endEarly = false;
     pressedKeys.forEach((someKey) => {
@@ -519,6 +517,14 @@ function checkForPressedKeys() {
                 }
                 else {
                     endEarly = false;
+                }
+            }
+            else if (keybindReferences[someKey].type == 'function') {
+                let id = keybindReferences[someKey].id;
+                if (id == 'pickUp') {
+                    if (currentHoveredDropItem) {
+                        lootItem(currentHoveredDropItem);
+                    }
                 }
             }
         }
@@ -608,13 +614,13 @@ const KEYBIND_LOCATIONS_ON_THE_KEYBOARD = {
     'm': [450, 178],
     ',': [499, 178],
     '.': [549, 178],
-    'Ctrl': [[43, 228], [712, 228]],
+    'Control': [[43, 228], [712, 228]],
     'Alt': [[190, 228], [561, 228]],
     'Space': [373, 228]
 };
 
 function getHoveredKeyboardKey() { // for detecting which keybind they want to put something on (using the picture + click and drag)
-    // there are 5 rows of keys. `1234... -> qwert... -> asdfg... -> shift zxcv... -> ctrl alt space...
+    // there are 5 rows of keys. `1234... -> qwert... -> asdfg... -> shift zxcv... -> control alt space...
     var key = '';
     let mouseY = SQUAREposY; // SQUAREposY = cursor Y location
     let mouseX = SQUAREposX + document.getElementById('gameArea').offsetLeft;
@@ -769,7 +775,7 @@ function getHoveredKeyboardKey() { // for detecting which keybind they want to p
     }
     else if (between(mouseY, 329, 378)) {
         if (between(mouseX, 26, 99)) {
-            key = 'Ctrl';
+            key = 'Control';
         }
         else if (between(mouseX, 173, 246)) {
             key = 'Alt';
@@ -781,33 +787,43 @@ function getHoveredKeyboardKey() { // for detecting which keybind they want to p
             key = 'Alt';
         }
         else if (between(mouseX, 694, 768)) {
-            key = 'Ctrl';
+            key = 'Control';
         }
     }
     return key;
 }
 
-var keybindReferences = {}; // example: {'Ctrl': {type: 'skill', id: 61101002}, 'a': {type: 'useItem', id: 2000019}, ...}
-var assignedKeyboardKeys = {}; // example:  {'Ctrl': [element, element],  'a': [element], ...}
-function addSkillToKeybinds(skill, keybind) {
+var keybindReferences = {}; // example: {'Control': {type: 'skill', id: 61101002}, 'a': {type: 'useItem', id: 2000019}, ...}
+var assignedKeyboardKeys = {}; // example:  {'Control': [element, element],  'a': [element], ...}
+function addToKeybinds(information, keybind, type) {
     if (keybind in assignedKeyboardKeys) {
         assignedKeyboardKeys[keybind].forEach((someElement) => {
             someElement.remove();
         });
+        delete assignedKeyboardKeys[keybind];
+    }
+    let imgLink = '';
+    if (information == 'pickUp') {
+        imgLink = 'url(./files/keyboard/Pick_Up.png)';
+    }
+    else {
+        imgLink = 'url(./skills/icon/' + information + '.png)';
     }
     keybindReferences[keybind] = {};
-    keybindReferences[keybind]['type'] = 'skill';
-    keybindReferences[keybind]['id'] = skill;
+    keybindReferences[keybind]['id'] = information;
+    keybindReferences[keybind]['type'] = type;
     assignedKeyboardKeys[keybind] = [];
     let location = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind];
-    if (keybind == 'Shift' || keybind == 'Ctrl' || keybind == 'Alt') {
+    if (keybind == 'Shift' || keybind == 'Control' || keybind == 'Alt') {
         let div = document.createElement('div');
         div.classList.add('changeableKeybind');
         div.style.left = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind][0][0] + 'px';
         div.style.top = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind][0][1] + 'px';
-        div.style.backgroundImage = 'url(./skills/icon/' + skill + '.png)';
+        div.style.backgroundImage = imgLink;
+        div.setAttribute('value', information);
         let img = new Image();
         img.src = './files/keyboard/' + keybind + '.png';
+        img.setAttribute('value', keybind);
         div.appendChild(img);
         document.getElementById('keyboardChangeEntireHolder').appendChild(div);
         assignedKeyboardKeys[keybind].push(div);
@@ -817,12 +833,15 @@ function addSkillToKeybinds(skill, keybind) {
     div.classList.add('changeableKeybind');
     div.style.left = location[0] + 'px';
     div.style.top = location[1] + 'px';
-    div.style.backgroundImage = 'url(./skills/icon/' + skill + '.png)';
+    div.style.backgroundImage = imgLink;
+    div.setAttribute('value', information);
     let img = new Image();
     img.src = './files/keyboard/' + keybind + '.png';
+    img.setAttribute('value', keybind);
     div.appendChild(img);
     document.getElementById('keyboardChangeEntireHolder').appendChild(div);
     assignedKeyboardKeys[keybind].push(div);
+    makeChangeableKeybindsDraggable();
     return;
 }
 
@@ -832,15 +851,12 @@ $('#keyboardChangeEntireHolder').on('mouseup', (event) => {
         if (targetKey == '') { // this means they missed a key or accidentally dragged something onto the keyboard
             return;
         }
-        console.log(targetKey);
-        if (draggedThingType == 'skill') {
-            addSkillToKeybinds(draggedSkillId, targetKey);
-        }
+        addToKeybinds(draggedThingId, targetKey, draggedThingType);
     }
 });
 
 var draggedThingType = 'etcItem';
-var draggedSkillId = '';
+var draggedThingId = '';
 function makeKeybindableThingsDraggable() {
     $(function() {
         $('.keybindableThing').draggable({
@@ -850,7 +866,7 @@ function makeKeybindableThingsDraggable() {
                 $('#draggedItemHolder').css('visibility', 'visible');
                 isSomethingBeingDragged = true;
                 draggedThingType = 'skill';
-                draggedSkillId = event.currentTarget.getAttribute('value');
+                draggedThingId = event.currentTarget.getAttribute('value');
                 let imgLink = $(event.currentTarget).attr('src');
                 $(event.currentTarget).css('pointer-events', 'none');
                 $('#draggedItemHolder').children('img').attr('src', imgLink);
@@ -866,4 +882,47 @@ function makeKeybindableThingsDraggable() {
             containment: 'window'
         });
     });
+}
+
+var liftedKey = '';
+function makeChangeableKeybindsDraggable() {
+    $(function() {
+        $('.changeableKeybind').draggable({
+            start: function(event) {
+                playSound(sounds[8]); // DragStart.mp3
+                $(event.currentTarget).css('visibility', 'hidden');
+                $('#draggedItemHolder').css('visibility', 'visible');
+                isSomethingBeingDragged = true;
+                liftedKey = event.currentTarget.children[0].getAttribute('value');
+                draggedThingId = event.currentTarget.getAttribute('value');
+                let text = event.currentTarget.style.backgroundImage;
+                let imgLink = text.slice(5, text.length-2);
+                let letterOfDirectory = imgLink[2];
+                if (letterOfDirectory == 'f') {
+                    draggedThingType = 'function'; // from "files" folder. stuff like "Pick Up"
+                }
+                else if (letterOfDirectory == 's') { // from "skills" folder
+                    draggedThingType = 'skill';
+                }
+                else if (letterOfDirectory == 'i') { // from "item" folder
+                    draggedThingType = 'useItem';
+                }
+                $(event.currentTarget).css('pointer-events', 'none');
+                $('#draggedItemHolder').children('img').attr('src', imgLink);
+            },
+            stop: function() {
+                $('#draggedItemHolder').css('visibility', 'hidden');
+                isSomethingBeingDragged = false;
+                assignedKeyboardKeys[liftedKey].forEach((someElement) => {
+                    someElement.remove();
+                });
+                delete assignedKeyboardKeys[liftedKey];
+                if (liftedKey in keybindReferences) {
+                    delete keybindReferences[liftedKey];
+                }
+            },
+            containment: 'window'
+        });
+    });
+
 }
