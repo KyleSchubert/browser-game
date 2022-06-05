@@ -379,13 +379,15 @@ var lastFloorY = 0;
 var canDoubleJump = false;
 var doubleJumped = false;
 var avatarComputedYPosition = AVATAR.offsetTop;
+var allJumpKeys = [];
 function avatarMovement(timeDelta) {
-    if (isJumping && !pressedKeys.includes(' ') && !doubleJumped) {
+    let hasPressedJumpKey = pressedKeys.some(someKey => allJumpKeys.includes(someKey));
+    if (isJumping && !hasPressedJumpKey && !doubleJumped) {
         canDoubleJump = true;
     }
-    if ((movementKeys.some((element) => pressedKeys.includes(element)) || (pressedKeys.includes(' ') && (!isJumping || canDoubleJump)))  && !isUsingSkill) {
+    if ((movementKeys.some((element) => pressedKeys.includes(element)) || (hasPressedJumpKey && (!isJumping || canDoubleJump)))  && !isUsingSkill) {
         let alreadySetState = false;
-        if (pressedKeys.includes(' ') && (!isJumping || canDoubleJump) && !pressedKeys.includes('ArrowDown')) {
+        if (hasPressedJumpKey && (!isJumping || canDoubleJump) && !pressedKeys.includes('ArrowDown')) {
             if (!alreadySetState) {
                 setState('jump');
                 alreadySetState = true;

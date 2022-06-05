@@ -796,23 +796,33 @@ function getHoveredKeyboardKey() { // for detecting which keybind they want to p
 var keybindReferences = {}; // example: {'Control': {type: 'skill', id: 61101002}, 'a': {type: 'useItem', id: 2000019}, ...}
 var assignedKeyboardKeys = {}; // example:  {'Control': [element, element],  'a': [element], ...}
 function addToKeybinds(information, keybind, type) {
-    if (keybind in assignedKeyboardKeys) {
-        assignedKeyboardKeys[keybind].forEach((someElement) => {
+    realKeybind = keybind;
+    if (keybind == 'Space') {
+        realKeybind = ' ';
+    }
+    if (realKeybind in assignedKeyboardKeys) {
+        assignedKeyboardKeys[realKeybind].forEach((someElement) => {
             someElement.remove();
         });
-        delete assignedKeyboardKeys[keybind];
+        delete assignedKeyboardKeys[realKeybind];
     }
     let imgLink = '';
+    removeItemOnce(allJumpKeys, realKeybind);
     if (information == 'pickUp') {
         imgLink = 'url(./files/keyboard/Pick_Up.png)';
+    }
+    else if (information == 'jump') {
+        imgLink = 'url(./files/keyboard/Jump.png)';
+        allJumpKeys.push(realKeybind);
     }
     else {
         imgLink = 'url(./skills/icon/' + information + '.png)';
     }
-    keybindReferences[keybind] = {};
-    keybindReferences[keybind]['id'] = information;
-    keybindReferences[keybind]['type'] = type;
-    assignedKeyboardKeys[keybind] = [];
+    keybindReferences[realKeybind] = {};
+    keybindReferences[realKeybind]['id'] = information;
+    keybindReferences[realKeybind]['type'] = type;
+    assignedKeyboardKeys[realKeybind] = [];
+    console.log(keybind);
     let location = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind];
     if (keybind == 'Shift' || keybind == 'Control' || keybind == 'Alt') {
         let div = document.createElement('div');
@@ -823,10 +833,10 @@ function addToKeybinds(information, keybind, type) {
         div.setAttribute('value', information);
         let img = new Image();
         img.src = './files/keyboard/' + keybind + '.png';
-        img.setAttribute('value', keybind);
+        img.setAttribute('value', realKeybind);
         div.appendChild(img);
         document.getElementById('keyboardChangeEntireHolder').appendChild(div);
-        assignedKeyboardKeys[keybind].push(div);
+        assignedKeyboardKeys[realKeybind].push(div);
         location = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind][1];
     }
     let div = document.createElement('div');
@@ -837,10 +847,10 @@ function addToKeybinds(information, keybind, type) {
     div.setAttribute('value', information);
     let img = new Image();
     img.src = './files/keyboard/' + keybind + '.png';
-    img.setAttribute('value', keybind);
+    img.setAttribute('value', realKeybind);
     div.appendChild(img);
     document.getElementById('keyboardChangeEntireHolder').appendChild(div);
-    assignedKeyboardKeys[keybind].push(div);
+    assignedKeyboardKeys[realKeybind].push(div);
     makeChangeableKeybindsDraggable();
     return;
 }
@@ -885,7 +895,7 @@ function makeKeybindableThingsDraggable() {
 }
 
 var liftedKey = '';
-var keyboardGameFunctionKeyLocations = {'pickUp': '16px'};
+var keyboardGameFunctionKeyLocations = {'pickUp': '16px', 'jump': '72px'};
 function makeChangeableKeybindsDraggable() {
     $(function() {
         $('.changeableKeybind').draggable({
@@ -929,6 +939,7 @@ function makeChangeableKeybindsDraggable() {
                     assignedKeyboardKeys[liftedKey].forEach((someElement) => {
                         someElement.remove();
                     });
+                    removeItemOnce(allJumpKeys, liftedKey);
                     delete assignedKeyboardKeys[liftedKey];
                     if (liftedKey in keybindReferences) {
                         delete keybindReferences[liftedKey];

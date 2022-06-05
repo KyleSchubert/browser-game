@@ -234,7 +234,12 @@ $(() => {
     if (data) {
         keybindReferences = data;
         Object.keys(keybindReferences).forEach((key) => {
-            addToKeybinds(keybindReferences[key].id, key, keybindReferences[key].type);
+            if (key == ' ') { // space key
+                addToKeybinds(keybindReferences[key].id, 'Space', keybindReferences[key].type);
+            }
+            else {
+                addToKeybinds(keybindReferences[key].id, key, keybindReferences[key].type);
+            }
         });
     }
     else {
@@ -247,6 +252,7 @@ $(() => {
         addToKeybinds(61101100, 'd', 'skill');
         addToKeybinds(61101101, 'f', 'skill');
         addToKeybinds('pickUp', 'z', 'function');
+        addToKeybinds('jump', 'Space', 'function');
     }
     loadPortals();
     let amountToSpawn = (MAX_MOBS-$('.mob').length);
