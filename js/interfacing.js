@@ -623,7 +623,7 @@ function getHoveredKeyboardKey() { // for detecting which keybind they want to p
     // there are 5 rows of keys. `1234... -> qwert... -> asdfg... -> shift zxcv... -> control alt space...
     var key = '';
     let mouseY = SQUAREposY; // SQUAREposY = cursor Y location
-    let mouseX = SQUAREposX + document.getElementById('gameArea').offsetLeft;
+    let mouseX = SQUAREposX - document.getElementById('gameArea').offsetLeft;
     if (between(mouseY, 129, 178)) {
         if (between(mouseX, 26, 75)) {
             key = '`';
@@ -822,7 +822,6 @@ function addToKeybinds(information, keybind, type) {
     keybindReferences[realKeybind]['id'] = information;
     keybindReferences[realKeybind]['type'] = type;
     assignedKeyboardKeys[realKeybind] = [];
-    console.log(keybind);
     let location = KEYBIND_LOCATIONS_ON_THE_KEYBOARD[keybind];
     if (keybind == 'Shift' || keybind == 'Control' || keybind == 'Alt') {
         let div = document.createElement('div');
