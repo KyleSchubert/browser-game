@@ -885,6 +885,7 @@ function makeKeybindableThingsDraggable() {
 }
 
 var liftedKey = '';
+var keyboardGameFunctionKeyLocations = {'pickUp': '16px'};
 function makeChangeableKeybindsDraggable() {
     $(function() {
         $('.changeableKeybind').draggable({
@@ -893,7 +894,12 @@ function makeChangeableKeybindsDraggable() {
                 $(event.currentTarget).css('visibility', 'hidden');
                 $('#draggedItemHolder').css('visibility', 'visible');
                 isSomethingBeingDragged = true;
-                liftedKey = event.currentTarget.children[0].getAttribute('value');
+                if (event.currentTarget.children.length > 0) {
+                    liftedKey = event.currentTarget.children[0].getAttribute('value');
+                }
+                else { // if the key was from the additional game function keys area
+                    liftedKey = '';
+                }
                 draggedThingId = event.currentTarget.getAttribute('value');
                 let text = event.currentTarget.style.backgroundImage;
                 let imgLink = text.slice(5, text.length-2);
@@ -913,12 +919,20 @@ function makeChangeableKeybindsDraggable() {
             stop: function() {
                 $('#draggedItemHolder').css('visibility', 'hidden');
                 isSomethingBeingDragged = false;
-                assignedKeyboardKeys[liftedKey].forEach((someElement) => {
-                    someElement.remove();
-                });
-                delete assignedKeyboardKeys[liftedKey];
-                if (liftedKey in keybindReferences) {
-                    delete keybindReferences[liftedKey];
+                if (liftedKey == '') {
+                    $(this).css('visibility', '');
+                    $(this).css('pointer-events', 'auto');
+                    $(this).css('left', keyboardGameFunctionKeyLocations[draggedThingId]);
+                    $(this).css('top', '');
+                }
+                else {
+                    assignedKeyboardKeys[liftedKey].forEach((someElement) => {
+                        someElement.remove();
+                    });
+                    delete assignedKeyboardKeys[liftedKey];
+                    if (liftedKey in keybindReferences) {
+                        delete keybindReferences[liftedKey];
+                    }
                 }
             },
             containment: 'window'

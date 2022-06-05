@@ -303,6 +303,18 @@ input[type=number]::-webkit-inner-spin-button {
     z-index: -1;
 }
 
+#keyboardGameFunctionKeysArea {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    width: 260px;
+    height: 64px;
+    bottom: 300px;
+    left: 400px;
+    background-color: var(--inventory-holder-color);
+    border-radius: 6px;
+}
+
 #keyboardChangeEntireHolder {
     position: absolute;
     bottom: 0px;
