@@ -398,8 +398,14 @@ function avatarMovement(timeDelta) {
             }
             if (canDoubleJump) {
                 doubleJumped = true;
-                positionAndAnimateSkillEffects(61001002, [0, -36]);
-                playSound(sounds[allSoundFiles.indexOf('61001002.mp3')]);
+                if (character.info.level > 60) {
+                    positionAndAnimateSkillEffects(61111221, [12, 36]); // why must this be ~80% larger?
+                    playSound(sounds[allSoundFiles.indexOf('61001002.mp3')]);
+                }
+                else {
+                    positionAndAnimateSkillEffects(61001002, [0, -36]);
+                    playSound(sounds[allSoundFiles.indexOf('61001002.mp3')]);
+                }
                 if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
                     xVelocity = 2.4*maxMovementSpeed;
                 }

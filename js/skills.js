@@ -197,6 +197,9 @@ function hitEffect(left, top, skill, reason='') {
     if (!(usedSkillSuffixes[suffixesSkill]['hit'].includes('hit0'))) {
         usedSkillSuffixes[suffixesSkill]['hit'] += 'hit0';
     }
+    if (usedSkillSuffixes[suffixesSkill]['hitDimensions'] != '') {
+        hitDimensions = usedSkillSuffixes[suffixesSkill]['hitDimensions'];
+    }
     div.style.backgroundImage = 'url(./skills/hit/' + skill + usedSkillSuffixes[suffixesSkill]['hit'] + '.png)'; // this used to be usedSkill not sure why
     div.style.width = hitDimensions[0] + 'px';
     div.style.height = hitDimensions[1] + 'px';
@@ -454,10 +457,12 @@ function makeSkillCards() {
                 document.getElementById('skillPoints').innerHTML = character.info.skillPoints[skillTier];
                 event.currentTarget.previousElementSibling.innerHTML = character.skillLevels[skill];
                 if (classSkills[skill].TYPE == 'passive') {
-                    Object.keys(getPassiveSkillStats(skill)).forEach((stat) => {
+                    getCompoundedStats();
+                    updateCharacterDisplay();
+                    /*Object.keys(getPassiveOrBuffSkillStats(skill, passiveSkillVars)).forEach((stat) => {
                         getOneCompoundedStat(stat);
                         updateOneCharacterDisplay(stat);
-                    });
+                    });*/
                 }
             }
         });
@@ -466,6 +471,17 @@ function makeSkillCards() {
         skillInfoHolder.appendChild(everythingElse);
         document.getElementById('skillContentAreaBottomPart').appendChild(skillInfoHolder);
     });
+}
+
+function changeSkillTextForColoredText(text) {
+    let finalHtml = text;
+    let locationOfColorChange = finalHtml.search('#c');
+    while (locationOfColorChange != -1) {
+        finalHtml = finalHtml.replace('#c', '<span style="color:cyan">');
+        finalHtml = finalHtml.replace('#', '</span>');
+        locationOfColorChange = finalHtml.search('#c');
+    }
+    return finalHtml;
 }
 
 function makeSkillTooltip(skill) {
@@ -489,8 +505,14 @@ function makeSkillTooltip(skill) {
     masterLevel.innerHTML = '[Master level: ' + classSkills[skill].maxLevel + ']';
     descriptionArea.appendChild(masterLevel);
     let description = document.createElement('div');
-    description.innerHTML = classSkills[skill].description;
+    description.innerHTML = changeSkillTextForColoredText(classSkills[skill].description);
     descriptionArea.appendChild(description);
+    if ('previousRequirementText' in classSkills[skill]) {
+        let previousRequirementText = document.createElement('div');
+        previousRequirementText.innerHTML = classSkills[skill].previousRequirementText;
+        previousRequirementText.style.color = 'gold';
+        descriptionArea.appendChild(previousRequirementText);
+    }
     if ('requirementText' in classSkills[skill]) {
         let requirementText = document.createElement('div');
         requirementText.innerHTML = classSkills[skill].requirementText;
@@ -555,14 +577,11 @@ function skillOnlyLoadComputedVars(skill) {
 }
 
 function writeSkillHitDescription(elementToAppendTo, skill, level) {
-    let repeatCount = 1;
-    if (classSkills[skill].TYPE == 'attackSequence') {
-        repeatCount = attackSkillVars[skill][0].length;
-    }
+    let repeatCount = classSkills[skill].hitDescriptions.length;
     for (let i=0; i<repeatCount; i++) {
         let string = skillEquationManager(classSkills[skill].hitDescriptions[i], level, skill);
         let textSpot = document.createElement('div');
-        textSpot.innerHTML = string;
+        textSpot.innerHTML = changeSkillTextForColoredText(string);
         elementToAppendTo.appendChild(textSpot);
     }
 }
@@ -633,6 +652,7 @@ function getSkillBonuses(skillId) {
 function setSkillSuffixesAndDimensions(skillId) {
     usedSkillSuffixes[skillId] = {};
     usedSkillSuffixes[skillId]['hit'] = '';
+    usedSkillSuffixes[skillId]['hitDimensions'] = '';
     usedSkillSuffixes[skillId]['effects'] = '';
     if (skillId in skillsThatGetEnhanced) {
         let keys = Object.keys(skillsThatGetEnhanced[skillId]);
@@ -649,7 +669,8 @@ function setSkillSuffixesAndDimensions(skillId) {
                 }
                 if ('hit' in skillsThatGetEnhanced[skillId][keys[i]] && !gotHit) {
                     usedSkillSuffixes[skillId]['hit'] = skillsThatGetEnhanced[skillId][keys[i]].hit;
-                    classSkills[skillId].hit[0] = skillsThatGetEnhanced[skillId][keys[i]].hitDimensions;
+                    usedSkillSuffixes[skillId]['hitDimensions'] = skillsThatGetEnhanced[skillId][keys[i]].hitDimensions;
+                    //classSkills[skillId].hit[0] = skillsThatGetEnhanced[skillId][keys[i]].hitDimensions;
                     gotHit = true;
                 }
             }

@@ -10,13 +10,16 @@ var attackSkillVars = {
     61101100: [['attackCount'], ['damage'], ['mobCount']],
     61101101: [['attackCount'], ['damage'], ['mobCount']],
     61101002: [['attackCount'], ['damage'], ['bulletCount'], ['cooltime']]
+
 };
 
 const attackSequences = {
     61001000: [[61001000], [61001004], [61001005]]
 };
 
-// these do nothing:  mastery, jumpBonus, speedBonus, powerStanceBonus, bossDamageBonus, critChance
+// these do nothing:  mastery, jumpBonus, speedBonus, powerStanceBonus, bossDamageBonus, critChance, elementalResistance, statusResistance
+//                    finalDamagePercent, dragonLinkSKillUseHpRestore, dragonLinkSkillBonusFinalDamagePercent,
+//                    monsterStatusEffectBonusFinalDamagePercent, 
 var passiveSkillVars = {
     structureExample: {'pddX': 'defense', 'w': 'targetSkill', 'p': 'attCountX'},
     60000221: {'attackSpeedBonus': 'attackSpeedBonus', 'speedBonus': 'speedBonus', 'jumpBonus': 'jumpBonus', 'powerStanceBonus': 'powerStanceBonus'},
@@ -25,20 +28,39 @@ var passiveSkillVars = {
     61100006: {'mastery': 'mastery'},
     61100007: {'mhpR': 'hpPercent', 'strX': 'strength'},
     61100008: {'padX': 'physicalAttack', 'bdR': 'bossDamageBonus', 'cr': 'critChance'}, // should only work in attacker mode
-    61100009: {} // dragon slash 2 (belongs here)
+    61100009: {}, // dragon slash 2 (belongs here)
+    61110004: {'padR': 'physicalAttackPercent', 'pdR': 'finalDamagePercent', 'cr': 'critChance'},
+    61110005: {'pddX': 'defense', 'x': 'dragonLinkSKillUseHpRestore'}, // should only work in defender mode
+    61110007: {'strX': 'strength', 'mhpR': 'hpPercent'},
+    61110010: {'padX': 'physicalAttack', 'bdR': 'bossDamageBonus', 'cr': 'critChance', 'x': 'dragonLinkSkillBonusFinalDamagePercent'}, // should only work in attacker mode
+    61110015: {} // dragon slash 3 (belongs here)
+};
+
+var timedPassiveSKillVars = { // these do nothing
+    61110006: {'x': 'recoveredHp', 'w': 'secondsDelay'}
 };
 
 var buffSkillVars = { // just like the others ->  'variable': 'real meaning here'
     60001216: {'pddX': 'defense'},
     60001217: {'padX': 'physicalAttack'},
-    61101004: {'indiePad': 'physicalAttack', 'duration': 'time', 'attackSpeedBonus': 'attackSpeedBonus'}
+    61101004: {'indiePad': 'physicalAttack', 'duration': 'time', 'attackSpeedBonus': 'attackSpeedBonus'},
+    61111003: {'time': 'time', 'terR': 'statusResistance', 'asrR': 'elementalResistance', 'x': 'monsterStatusEffectBonusFinalDamagePercent'}
 };
 
 var skillsThatGetEnhanced = {
     61001000: {
         61001000: {stats: {}, effects: 'CharLevel10effect', hit: 'CharLevel10hit0', hitDimensions: [237,131]},
-        61100009: {stats: {'damageMult': 'damR'}, effects: 'CharLevel30effect', hit: 'CharLevel30hit0', hitDimensions: [237,131]}
+        61100009: {stats: {'damageMult': 'damR'}, effects: 'CharLevel30effect', hit: 'CharLevel30hit0', hitDimensions: [237,131]},
+        61110015: {stats: {'damageMult': 'damR'}, effects: 'CharLevel60effect', hit: 'CharLevel60hit0', hitDimensions: [302,246]}
     }
+};
+
+var skillsThatChangeDuringCertainBuffs = { // visual and/or numerical. ex: 'usedSkillId': {triggerSkill: 'someBuffSkillId', newId: 'skillIdForWhat_usedSkillId_turnsInto'}, ...
+    61001101: {triggerSkill: 61111008, newId: 61111215},
+    61101100: {triggerSkill: 61111008, newId: 61111216},
+    61101101: {triggerSkill: 61111008, newId: 61111217},
+    61111100: {triggerSkill: 61111008, newId: 61111111},
+    61111101: {triggerSkill: 61111008, newId: 61111219}
 };
 
 var skillsThatHaveNoAnimations = [60001216, 60001217]; // skills like "Realign: Attacker Mode"
@@ -177,7 +199,8 @@ const classSkills = {
         maxLevel: 2,
         TYPE: 'passive',
         mpCon: 0,
-        description: 'Enhances Dragon Slash\'s Attack Power. Required Skill: #cLevel 20 Dragon Slash#',
+        description: 'Enhances Dragon Slash\'s Attack Power.',
+        previousRequirementText: 'Required Skill: Level 20 Dragon Slash',
         requirementText: 'Level 2 required to learn Dragon Slash II.',
         hitDescriptions: ['Additional {20*x}% bonus to Dragon Slash damage'],
         usedVariables: {'mpCon': '0', 'damR': '20*x'},
@@ -230,7 +253,7 @@ const classSkills = {
         action: [['swingT3', 1, -90, [1, 0]], ['swingT3', 1, -90, [2, 0]], ['swingT3', 2, -90, [-22, 0]], ['swingT3', 2, 90, [-23, 0]], ['swingT3', 2, 90, [-24, 0]], ['swingT3', 2, 90, [-25, 0]], ['swingT3', 2, 90, [-22, 0]]],
         reuseWaitTime: 800,
         hit: [[151, 178], [60, 60, 60, 60, 60, 60]],
-        description: 'Stab your sword into the ground to create an explosive shockwave that blasts multiple enemies. #cCommand Skill: During Attack + Up key',
+        description: 'Stab your sword into the ground to create an explosive shockwave that blasts multiple enemies. #cCommand Skill: During Attack + Up key#',
         hitDescriptions: ['MP Cost: {12+Math.floor(x/4)}, Damage: {190+4*x}%, Mobs Hit: 8, Number of Attacks: 2'],
         usedVariables: {'mpCon': '12+Math.floor(x/4)', 'attackCount': '2', 'mobCount': '8', 'damage': '190+4*x'},
         computedVars: {}
@@ -316,7 +339,8 @@ const classSkills = {
         maxLevel: 1,
         TYPE: 'passive',
         mpCon: 0,
-        description: 'Enhances Realign: Defender Mode. Enhanced effects stack.\nRequired Skill: #cDefender Mode I Lv.1+#',
+        description: 'Enhances Realign: Defender Mode. Enhanced effects stack.',
+        previousRequirementText: 'Required Skill: Defender Mode I Lv.1+',
         requirementText: 'Level 1 required to learn Defender Mode III.',
         hitDescriptions: ['Defense: Additional +200', '3% of max HP restored when using Dragon Link skills.'],
         usedVariables: {'mpCon': '0', 'pddX': '200', 'x': '3'},
@@ -339,7 +363,8 @@ const classSkills = {
         maxLevel: 10,
         TYPE: 'passive',
         mpCon: 0,
-        description: 'Permanently increases STR and HP.\nRequired Skill: #c Inner Blaze Lv. 10#',
+        description: 'Permanently increases STR and HP.',
+        previousRequirementText: 'Required Skill: Inner Blaze Lv. 10',
         hitDescriptions: ['STR: +{3*x}, HP: +{3*x}%'],
         usedVariables: {'mpCon': '0', 'strX': '3*x', 'mhpR': '3*x'},
         computedVars: {}
@@ -350,7 +375,8 @@ const classSkills = {
         maxLevel: 1,
         TYPE: 'passive',
         mpCon: 0,
-        description: 'Enhances Realign: Attacker Mode. Enhanced effects stack.\nRequired Skill: #cAttacker Mode I Lv.1+#',
+        description: 'Enhances Realign: Attacker Mode. Enhanced effects stack.',
+        previousRequirementText: 'Required Skill: Attacker Mode I Lv.1+',
         requirementText: 'Level 1 required to learn Attacker Mode III.',
         hitDescriptions: ['Attack Power: +15, Critical Rate: +5%, Boss Damage: +5%', 'Final Damage additionally increased by 5% when using Dragon Link skills.'],
         usedVariables: {'mpCon': '0', 'padX': '15', 'bdR': '5', 'cr': '5', 'x': '5'},
@@ -362,7 +388,8 @@ const classSkills = {
         maxLevel: 2,
         TYPE: 'passive',
         mpCon: 0,
-        description: 'Enhances Dragon Slash\'s Attack Power. Required Skill: #cLevel 20 Dragon Slash I#',
+        description: 'Enhances Dragon Slash\'s Attack Power.',
+        previousRequirementText: 'Required Skill: Level 20 Dragon Slash I',
         requirementText: 'Level 2 required to learn Dragon Slash III.',
         hitDescriptions: ['Additional {35*x}% bonus to Dragon Slash damage'],
         usedVariables: {'mpCon': '0', 'damR': '35*x'},
@@ -448,7 +475,7 @@ const classSkills = {
         action: [['swingT3', 0, -300], ['swingT3', 2, 60, [1, 0]], ['swingT3', 2, 60, [2, 0]], ['swingT3', 2, 60, [3, 0]]],
         reuseWaitTime: 480,
         hit: [[143, 161], [60, 60, 60, 60, 60, 60]],
-        description: 'Creates a whirlwind that attacks enemies until certain targets are defeated. Dissipates after a short distance or time. Unaffected by attack reflection. Up to two can exist. #cCommand Skill: During Attack + Jump Key + Dragon Link',
+        description: 'Creates a whirlwind that attacks enemies until certain targets are defeated. Dissipates after a short distance or time. Unaffected by attack reflection. Up to two can exist. #cCommand Skill: During Attack + Jump Key + Dragon Link#',
         hitDescriptions: ['MP Cost: {15+x}, Damage: {140+3*x}%, Number of Attacks: 40, Chance to Slow Attacked Monsters: {20+x}%', '#cDissipates when certain number of attacks are made, set distance is traveled, or duration expires#. '],
         usedVariables: {'mpCon': '15+x', 'attackCount': '40', 'damage': '140+3*x', 'prop': '20+x'},
         computedVars: {}
