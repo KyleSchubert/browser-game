@@ -36,12 +36,12 @@ function processSkill(skill) {
             index = previousSequentialSkillIndex + 1;
         }
         realSkill = attackSequences[skill][index][0];
-        let linesVariable = attackSkillVars[usedSkill][0][index];
+        let linesVariable = attackSkillVars[usedSkill].attackCount[index];
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
-        let damageVariable = attackSkillVars[usedSkill][1][index];
+        let damageVariable = attackSkillVars[usedSkill].damageMult[index];
         let equation = classSkills[usedSkill].usedVariables[damageVariable];
         let damageMult = classSkills[usedSkill].computedVars[equation];
-        let targetsVariable = attackSkillVars[usedSkill][2][index];
+        let targetsVariable = attackSkillVars[usedSkill].mobCount[index];
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
         realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
         let bonuses = getSkillBonuses(skill);
@@ -77,21 +77,24 @@ function processSkill(skill) {
             xVelocity -= facingDirectionMult * 8;
         }
         realSkill = usedSkill;
-        let linesVariable = attackSkillVars[usedSkill][0];
+        let linesVariable = attackSkillVars[usedSkill].attackCount;
         let lines = parseInt(classSkills[usedSkill].usedVariables[linesVariable]);
         if (isNaN(lines)) {
             lines = 1;
         }
-        let damageVariable = attackSkillVars[usedSkill][1];
+        let damageVariable = attackSkillVars[usedSkill].damageMult;
         let equation = classSkills[usedSkill].usedVariables[damageVariable];
         let damageMult = classSkills[usedSkill].computedVars[equation];
-        let targetsVariable = attackSkillVars[usedSkill][2];
+        let targetsVariable = attackSkillVars[usedSkill].mobCount;
         let targets = parseInt(classSkills[usedSkill].usedVariables[targetsVariable]);
+        if (isNaN(targets)) {
+            targets = 1;
+        }
         realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
-        if (skillType == 'ballEmitter') {
-            let bulletsVariable = attackSkillVars[usedSkill][3];
+        if (skillType == 'ballEmitterAimed' || skillType == 'ballEmitterFlatGravity') {
+            let bulletsVariable = attackSkillVars[usedSkill].bulletCount;
             let bullets = parseInt(classSkills[usedSkill].usedVariables[bulletsVariable]);
-            realSkillData[realSkill]['bullets'] = bullets;    
+            realSkillData[realSkill]['bullets'] = bullets;
         }
         let bonuses = getSkillBonuses(skill);
         Object.keys(bonuses).forEach((key) => {
@@ -295,7 +298,7 @@ function startHitCheckObserver(skillPairKey) {
             ) {
                 let delay = 0;
                 let skillType = classSkills[skillId].TYPE;
-                if (skillType == 'ballEmitter') {
+                if (skillType == 'ballEmitterAimed') {
                     let gameArea = document.getElementById('gameArea');
                     let facingDirectionMult = 1;
                     if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {

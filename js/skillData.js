@@ -4,15 +4,15 @@ const skillsPerClass = {
 
 // I have to manually type these
 var attackSkillVars = {
-    structureExample: [['attackCount'], ['damage'], ['mobCount'], ['bulletCount']],
-    61001000: [['attackCount', 'v', 'z'], ['damage', 'u', 'y'], ['mobCount', 's', 'w']],
-    61001101: [['attackCount'], ['damage'], ['mobCount'], ['bulletCount']],
-    61101100: [['attackCount'], ['damage'], ['mobCount']],
-    61101101: [['attackCount'], ['damage'], ['mobCount']],
-    61101002: [['attackCount'], ['damage'], ['bulletCount'], ['cooltime']]
-
+    61001000: {attackCount: ['attackCount', 'v', 'z'], damageMult: ['damage', 'u', 'y'], mobCount: ['mobCount', 's', 'w']},
+    61001101: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount', bulletCount: 'bulletCount'},
+    61101100: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'},
+    61101101: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'},
+    61101002: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', cooltime: 'cooltime'},
+    61111100: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'},
+    61111111: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'}
 };
-
+//MAKE time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'}, DO STUFF
 const attackSequences = {
     61001000: [[61001000], [61001004], [61001005]]
 };
@@ -157,7 +157,7 @@ const classSkills = {
         className: 'Kaiser',
         skillName: 'Flame Surge',
         maxLevel: 20,
-        TYPE: 'ballEmitter',
+        TYPE: 'ballEmitterAimed',
         mpCon: '6+Math.ceil(x/5)',
         ball: {'61001101ball': [[104, 63], [40, 32], [120, 120, 120]]},
         effects: {'61001101effect': [[389, 295], [210, 176], [210, 90, 90, 90, 90]]},
@@ -468,8 +468,9 @@ const classSkills = {
         className: 'Kaiser',
         skillName: 'Wing Beat',
         maxLevel: 20,
-        TYPE: 'ballEmitter',
+        TYPE: 'ballEmitterFlatGravity',
         mpCon: '15+x',
+        ball: {'61111100ball': [[336, 143], [164, 141], [90, 90, 90, 90, 90, 90, 90, 90]]},
         effects: {'61111100effect': [[537, 202], [180, 145], [60, 60, 60, 60, 60, 60, 60, 60, 60]], '61111100effect0': [[425, 173], [188, 158], [60, 60, 60, 60, 60, 60, 60, 60, 60]]},
         LTRB: [-55, -90, 55, 5],
         action: [['swingT3', 0, -300], ['swingT3', 2, 60, [1, 0]], ['swingT3', 2, 60, [2, 0]], ['swingT3', 2, 60, [3, 0]]],
@@ -477,7 +478,7 @@ const classSkills = {
         hit: [[143, 161], [60, 60, 60, 60, 60, 60]],
         description: 'Creates a whirlwind that attacks enemies until certain targets are defeated. Dissipates after a short distance or time. Unaffected by attack reflection. Up to two can exist. #cCommand Skill: During Attack + Jump Key + Dragon Link#',
         hitDescriptions: ['MP Cost: {15+x}, Damage: {140+3*x}%, Number of Attacks: 40, Chance to Slow Attacked Monsters: {20+x}%', '#cDissipates when certain number of attacks are made, set distance is traveled, or duration expires#. '],
-        usedVariables: {'mpCon': '15+x', 'attackCount': '40', 'damage': '140+3*x', 'prop': '20+x'},
+        usedVariables: {'mpCon': '15+x', 'attackCount': '40', 'damage': '140+3*x', 'prop': '20+x', 'time': '15000', 'maxDistance': '1000', 'attackDelay': '330', 'bulletCount': '1'},
         computedVars: {}
     },
     61111101: {
@@ -500,22 +501,23 @@ const classSkills = {
         className: 'Kaiser',
         skillName: 'Wing Beat (Transfiguration)',
         maxLevel: 20,
-        TYPE: 'ballEmitter',
+        TYPE: 'ballEmitterFlatGravity',
         mpCon: '20+x',
+        ball: {'61111111ball': [[491, 220], [241, 212], [90, 90, 90, 90, 90, 90, 90, 90]]},
         LTRB: [-55, -90, 55, 5],
         action: [['swingT3', 0, -300], ['swingT3', 2, 60, [1, 0]], ['swingT3', 2, 60, [2, 0]], ['swingT3', 2, 60, [3, 0]]],
         reuseWaitTime: 9999,
         hit: [[246, 274], [60, 60, 60, 60, 60]],
         description: 'Create a whirlwind that attacks enemies until certain monsters are killed. Whirlwind will dissipate after a short distance or time.',
         hitDescriptions: ['MP Cost: {20+x}, Damage: {140+3*x}%, Number of Attacks: 44, Chance to SlowAttacked Monsters: {30+x}%', '#cDissipates when certain # of attacks are made, set distance is traveled, or duration expires#.'],
-        usedVariables: {'mpCon': '20+x', 'attackCount': '44', 'damage': '140+3*x', 'prop': '30+x'},
+        usedVariables: {'mpCon': '20+x', 'attackCount': '44', 'damage': '140+3*x', 'prop': '30+x', 'time': '10000', 'maxDistance': '1000', 'attackDelay': '220', 'bulletCount': '1'},
         computedVars: {}
     },
     61111215: {
         className: 'Kaiser',
         skillName: 'Flame Surge (Transfiguration)',
         maxLevel: 20,
-        TYPE: 'ballEmitter',
+        TYPE: 'ballEmitterAimed',
         mpCon: '6+Math.ceil(x/5)',
         ball: {'61111215ball': [[184, 96], [44, 50], [120, 120, 120, 120]]},
         effects: {'61111215effect': [[246, 205], [185, 147], [90, 90, 90, 60, 30]]},

@@ -468,14 +468,22 @@ function dialogProceed() {
 
 var pressedKeys = [];
 document.addEventListener('keydown', (event) => {
-    if (!pressedKeys.includes(event.key)) {
-        pressedKeys.push(event.key);
+    let key = event.key;
+    if (key != 'Control' && key != 'Alt' && key != 'Shift' && key != ' ' && key != 'ArrowUp' && key != 'ArrowLeft' && key != 'ArrowRight' && key != 'ArrowDown') {
+        key = key.toLowerCase();
+    }
+    if (!pressedKeys.includes(key)) {
+        pressedKeys.push(key);
     }
 });
 
 document.addEventListener('keyup', (event) => {
-    if (pressedKeys.includes(event.key)) {
-        pressedKeys.splice(pressedKeys.indexOf(event.key), 1);
+    let key = event.key;
+    if (key != 'Control' && key != 'Alt' && key != 'Shift' && key != ' ' && key != 'ArrowUp' && key != 'ArrowLeft' && key != 'ArrowRight' && key != 'ArrowDown') {
+        key = key.toLowerCase();
+    }
+    if (pressedKeys.includes(key)) {
+        pressedKeys.splice(pressedKeys.indexOf(key), 1);
     }
 });
 

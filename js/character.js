@@ -133,10 +133,12 @@ function updateCharacterDisplay() {
 
 const levelUpGifTimings = [500, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90];
 function genericSpritesheetAnimation(animations, frame, timings, deleteGroupWhenDone=false, infiniteLooping=false) {
-    let beforeFrame = frame;
     if (frame >= timings.length) {
         if (infiniteLooping) {
             frame = 0;
+            if (animations[0].parentNode === null || animations[0].parentNode.parentNode === null) { // removes elements that were removed already
+                return;
+            }
         }
         else {
             if (deleteGroupWhenDone) {
