@@ -540,9 +540,7 @@ function avatarMovement(timeDelta) {
     }
 }
 
-function getFirstPlatformBelow() {
-    let posX = avatarComputedXPosition;
-    let posY = avatarComputedYPosition;
+function getFirstPlatformBelow(posX=avatarComputedXPosition, posY=avatarComputedYPosition) {
     let closestY = 999999999;
     let finalY = 0;
     zonePlatforms.forEach((coords) => {

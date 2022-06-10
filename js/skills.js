@@ -6,6 +6,7 @@ var realSkillData = {};
 var previousSkill = 0; // for skills that chain together (like dragon slash having 3 slashes)
 var usedSkillSuffixes = {}; // {skillId: {'effects': '', 'hit': ''}}
 var usedSkillHitDetectionPairs = {}; // {99-999: skillId};  this is for the hitCheckObserver so that a hitCheck can be paired with a certain skill
+var triggerOnHitDetectionPairs = {}; // {0-999999...: true/false};  this is for attacks that have duration and do something when they hit
 var cannotUse = [];
 var previousSequentialSkillIndex = 0;
 const attackSpeedValues = [1, 0.9, 0.8, 0.75, 0.7, 0.66, 0.63, 0.6];
@@ -91,10 +92,24 @@ function processSkill(skill) {
             targets = 1;
         }
         realSkillData[realSkill] = {'lines': lines, 'damageMult': damageMult, 'targets': targets, 'sound': sounds[allSoundFiles.indexOf(usedSkill + 'hit.mp3')]};
-        if (skillType == 'ballEmitterAimed' || skillType == 'ballEmitterFlatGravity') {
+        if (skillType == 'ballEmitterAimed' || skillType == 'ballEmitterDurationFlatGravity') {
             let bulletsVariable = attackSkillVars[usedSkill].bulletCount;
             let bullets = parseInt(classSkills[usedSkill].usedVariables[bulletsVariable]);
             realSkillData[realSkill]['bullets'] = bullets;
+            if (skillType == 'ballEmitterDurationFlatGravity') {
+                let timeVariable = attackSkillVars[usedSkill].time;
+                let time = parseInt(classSkills[usedSkill].usedVariables[timeVariable]);
+                realSkillData[realSkill]['time'] = time;
+                let maxDistanceVariable = attackSkillVars[usedSkill].maxDistance;
+                let maxDistance = parseInt(classSkills[usedSkill].usedVariables[maxDistanceVariable]);
+                realSkillData[realSkill]['maxDistance'] = maxDistance;
+                let attackDelayVariable = attackSkillVars[usedSkill].attackDelay;
+                let attackDelay = parseInt(classSkills[usedSkill].usedVariables[attackDelayVariable]);
+                realSkillData[realSkill]['attackDelay'] = attackDelay;
+                let maxTargetsVariable = attackSkillVars[usedSkill].maxTargets;
+                let maxTargets = parseInt(classSkills[usedSkill].usedVariables[maxTargetsVariable]);
+                realSkillData[realSkill]['maxTargets'] = maxTargets;
+            }
         }
         let bonuses = getSkillBonuses(skill);
         Object.keys(bonuses).forEach((key) => {
@@ -128,7 +143,36 @@ function useAttackSkill(skill) {
         positionAndAnimateSkillEffects(skill);
     }
     playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
-    checkHit(skill);
+    if (classSkills[skill].TYPE == 'ballEmitterDurationFlatGravity') { // like Wing Beat that moves on its own and hits stuff freely
+        let gameArea = document.getElementById('gameArea');
+        let facingDirectionMult = 1;
+        if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+            facingDirectionMult = -1;
+        }
+        let startX = AVATAR.offsetLeft - facingDirectionMult*70;
+        let startY = AVATAR.offsetTop - 90;
+        let speed = 0.1 * facingDirectionMult;
+        let subject = document.createElement('div');
+        let ball = classSkills[skill].ball[Object.keys(classSkills[skill].ball)[0]];
+        let ballDimensions = ball[0];
+        subject.style.backgroundImage = 'url(./skills/ball/' + skill + 'ball.png)';
+        subject.style.width = ballDimensions[0] + 'px';
+        subject.style.height = ballDimensions[1] + 'px';
+        subject.style.position = 'absolute';
+        subject.style.backgroundPositionX = '0px';
+        let ballCoords = [startX - ballDimensions[0]/2, startY - ballDimensions[1]/2];
+        subject.style.left = ballCoords[0] + 'px';
+        subject.style.top =  ballCoords[1] + 'px';
+        gameArea.appendChild(subject);
+        genericSpritesheetAnimation([subject], 0, ball[2], false, true);
+        let elementId = randomIntFromInterval(0, 999999999999);
+        movingSkills[elementId] = {'top': ballCoords[1], 'left': ballCoords[0], 'height': ballDimensions[1], 'width': ballDimensions[0], 'pauseOnHitRemainingTime': 0};
+        scheduleToGameLoop(0, moveSkillAlongStraightPathWithGravity, [subject, elementId, console.log, '', realSkillData[skill].duration, 0, realSkillData[skill].maxDistance, speed], 'movement');
+        scheduleToGameLoop(0, triggerSkillOverTimeFromElement, [subject, elementId, skill, realSkillData[skill].attackDelay, realSkillData[skill].maxTargets]);
+    }
+    else {
+        checkHit(skill, true);
+    }
     if (gameLoop.skillMovements.length > 0) {
         isUsingSkill = false;
         gameLoop.skillMovements = [];
@@ -213,27 +257,62 @@ function hitEffect(left, top, skill, reason='') {
     return div;
 }
 
+function triggerSkillOverTimeFromElement(element, elementId, skillId, useTime, remainingTriggers) {
+    if (remainingTriggers == 0) {
+        element.remove();
+        if (elementId in movingSkills) {
+            delete movingSkills[elementId];
+        }
+        return;
+    }
+    if (element.parentNode === null || element.parentNode.parentNode === null) { // removes elements that were removed already
+        if (elementId in movingSkills) {
+            delete movingSkills[elementId];
+        }
+        return;
+    }
+    if (!(elementId in movingSkills)) {
+        return;
+    }
+    let ltrb = classSkills[skillId].LTRB;
+    let left = movingSkills[elementId].left;
+    let top = movingSkills[elementId].top;
+    let width = movingSkills[elementId].width;
+    let height = movingSkills[elementId].height;
+    let leftBound = left + width/2 + ltrb[0];
+    let topBound = top + height + ltrb[1];
+    let rightBound = left + width/2 + ltrb[2];
+    let bottomBound = top + height + ltrb[3];
+    checkHit(skillId, false, elementId, leftBound, topBound, rightBound, bottomBound);
+    scheduleToGameLoop(useTime, triggerSkillOverTimeFromElement, [element, elementId, skillId, useTime, remainingTriggers-1]);
+}
+
 const marginToAccountFor = parseInt($('#lootBlocker').css('margin-top'));
 var isSettingObserverSkillId = false;
 var lastSkillPairKey = 99; // 100 - 999
 var latestSkillBounds = {}; // skillId: [all 4 of the skill bounds based on where the character was and the screen was AND the gameArea's offsetLeft at the time]
-function checkHit(skillId) {
+function checkHit(skillId, refreshLocation=false, elementId=-1, leftBound=0, topBound=0, rightBound=0, bottomBound=0) {
     if (!isSettingObserverSkillId) {
         isSettingObserverSkillId = true;
-        let LTRB = classSkills[skillId].LTRB;
-        let leftBound = 0;
-        let rightBound = 0;
-        let totalOffsetLeft = document.getElementById('gameArea').offsetLeft + AVATAR.offsetLeft;
-        if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-            rightBound = totalOffsetLeft - LTRB[0];
-            leftBound = totalOffsetLeft - LTRB[2];
+        let gameAreaOffsetLeft = document.getElementById('gameArea').offsetLeft;
+        if (refreshLocation) {
+            let LTRB = classSkills[skillId].LTRB;
+            totalOffsetLeft = gameAreaOffsetLeft + AVATAR.offsetLeft;
+            if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                rightBound = totalOffsetLeft - LTRB[0];
+                leftBound = totalOffsetLeft - LTRB[2];
+            }
+            else {
+                leftBound = totalOffsetLeft + LTRB[0];
+                rightBound = totalOffsetLeft + LTRB[2];
+            }
+            topBound = AVATAR.offsetTop + LTRB[1];
+            bottomBound = AVATAR.offsetTop + LTRB[3];
         }
         else {
-            leftBound = totalOffsetLeft + LTRB[0];
-            rightBound = totalOffsetLeft + LTRB[2];
+            leftBound += gameAreaOffsetLeft;
+            rightBound += gameAreaOffsetLeft;
         }
-        const topBound = AVATAR.offsetTop + LTRB[1];
-        const bottomBound = AVATAR.offsetTop + LTRB[3];
         if (debugSkillBounds) {
             let gameArea = document.getElementById('gameArea');
             gameArea.appendChild(createLine(leftBound, topBound, rightBound, topBound));
@@ -246,13 +325,17 @@ function checkHit(skillId) {
             'right': rightBound, 
             'bottom': bottomBound, 
             'top': topBound, 
-            'offsetLeft': document.getElementById('gameArea').offsetLeft
+            'offsetLeft': gameAreaOffsetLeft
         };
         lastSkillPairKey++;
         if (lastSkillPairKey > 999) {
             lastSkillPairKey = 99;
         }
         usedSkillHitDetectionPairs[lastSkillPairKey] = skillId;
+        triggerOnHitDetectionPairs[lastSkillPairKey] = false;
+        if (elementId in movingSkills) {
+            movingSkills[elementId]['skillPairKey'] = lastSkillPairKey;
+        }
         startHitCheckObserver(lastSkillPairKey);
         Array.from(document.getElementsByClassName('mob')).forEach((element) => {
             if (!element.classList.contains('mobDying')) {
@@ -262,7 +345,7 @@ function checkHit(skillId) {
         isSettingObserverSkillId = false;
     }
     else {
-        scheduleToGameLoop(0, checkHit, [skillId], 'skill');
+        scheduleToGameLoop(0, checkHit, [skillId, refreshLocation, leftBound, topBound, rightBound, bottomBound], 'skill');
     }
 }
 
@@ -344,6 +427,7 @@ function startHitCheckObserver(skillPairKey) {
                 let data = [entry.target, groupNumber, skillId, [bounds['left']-offsetLeftSkill+bounds['width']/2, bounds['top']]];
                 scheduleToGameLoop(delay, mobDamageEvent, data, 'damageNumber');
                 mobHits++;
+                triggerOnHitDetectionPairs[pairKey] = true;
             }
         }
         if (hitGroup.hasChildNodes()) {
@@ -828,7 +912,7 @@ function flyingSwords() {
 // requires an element that is already prepared to be moved (has "position: absolute" and is already at a good starting position)
 // AND it requires the initial orientation to have the pointy end (whatever hits the target) to be at the top
 // AND it requires a 'currentAngle' attribute in the elem
-function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget=false, turnPower=0.01, turnAcceleration=0, speed=1, acceleration=0) {
+function moveSKillAlongCurvyPath(elem, target, finalCallback, dataForCallback, movingTarget=false, turnPower=0.01, turnAcceleration=0, speed=1, acceleration=0) {
     let targetLocation = [0, 0];
     if (target.classList.contains('mobDying') || noKilling) { // if mob died then disappear so it doesnt look weird
         elem.remove();
@@ -842,7 +926,7 @@ function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget
     }
     if (between(parseFloat(elem.style.left), targetLocation[0] - 5, targetLocation[0] + 5) && 
             between(parseFloat(elem.style.top), targetLocation[1] - 5, targetLocation[1] + 5)) {
-        scheduleToGameLoop(1, finalCallback, data, 'skill');
+        scheduleToGameLoop(1, finalCallback, dataForCallback, 'skill');
         elem.remove();
         return;
     }
@@ -851,7 +935,6 @@ function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget
     if (elem.offsetTop < targetLocation[1]) {
         targetAngle -= 180;
     }
-    elem.setAttribute('target-angle', targetAngle); // for TESTING
     let nextAngle = 0;
     if (between(currentAngle, targetAngle-turnPower, targetAngle+turnPower)) {
         nextAngle = targetAngle;
@@ -873,5 +956,71 @@ function moveSKillAlongCurvyPath(elem, target, finalCallback, data, movingTarget
     elem.style.left = parseFloat(elem.style.left) - speed * Math.cos(angleFixer(nextAngle) / 57.3) + 'px';
     elem.style.top = parseFloat(elem.style.top) - speed * Math.sin(angleFixer(nextAngle) / 57.3) + 'px';
     elem.setAttribute('current-angle', nextAngle);
-    scheduleToGameLoop(0, moveSKillAlongCurvyPath, [elem, target, finalCallback, data, movingTarget, turnPower+turnAcceleration, turnAcceleration, speed+acceleration, acceleration], 'skill');
+    scheduleToGameLoop(0, moveSKillAlongCurvyPath, [elem, target, finalCallback, dataForCallback, movingTarget, turnPower+turnAcceleration, turnAcceleration, speed+acceleration, acceleration], 'skill');
+}
+
+var movingSkills = {};
+function moveSkillAlongStraightPathWithGravity(timeDelta, elem, elemId, finalCallback, dataForCallback, duration, distanceTraveled=0, maxDistance=9999, xVelocity=0.1, storedXVelocity=0.1, acceleration=0, yVelocity=0, skillLastFloorY=0) {
+    if (!(elemId in movingSkills)) {
+        return;
+    }
+    if (triggerOnHitDetectionPairs[movingSkills[elemId].skillPairKey]) {
+        movingSkills[elemId].pauseOnHitRemainingTime = 400;
+    }
+    if (movingSkills[elemId].pauseOnHitRemainingTime >= 0) {
+        if (xVelocity != 0) {
+            storedXVelocity = xVelocity;
+        }
+        xVelocity = 0;
+        movingSkills[elemId].pauseOnHitRemainingTime -= timeDelta;
+    }
+    else {
+        if (xVelocity == 0) {
+            xVelocity = storedXVelocity;
+        }
+    }
+    movingSkills[elemId].left -= xVelocity * timeDelta;
+    distanceTraveled += Math.abs(xVelocity) * timeDelta;
+    if (distanceTraveled > maxDistance) {
+        elem.remove();
+        if (elemId in movingSkills) {
+            delete movingSkills[elemId];
+        }
+        return;
+    }
+    if (elem.parentNode === null || elem.parentNode.parentNode === null) { // removes elements that were removed already
+        if (elemId in movingSkills) {
+            delete movingSkills[elemId];
+        }
+        return;
+    }
+    elem.style.left = movingSkills[elemId].left + 'px';
+    let skillIsFalling = (getFirstPlatformBelow(movingSkills[elemId].left+movingSkills[elemId].width/2, movingSkills[elemId].top+movingSkills[elemId].height)-movingSkills[elemId].height != movingSkills[elemId].top);
+    if (!skillIsFalling) {
+        skillIsFalling = (yVelocity < 0);
+    }
+    if (yVelocity != 0 || skillIsFalling) {
+        skillLastFloorY = getFirstPlatformBelow(movingSkills[elemId].left+movingSkills[elemId].width/2, movingSkills[elemId].top+movingSkills[elemId].height);
+        movingSkills[elemId].top -= yVelocity * timeDelta;
+        elem.style.top = movingSkills[elemId].top + 'px';
+        yVelocity -= gravity * timeDelta;
+    }
+    if (skillIsFalling) {
+        if (movingSkills[elemId].top >= skillLastFloorY-movingSkills[elemId].height) {
+            skillIsFalling = false;
+            yVelocity = 0;
+            movingSkills[elemId].top = skillLastFloorY-movingSkills[elemId].height;
+            elem.style.top = movingSkills[elemId].top + 'px';
+        }
+    }
+    if (movingSkills[elemId].left+movingSkills[elemId].width/2 <= 0 || movingSkills[elemId].left+movingSkills[elemId].width/2 >= 1079) { // bounce off edges of screen
+        if (movingSkills[elemId].left+movingSkills[elemId].width/2 <= 0) {
+            movingSkills[elemId].left = 0-movingSkills[elemId].width/2;
+        }
+        else {
+            movingSkills[elemId].left = 1079-movingSkills[elemId].width/2;
+        }
+        xVelocity *= -1;
+    }
+    scheduleToGameLoop(0, moveSkillAlongStraightPathWithGravity, [elem, elemId, finalCallback, dataForCallback, duration, distanceTraveled, maxDistance, xVelocity, storedXVelocity, acceleration, yVelocity, skillLastFloorY], 'movement');
 }

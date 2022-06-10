@@ -9,8 +9,8 @@ var attackSkillVars = {
     61101100: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'},
     61101101: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'},
     61101002: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', cooltime: 'cooltime'},
-    61111100: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'},
-    61111111: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'}
+    61111100: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay', maxTargets: 'maxTargets'},
+    61111111: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay', maxTargets: 'maxTargets'}
 };
 //MAKE time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'}, DO STUFF
 const attackSequences = {
@@ -468,7 +468,7 @@ const classSkills = {
         className: 'Kaiser',
         skillName: 'Wing Beat',
         maxLevel: 20,
-        TYPE: 'ballEmitterFlatGravity',
+        TYPE: 'ballEmitterDurationFlatGravity',
         mpCon: '15+x',
         ball: {'61111100ball': [[336, 143], [164, 141], [90, 90, 90, 90, 90, 90, 90, 90]]},
         effects: {'61111100effect': [[537, 202], [180, 145], [60, 60, 60, 60, 60, 60, 60, 60, 60]], '61111100effect0': [[425, 173], [188, 158], [60, 60, 60, 60, 60, 60, 60, 60, 60]]},
@@ -478,7 +478,7 @@ const classSkills = {
         hit: [[143, 161], [60, 60, 60, 60, 60, 60]],
         description: 'Creates a whirlwind that attacks enemies until certain targets are defeated. Dissipates after a short distance or time. Unaffected by attack reflection. Up to two can exist. #cCommand Skill: During Attack + Jump Key + Dragon Link#',
         hitDescriptions: ['MP Cost: {15+x}, Damage: {140+3*x}%, Number of Attacks: 40, Chance to Slow Attacked Monsters: {20+x}%', '#cDissipates when certain number of attacks are made, set distance is traveled, or duration expires#. '],
-        usedVariables: {'mpCon': '15+x', 'attackCount': '40', 'damage': '140+3*x', 'prop': '20+x', 'time': '15000', 'maxDistance': '1000', 'attackDelay': '330', 'bulletCount': '1'},
+        usedVariables: {'mpCon': '15+x', 'attackCount': '1', 'damage': '140+3*x', 'prop': '20+x', 'time': '15000', 'maxDistance': '1000', 'attackDelay': '330', 'bulletCount': '1', 'maxTargets': '40'},
         computedVars: {}
     },
     61111101: {
@@ -510,7 +510,7 @@ const classSkills = {
         hit: [[246, 274], [60, 60, 60, 60, 60]],
         description: 'Create a whirlwind that attacks enemies until certain monsters are killed. Whirlwind will dissipate after a short distance or time.',
         hitDescriptions: ['MP Cost: {20+x}, Damage: {140+3*x}%, Number of Attacks: 44, Chance to SlowAttacked Monsters: {30+x}%', '#cDissipates when certain # of attacks are made, set distance is traveled, or duration expires#.'],
-        usedVariables: {'mpCon': '20+x', 'attackCount': '44', 'damage': '140+3*x', 'prop': '30+x', 'time': '10000', 'maxDistance': '1000', 'attackDelay': '220', 'bulletCount': '1'},
+        usedVariables: {'mpCon': '20+x', 'attackCount': '44', 'damage': '140+3*x', 'prop': '30+x', 'time': '10000', 'maxDistance': '1000', 'attackDelay': '220', 'bulletCount': '1', 'maxTargets': '1'},
         computedVars: {}
     },
     61111215: {
