@@ -679,7 +679,6 @@ input[type=number]::-webkit-inner-spin-button {
     width: 1080px;
     height: 100vh;
     max-height: 944px;
-    z-index: 1;
     background-image: url(./files/terrainv2.png);
 }
 
