@@ -89,8 +89,8 @@ function chosenLoadNextOptions(e, parameters) {
         console.log(parameters);
         if (chosenInitialCategory == 'Mobs') {
             let name = parameters.selected.toLowerCase();
-            $('#makerVisual img').attr('src', './mob/alive/' + name + '.gif');
-            makerLoadTheEditor(name, 'Mobs');
+            //$('#makerVisual img').attr('src', './mob/alive/' + name + '.gif');
+            //makerLoadTheEditor(name, 'Mobs');
         }
         else if (chosenInitialCategory == 'Items') {
             itemImageSetup(parameters.selected, setMakerVisualPartTwo);

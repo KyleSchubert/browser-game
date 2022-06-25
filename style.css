@@ -673,23 +673,6 @@ input[type=number]::-webkit-inner-spin-button {
     bottom: -16px;
 }
 
-.portal {
-    position: absolute;
-    width: 101px;
-    height: 142px;
-    background-image: url("./files/portal.gif");
-}
-
-.damageNumberHolder {
-    position: absolute;
-    animation: 920ms linear risingTransparentFade;
-    pointer-events: none;
-}
-
-.damageNumberHolder img {
-    position: absolute;
-}
-
 #lootArea {
     position: relative;
     width: 1080px;
@@ -698,21 +681,34 @@ input[type=number]::-webkit-inner-spin-button {
     background-image: url(./files/terrainv2.png);
 }
 
-#lootBlocker {
-    display: inline-block;
-    margin-top: 716px;
-    border-top: 0px;
-    margin-bottom: 0px;
-    width: 100%;
+.damageNumberHolder {
+    position: absolute;
+    z-index: 4;
+    animation: 920ms linear risingTransparentFade;
+    pointer-events: none;
+}
+
+.damageNumberHolder img {
+    position: absolute;
+}
+
+#lootSurface {
+    position: relative;
+    z-index: 3;
 }
 
 #mobArea {
-    display: flex;
     position: relative;
+    z-index: 2;
     pointer-events: none;
-    align-items: flex-end;
-    height: 47px;
-    width: 100%;
+}
+
+.portal {
+    position: absolute;
+    width: 101px;
+    height: 142px;
+    z-index: 1;
+    background-image: url("./files/portal.gif");
 }
 
 @keyframes mobMove {
@@ -736,7 +732,6 @@ input[type=number]::-webkit-inner-spin-button {
 
 .hpBar {
     position: absolute;
-    top: -24px;
     visibility: hidden;
 }
 

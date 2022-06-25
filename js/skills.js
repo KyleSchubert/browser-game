@@ -5,7 +5,6 @@ var realSkill = 0; // used for all skills but especially  dragon slash to access
 var realSkillData = {};
 var previousSkill = 0; // for skills that chain together (like dragon slash having 3 slashes)
 var usedSkillSuffixes = {}; // {skillId: {'effects': '', 'hit': ''}}
-var usedSkillHitDetectionPairs = {}; // {99-999: skillId};  this is for the hitCheckObserver so that a hitCheck can be paired with a certain skill
 var triggerOnHitDetectionPairs = {}; // {0-999999...: true/false};  this is for attacks that have duration and do something when they hit
 var cannotUse = [];
 var previousSequentialSkillIndex = 0;
@@ -13,7 +12,7 @@ const attackSpeedValues = [1, 0.9, 0.8, 0.75, 0.7, 0.66, 0.63, 0.6];
 var attackSpeedBonus = 1;
 var skillDoneWaiting = true; // this is for letting the player combo to another skill
 var debugSkillBounds = false;
-
+var debugMobBounds = false; // only for getBounds() function
 
 function processSkill(skill) {
     skill = parseInt(skill);
@@ -294,10 +293,9 @@ var latestSkillBounds = {}; // skillId: [all 4 of the skill bounds based on wher
 function checkHit(skillId, refreshLocation=false, elementId=-1, leftBound=0, topBound=0, rightBound=0, bottomBound=0) {
     if (!isSettingObserverSkillId) {
         isSettingObserverSkillId = true;
-        let gameAreaOffsetLeft = document.getElementById('gameArea').offsetLeft;
         if (refreshLocation) {
             let LTRB = classSkills[skillId].LTRB;
-            totalOffsetLeft = gameAreaOffsetLeft + AVATAR.offsetLeft;
+            let totalOffsetLeft = AVATAR.offsetLeft;
             if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
                 rightBound = totalOffsetLeft - LTRB[0];
                 leftBound = totalOffsetLeft - LTRB[2];
@@ -308,10 +306,6 @@ function checkHit(skillId, refreshLocation=false, elementId=-1, leftBound=0, top
             }
             topBound = AVATAR.offsetTop + LTRB[1];
             bottomBound = AVATAR.offsetTop + LTRB[3];
-        }
-        else {
-            leftBound += gameAreaOffsetLeft;
-            rightBound += gameAreaOffsetLeft;
         }
         if (debugSkillBounds) {
             let gameArea = document.getElementById('gameArea');
@@ -324,24 +318,17 @@ function checkHit(skillId, refreshLocation=false, elementId=-1, leftBound=0, top
             'left': leftBound, 
             'right': rightBound, 
             'bottom': bottomBound, 
-            'top': topBound, 
-            'offsetLeft': gameAreaOffsetLeft
+            'top': topBound
         };
         lastSkillPairKey++;
         if (lastSkillPairKey > 999) {
             lastSkillPairKey = 99;
         }
-        usedSkillHitDetectionPairs[lastSkillPairKey] = skillId;
         triggerOnHitDetectionPairs[lastSkillPairKey] = false;
         if (elementId in movingSkills) {
             movingSkills[elementId]['skillPairKey'] = lastSkillPairKey;
         }
-        startHitCheckObserver(lastSkillPairKey);
-        Array.from(document.getElementsByClassName('mob')).forEach((element) => {
-            if (!element.classList.contains('mobDying')) {
-                hitCheckObserver.observe(element);
-            }
-        });
+        startHitCheckObserver(skillId, lastSkillPairKey);
         isSettingObserverSkillId = false;
     }
     else {
@@ -349,27 +336,52 @@ function checkHit(skillId, refreshLocation=false, elementId=-1, leftBound=0, top
     }
 }
 
-var hitCheckObserver = new IntersectionObserver(()=>{});
-function startHitCheckObserver(skillPairKey) {
-    hitCheckObserver = new IntersectionObserver((entries, whereICanGetTheSkillId) => {
-        let pairKey = parseInt(whereICanGetTheSkillId.thresholds[0] * 100000);
-        let skillId = usedSkillHitDetectionPairs[pairKey];
-        let leftSkillBound = latestSkillBounds[skillId].left;
-        let rightSkillBound = latestSkillBounds[skillId].right;
-        let bottomSkillBound = latestSkillBounds[skillId].bottom;
-        let topSkillBound = latestSkillBounds[skillId].top;
-        let offsetLeftSkill = latestSkillBounds[skillId].offsetLeft;
-        let hitGroup = document.createElement('div');
-        let mobHits = 0;
-        let groupNumber = randomIntFromInterval(0, 2000000000000);
-        let gameArea = document.getElementById('gameArea');
-        for (const entry of entries) {
-            if (mobHits == realSkillData[skillId]['targets']) {
-                break;
-            }
-            const bounds = entry.boundingClientRect;
-            if (
-                (between(bounds['left'], leftSkillBound, rightSkillBound)
+function getBounds(mobDivId) { // might want different hitboxes for different mob animations but for now it'll work with the same offsets for the same mob every time
+    let bounds = {left: 9999, right: 9999, top: 9999, bottom: 9999};
+    if (mobDivId in activeMobs) {
+        let mobId = activeMobs[mobDivId].id;
+        if (activeMobs[mobDivId].facing == 'right') {
+            bounds.right = activeMobs[mobDivId].left - mobBoundOffsets[mobId].left;
+            bounds.left = activeMobs[mobDivId].left - mobBoundOffsets[mobId].right;
+        }
+        else {
+            bounds.left = activeMobs[mobDivId].left + mobBoundOffsets[mobId].left;
+            bounds.right = activeMobs[mobDivId].left + mobBoundOffsets[mobId].right;
+        }
+        bounds.top = activeMobs[mobDivId].top + mobBoundOffsets[mobId].top;
+        bounds.bottom = activeMobs[mobDivId].top + mobBoundOffsets[mobId].bottom;
+        if (debugMobBounds) {
+            let gameArea = document.getElementById('gameArea');
+            gameArea.appendChild(createLine(bounds.left, bounds.top, bounds.right, bounds.top));
+            gameArea.appendChild(createLine(bounds.left, bounds.bottom, bounds.right, bounds.bottom));
+            gameArea.appendChild(createLine(bounds.left, bounds.top, bounds.left, bounds.bottom));
+            gameArea.appendChild(createLine(bounds.right, bounds.top, bounds.right, bounds.bottom));
+        }
+    }
+    return bounds;
+}
+
+function startHitCheckObserver(skillId, pairKey) {
+    let leftSkillBound = latestSkillBounds[skillId].left;
+    let rightSkillBound = latestSkillBounds[skillId].right;
+    let bottomSkillBound = latestSkillBounds[skillId].bottom;
+    let topSkillBound = latestSkillBounds[skillId].top;
+    let hitGroup = document.createElement('div');
+    let mobHits = 0;
+    let groupNumber = randomIntFromInterval(0, 2000000000000);
+    let gameArea = document.getElementById('gameArea');
+    targetableMobs.forEach((mobDivId) => {
+        if (mobHits == realSkillData[skillId]['targets']) {
+            return;
+        }
+        if (activeMobs[mobDivId].isDying) {
+            return;
+        }
+        let mobOriginPositionX = activeMobs[mobDivId].left;
+        let mobOriginPositionY = activeMobs[mobDivId].top; 
+        let bounds = getBounds(mobDivId);
+        if (
+            (between(bounds['left'], leftSkillBound, rightSkillBound)
                     || between(bounds['right'], leftSkillBound, rightSkillBound)
                     || between(leftSkillBound, bounds['left'], bounds['right'])
                     || between(rightSkillBound, bounds['left'], bounds['right']))
@@ -378,64 +390,62 @@ function startHitCheckObserver(skillPairKey) {
                     || between(bounds['bottom'], topSkillBound, bottomSkillBound)
                     || between(topSkillBound, bounds['top'], bounds['bottom'])
                     || between(bottomSkillBound, bounds['top'], bounds['bottom']))
-            ) {
-                let delay = 0;
-                let skillType = classSkills[skillId].TYPE;
-                if (skillType == 'ballEmitterAimed') {
-                    let gameArea = document.getElementById('gameArea');
-                    let facingDirectionMult = 1;
-                    if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-                        facingDirectionMult = -1;
-                    }
-                    let startX = AVATAR.offsetLeft - facingDirectionMult*70;
-                    let startY = AVATAR.offsetTop - 90;
-                    let endX = bounds['left'] - offsetLeftSkill + bounds['width']/2;
-                    let endY = bounds['top'] + bounds['height']/2;
-                    let speed = 0.4;
-                    delay = getBallEmitterHitDelay(speed, startX, startY, endX, endY);
-                    let hitDiv = hitEffect(endX, endY, skillId);
-                    hitDiv.style.visibility = 'hidden';
-                    gameArea.appendChild(hitDiv);
-                    let subject = document.createElement('div');
-                    let ball = classSkills[skillId].ball[Object.keys(classSkills[skillId].ball)[0]];
-                    let ballDimensions = ball[0];
-                    subject.style.backgroundImage = 'url(./skills/ball/' + skillId + 'ball.png)';
-                    subject.style.width = ballDimensions[0] + 'px';
-                    subject.style.height = ballDimensions[1] + 'px';
-                    subject.style.position = 'absolute';
-                    subject.style.backgroundPositionX = '0px';
-                    let ballCoords = [startX - ballDimensions[0]/2, startY - ballDimensions[1]/2];
-                    subject.style.left = ballCoords[0] + 'px';
-                    subject.style.top =  ballCoords[1] + 'px';
-                    if (startX < endX) {
-                        subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)+3.14) + 'rad)';
-                    }
-                    else {
-                        subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)) + 'rad)';
-                    }
-                    gameArea.appendChild(subject);
-                    let ballDelays = ball[2];
-                    scheduleToGameLoop(0, animateBallEmitter, [ballDimensions[0], subject, ballCoords, ballDelays, [endX-startX, endY-startY], delay, ballDelays[0]], 'movement');
-                    scheduleToGameLoop(delay, (someElement) => {
-                        someElement.style.visibility = '';
-                    }, [hitDiv], 'skill');
-                    scheduleToGameLoop(delay, genericSpritesheetAnimation, [[hitDiv], 0, classSkills[skillId].hit[1]]);
+        ) {
+            let delay = 0;
+            let skillType = classSkills[skillId].TYPE;
+            if (skillType == 'ballEmitterAimed') {
+                let gameArea = document.getElementById('gameArea');
+                let facingDirectionMult = 1;
+                if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+                    facingDirectionMult = -1;
+                }
+                let startX = AVATAR.offsetLeft - facingDirectionMult*70;
+                let startY = AVATAR.offsetTop - 90;
+                let endX = mobOriginPositionX ;
+                let endY = mobOriginPositionY;
+                let speed = 1.2;
+                delay = getBallEmitterHitDelay(speed, startX, startY, endX, endY);
+                let hitDiv = hitEffect(endX, endY, skillId);
+                hitDiv.style.visibility = 'hidden';
+                gameArea.appendChild(hitDiv);
+                let subject = document.createElement('div');
+                let ball = classSkills[skillId].ball[Object.keys(classSkills[skillId].ball)[0]];
+                let ballDimensions = ball[0];
+                subject.style.backgroundImage = 'url(./skills/ball/' + skillId + 'ball.png)';
+                subject.style.width = ballDimensions[0] + 'px';
+                subject.style.height = ballDimensions[1] + 'px';
+                subject.style.position = 'absolute';
+                subject.style.backgroundPositionX = '0px';
+                let ballCoords = [startX - ballDimensions[0]/2, startY - ballDimensions[1]/2];
+                subject.style.left = ballCoords[0] + 'px';
+                subject.style.top =  ballCoords[1] + 'px';
+                if (startX < endX) {
+                    subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)+3.14) + 'rad)';
                 }
                 else {
-                    hitGroup.appendChild(hitEffect(bounds['left']-offsetLeftSkill+bounds['width']/2, bounds['top']+bounds['height']/2, skillId));
+                    subject.style.transform = 'rotate(' + (getBallEmitterAngle(startX, startY, endX, endY)) + 'rad)';
                 }
-                let data = [entry.target, groupNumber, skillId, [bounds['left']-offsetLeftSkill+bounds['width']/2, bounds['top']]];
-                scheduleToGameLoop(delay, mobDamageEvent, data, 'damageNumber');
-                mobHits++;
-                triggerOnHitDetectionPairs[pairKey] = true;
+                gameArea.appendChild(subject);
+                let ballDelays = ball[2];
+                scheduleToGameLoop(0, animateBallEmitter, [ballDimensions[0], subject, ballCoords, ballDelays, [endX-startX, endY-startY], delay, ballDelays[0]], 'movement');
+                scheduleToGameLoop(delay, (someElement) => {
+                    someElement.style.visibility = '';
+                }, [hitDiv], 'skill');
+                scheduleToGameLoop(delay, genericSpritesheetAnimation, [[hitDiv], 0, classSkills[skillId].hit[1]]);
             }
+            else {
+                hitGroup.appendChild(hitEffect(mobOriginPositionX, mobOriginPositionY, skillId));
+            }
+            let data = [mobDivId, groupNumber, skillId];
+            scheduleToGameLoop(delay, mobDamageEvent, data, 'damageNumber');
+            mobHits++;
+            triggerOnHitDetectionPairs[pairKey] = true;
         }
-        if (hitGroup.hasChildNodes()) {
-            gameArea.appendChild(hitGroup);
-            genericSpritesheetAnimation(hitGroup.children, 0, classSkills[skillId].hit[1], deleteGroupWhenDone=true);
-        }
-        hitCheckObserver.disconnect();
-    }, {'threshold': parseFloat("0.00" + skillPairKey + "50")});
+    });
+    if (hitGroup.hasChildNodes()) {
+        gameArea.appendChild(hitGroup);
+        genericSpritesheetAnimation(hitGroup.children, 0, classSkills[skillId].hit[1], deleteGroupWhenDone=true);
+    }
 }
 
 function getBallEmitterHitDelay(speed, startX, startY, endX, endY) {
@@ -795,16 +805,16 @@ function positionAndAnimateOneSkillEffect(effectName='', skillEffect=[], additio
     genericSpritesheetAnimation([div], 0, skillEffect[2]);
 }
 
-function skillPreplannedHit(target, skillId) { // target=element (like a mob), skillId=skillId
-    let locationCoords = [target.offsetLeft + parseInt(target.style.width)/2, 769 + target.offsetTop - parseInt(target.style.height)/2];
+function skillPreplannedHit(targetDivId, skillId) {
+    let locationCoords = [activeMobs[targetDivId].left, activeMobs[targetDivId].top];
     let hitDiv = hitEffect(locationCoords[0], locationCoords[1], skillId);
     gameArea.appendChild(hitDiv);
     scheduleToGameLoop(0, genericSpritesheetAnimation, [[hitDiv], 0, classSkills[skillId].hit[1]]);
-    if (target.classList.contains('mobDying')) {
+    if (!targetableMobs.includes(targetDivId)) {
         return;
     }
     let groupNumber = randomIntFromInterval(0, 2000000000000);
-    let data = [target, groupNumber, skillId, locationCoords];
+    let data = [targetDivId, groupNumber, skillId];
     scheduleToGameLoop(0, mobDamageEvent, data, 'damageNumber');
     return;
 }
@@ -817,7 +827,6 @@ function flyingSwords() {
         [50, 110]
     ];
     if (flyingSwordsAreUp) {
-        let numberOfMobs = document.getElementsByClassName('mob').length;
         if (numberOfMobs == 0) {
             return;
         }
@@ -833,9 +842,8 @@ function flyingSwords() {
             elem.style.pointerEvents = 'none';
             elem.style.transform = AVATAR.style.transform;
             GAME_AREA.appendChild(elem);
-            numberOfMobs = document.getElementsByClassName('mob').length; // re-get this value just in case
             let mobNumber = randomIntFromInterval(0, numberOfMobs-1);
-            let target = document.getElementsByClassName('mob')[mobNumber];
+            let target = targetableMobs[mobNumber];
             moveSKillAlongCurvyPath(elem, target, skillPreplannedHit, [target, 61101002], true, 0.01, 0.03, 3, 0.02);
         });
         while (theElements.length > 0) {
@@ -914,14 +922,18 @@ function flyingSwords() {
 // AND it requires a 'currentAngle' attribute in the elem
 function moveSKillAlongCurvyPath(elem, target, finalCallback, dataForCallback, movingTarget=false, turnPower=0.01, turnAcceleration=0, speed=1, acceleration=0) {
     let targetLocation = [0, 0];
-    if (target.classList.contains('mobDying') || noKilling) { // if mob died then disappear so it doesnt look weird
-        elem.remove();
-        return;
-    }
     if (movingTarget) { // "target" is an element
-        targetLocation = [target.offsetLeft, target.offsetTop+716];
+        if (!targetableMobs.includes(target) || noKilling) { // if mob died then disappear so it doesnt look weird
+            elem.remove();
+            return;
+        }
+        targetLocation = [activeMobs[target].left, activeMobs[target].top];
     }
     else { // "target" is coordinates
+        if (noKilling) {
+            elem.remove();
+            return;
+        }
         targetLocation = target;
     }
     if (between(parseFloat(elem.style.left), targetLocation[0] - 5, targetLocation[0] + 5) && 

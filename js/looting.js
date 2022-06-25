@@ -37,6 +37,7 @@ function lootItem(target) { // use   this.whatever   to get what you need   ex: 
     target.classList.remove('clickable');
     let success = obtainItem(target.value);
     if (!success) {
+        gainTextStreamAdd('Could not pick up item. Inventory full.');
         target.classList.add('clickable');
         $(target).on('click mouseenter mouseleave', (event) => {
             if (event.type == 'click') {

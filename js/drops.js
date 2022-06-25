@@ -77,19 +77,13 @@ function setupImage(url, itemID) {
     return finishedImage;
 }
 
-function dropLoot(mob, mobLeft=540, dropCount=0, unknown=false, justGetThem=false) {
+function dropLoot(mob, left=540, top=400, dropCount=0, unknown=false, justGetThem=false) {
     const aligner = document.createElement('div');
     aligner.classList = ['dropAligner'];
     aligner.style.width = ''.concat(dropCount*32, 'px');
     aligner.value = dropCount;
-    const lootSurface = document.getElementById('lootSurface');
-    if (lootSurface.lastElementChild) {
-        aligner.style.zIndex = Number(lootArea.lastElementChild.style.zIndex)+1;
-    }
-    else {
-        aligner.style.zIndex = 1;
-    }
-    aligner.style.marginLeft = ''.concat(parseInt(mobLeft) - dropCount*32/2 + 16, 'px');
+    aligner.style.left = ''.concat(left - dropCount*32/2 + 16, 'px');
+    aligner.style.top = top - 46 + 'px';
     if (justGetThem) {
         let stuff = getUnknownItems();
         for (let i = 0; i < stuff.length; i++) {

@@ -74,20 +74,6 @@ function removeItemFromAvatar(id) {
     delete allAvatarParts[id];
 }
 
-function makeTestPixel(x, y, color='red', name='') {
-    let appendLocation = AVATAR;
-    let pixel = document.createElement('div');
-    pixel.style.position = 'absolute';
-    pixel.style.left = x + 'px';
-    pixel.style.top = y + 'px';
-    pixel.style.backgroundColor = color;
-    pixel.style.width = '1px';
-    pixel.style.height = '1px';
-    pixel.style.zIndex = '999';
-    pixel.setAttribute('name', name);
-    appendLocation.appendChild(pixel);
-}
-
 function avatarDealWithUnusedParts(id, dataSource, state, frame) {
     let itemsUnusedParts = [];
     Object.keys(allAvatarParts[id]).forEach((partName) => {
@@ -118,7 +104,6 @@ function tempMoveFace() {
     avatarSetPositionOfOnePart(face, 20000);
 }
 
-const SMALL_UNIT_OF_TIME = 10;
 var avatarEquipmentFrameRecords = {};
 function avatarAnimate(reverse=false, frame=0, showOneFrame=false) { // the part needs to already be on the avatar
     avatarDealWithUnusedParts(2000, bodyData, bodyState, frame);

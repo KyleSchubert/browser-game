@@ -255,14 +255,14 @@ $(() => {
         addToKeybinds('jump', 'Space', 'function');
     }
     loadPortals();
-    let amountToSpawn = (MAX_MOBS-$('.mob').length);
+    let amountToSpawn = (MAX_MOBS-numberOfMobs);
     for (i=0; i<amountToSpawn; i++) {
         spawn(getMob());
     }
     setInterval(() => {
-        if ($('.mob').length < MAX_MOBS) {
+        if (numberOfMobs < MAX_MOBS) {
             console.log("Respawning mobs");
-            let amountToSpawn = (MAX_MOBS-$('.mob').length);
+            let amountToSpawn = (MAX_MOBS-numberOfMobs);
             for (i=0; i<amountToSpawn; i++) {
                 spawn(getMob());
             }
@@ -340,3 +340,32 @@ function secondsToReadableTime(seconds) {
         return minutes + ':' + realSeconds;
     }
 }
+
+// me
+function makeTestPixel(x, y, color='red', name='') {
+    let appendLocation = document.getElementById('gameArea');
+    let pixel = document.createElement('div');
+    pixel.style.position = 'absolute';
+    pixel.style.left = x + 'px';
+    pixel.style.top = y + 'px';
+    pixel.style.backgroundColor = color;
+    pixel.style.width = '1px';
+    pixel.style.height = '1px';
+    pixel.style.zIndex = '999';
+    pixel.setAttribute('name', name);
+    appendLocation.appendChild(pixel);
+}
+
+// me
+function makeTestBullseyePixels(x, y, color='red', name='') {
+    makeTestPixel(x, y, color, name);
+    makeTestPixel(x+1, y, 'white', name);
+    makeTestPixel(x-1, y, 'white', name);
+    makeTestPixel(x, y+1, 'white', name);
+    makeTestPixel(x+1, y+1, 'white', name);
+    makeTestPixel(x-1, y+1, 'white', name);
+    makeTestPixel(x, y-1, 'white', name);
+    makeTestPixel(x+1, y-1, 'white', name);
+    makeTestPixel(x-1, y-1, 'white', name);
+}
+

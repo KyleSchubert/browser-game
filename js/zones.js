@@ -131,6 +131,9 @@ function changeZones() {
 
 $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()
     $('.mob').remove();
+    activeMobs = {};
+    numberOfMobs = 0;
+    targetableMobs = [];
     if ($('#superBlocker').hasClass('fadeToBlack')) { 
         loadPortals();
         noKilling = false;
