@@ -136,6 +136,7 @@ function mobDamageEvent(mobDivId, soundGroupNumber=-1, skill=0) {
     let theirHpBar = mobDiv.lastChild;
     theirHpBar.style.visibility = 'visible';
     let newHP = activeMobs[mobDivId].hp - damageRoll; // maybe needs improvement
+    activeMobs[mobDivId].hp = newHP;
     if (newHP < 0) {
         newHP = 0;
     }
