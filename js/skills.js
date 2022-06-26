@@ -158,6 +158,7 @@ function useAttackSkill(skill) {
         subject.style.width = ballDimensions[0] + 'px';
         subject.style.height = ballDimensions[1] + 'px';
         subject.style.position = 'absolute';
+        subject.style.zIndex = 2;
         subject.style.backgroundPositionX = '0px';
         let ballCoords = [startX - ballDimensions[0]/2, startY - ballDimensions[1]/2];
         subject.style.left = ballCoords[0] + 'px';
@@ -236,6 +237,7 @@ function skillActionAnimation(state, frameOfState, avatarPositionChange=[0,0]) {
 function hitEffect(left, top, skill, reason='') {
     let hitDimensions = classSkills[skill].hit[0]; // this used to be usedSkill not sure why
     let div = document.createElement('div');
+    div.style.zIndex = 1;
     let suffixesSkill = skill;
     if ('originalSkill' in classSkills[skill]) { // example: dragon slash
         suffixesSkill = classSkills[skill].originalSkill;
@@ -401,8 +403,8 @@ function startHitCheckObserver(skillId, pairKey) {
                 }
                 let startX = AVATAR.offsetLeft - facingDirectionMult*70;
                 let startY = AVATAR.offsetTop - 90;
-                let endX = mobOriginPositionX ;
-                let endY = mobOriginPositionY;
+                let endX = mobOriginPositionX;
+                let endY = mobOriginPositionY+0.5*mobBoundOffsets[activeMobs[mobDivId].id].top;
                 let speed = 1.2;
                 delay = getBallEmitterHitDelay(speed, startX, startY, endX, endY);
                 let hitDiv = hitEffect(endX, endY, skillId);
@@ -412,6 +414,7 @@ function startHitCheckObserver(skillId, pairKey) {
                 let ball = classSkills[skillId].ball[Object.keys(classSkills[skillId].ball)[0]];
                 let ballDimensions = ball[0];
                 subject.style.backgroundImage = 'url(./skills/ball/' + skillId + 'ball.png)';
+                subject.style.zIndex = 2;
                 subject.style.width = ballDimensions[0] + 'px';
                 subject.style.height = ballDimensions[1] + 'px';
                 subject.style.position = 'absolute';
@@ -434,7 +437,7 @@ function startHitCheckObserver(skillId, pairKey) {
                 scheduleToGameLoop(delay, genericSpritesheetAnimation, [[hitDiv], 0, classSkills[skillId].hit[1]]);
             }
             else {
-                hitGroup.appendChild(hitEffect(mobOriginPositionX, mobOriginPositionY, skillId));
+                hitGroup.appendChild(hitEffect(mobOriginPositionX, mobOriginPositionY+0.5*mobBoundOffsets[activeMobs[mobDivId].id].top, skillId));
             }
             let data = [mobDivId, groupNumber, skillId];
             scheduleToGameLoop(delay, mobDamageEvent, data, 'damageNumber');
@@ -787,6 +790,7 @@ function positionAndAnimateSkillEffects(skill=0, additionalOffsets=[0,0]) {
 function positionAndAnimateOneSkillEffect(effectName='', skillEffect=[], additionalOffsets=[0,0]) {
     let div = document.createElement('div');
     div.style.position = 'absolute';
+    div.style.zIndex = 2;
     div.style.backgroundPositionX = '0px';
     div.style.backgroundImage = 'url(./skills/effect/' + effectName + '.png)';
     let dimensions = skillEffect[0];
@@ -871,6 +875,7 @@ function flyingSwords() {
             // flames
             let div = document.createElement('div');
             div.style.position = 'absolute';
+            div.style.zIndex = 1;
             div.style.backgroundPositionX = '0px';
             div.style.backgroundImage = 'url(./skills/forceAtom/forceAtom2atom1parentAtom.png)';
             let particleDimensions = classSkills[61101002].particles.dimensions.forceAtom2atom1parentAtom;
@@ -888,6 +893,7 @@ function flyingSwords() {
             div.style.transform += 'rotate(90deg)';
             let div2 = document.createElement('div');
             div2.style.position = 'absolute';
+            div.style.zIndex = 1;
             div2.style.backgroundPositionX = '0px';
             div2.style.backgroundImage = 'url(./skills/forceAtom/forceAtom2atom1parentAtomAdd1effect.png)';
             let particleDimensions2 = classSkills[61101002].particles.dimensions.forceAtom2atom1parentAtomAdd1effect;

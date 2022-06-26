@@ -223,6 +223,10 @@ function mobDie(mobDivId=-1) {
     }
     $(mobDiv).off('click');
     mobDiv.style.pointerEvents = 'none';
+    if (activeMobs[mobDivId].isDying == true) {
+        return;
+    }
+    //console.log(mobDivId, 'JUST DIED');
     activeMobs[mobDivId].isDying = true;
     removeItemOnce(targetableMobs, mobDivId);
     if (numberOfMobs > 0) {

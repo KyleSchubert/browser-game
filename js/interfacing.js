@@ -506,38 +506,36 @@ function checkForToggleKeys() {
 }
 
 function checkForPressedKeys() {
-    if (smallDialogBoxOpen) { // this prevents buying stuff and activating skills on your number keys
-        return;
+    if (!smallDialogBoxOpen) { // this prevents buying stuff and activating skills on your number keys
+        let endEarly = false;
+        pressedKeys.forEach((someKey) => {
+            if (endEarly) {
+                return;
+            }
+            if (someKey in keybindReferences) {
+                endEarly = true;
+                if (keybindReferences[someKey].type == 'skill') {
+                    let id = keybindReferences[someKey].id;
+                    if (id in character.skillLevels) { // it should be in there, but if it isn't something strange happened
+                        if (character.skillLevels[id] >= 1) {
+                            processSkill(id);
+                        }
+                    }
+                    else {
+                        endEarly = false;
+                    }
+                }
+                else if (keybindReferences[someKey].type == 'function') {
+                    let id = keybindReferences[someKey].id;
+                    if (id == 'pickUp') {
+                        if (currentHoveredDropItem) {
+                            lootItem(currentHoveredDropItem);
+                        }
+                    }
+                }
+            }
+        });
     }
-    let endEarly = false;
-    pressedKeys.forEach((someKey) => {
-        if (endEarly) {
-            return;
-        }
-        if (someKey in keybindReferences) {
-            endEarly = true;
-            if (keybindReferences[someKey].type == 'skill') {
-                let id = keybindReferences[someKey].id;
-                if (id in character.skillLevels) { // it should be in there, but if it isn't something strange happened
-                    if (character.skillLevels[id] >= 1) {
-                        processSkill(id);
-                    }
-                }
-                else {
-                    endEarly = false;
-                }
-            }
-            else if (keybindReferences[someKey].type == 'function') {
-                let id = keybindReferences[someKey].id;
-                if (id == 'pickUp') {
-                    if (currentHoveredDropItem) {
-                        lootItem(currentHoveredDropItem);
-                    }
-                }
-            }
-        }
-    });
-    
     scheduleToGameLoop(0, checkForPressedKeys, [], 'interfacing');
 }
 
