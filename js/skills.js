@@ -54,7 +54,7 @@ function processSkill(skill) {
         useAttackSkill(realSkill);
     }
     else if (skillType == 'buff') {
-        playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')]);
+        playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')], 'use');
         if ('duration' in buffSkillVars[usedSkill]) { // some buffs are toggleable and have no duration
             let durationVariable = buffSkillVars[usedSkill]['duration'];
             let equation = classSkills[usedSkill].usedVariables[durationVariable];
@@ -117,7 +117,7 @@ function processSkill(skill) {
         realSkillData[realSkill]['damageMult'] /= 100;
         setSkillSuffixesAndDimensions(skill);
         if (skillType == 'flyingSwords') {
-            playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')]);
+            playSound(sounds[allSoundFiles.indexOf(usedSkill + 'use.mp3')], 'use');
             flyingSwords();
             positionAndAnimateSkillEffects(usedSkill);
             return;
@@ -141,7 +141,7 @@ function useAttackSkill(skill) {
     else {
         positionAndAnimateSkillEffects(skill);
     }
-    playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')]);
+    playSound(sounds[allSoundFiles.indexOf(skill + 'use.mp3')], 'use');
     if (classSkills[skill].TYPE == 'ballEmitterDurationFlatGravity') { // like Wing Beat that moves on its own and hits stuff freely
         let gameArea = document.getElementById('gameArea');
         let facingDirectionMult = 1;

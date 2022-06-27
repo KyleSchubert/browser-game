@@ -10,7 +10,9 @@ var attackSkillVars = {
     61101101: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'},
     61101002: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', cooltime: 'cooltime'},
     61111100: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay', maxTargets: 'maxTargets'},
-    61111111: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay', maxTargets: 'maxTargets'}
+    61111101: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'},
+    61111111: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay', maxTargets: 'maxTargets'},
+    61111219: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'}
 };
 //MAKE time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'}, DO STUFF
 const attackSequences = {
@@ -40,11 +42,11 @@ var timedPassiveSKillVars = { // these do nothing
     61110006: {'x': 'recoveredHp', 'w': 'secondsDelay'}
 };
 
-var buffSkillVars = { // just like the others ->  'variable': 'real meaning here'
+var buffSkillVars = { // just like the others ->  'variable': 'real meaning here'.   ('duration': 'time'   always, though)
     60001216: {'pddX': 'defense'},
     60001217: {'padX': 'physicalAttack'},
     61101004: {'indiePad': 'physicalAttack', 'duration': 'time', 'attackSpeedBonus': 'attackSpeedBonus'},
-    61111003: {'time': 'time', 'terR': 'statusResistance', 'asrR': 'elementalResistance', 'x': 'monsterStatusEffectBonusFinalDamagePercent'}
+    61111003: {'duration': 'time', 'terR': 'statusResistance', 'asrR': 'elementalResistance', 'x': 'monsterStatusEffectBonusFinalDamagePercent'}
 };
 
 var skillsThatGetEnhanced = {

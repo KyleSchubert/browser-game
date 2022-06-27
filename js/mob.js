@@ -109,7 +109,7 @@ function mobDamageEvent(mobDivId, soundGroupNumber=-1, skill=0) {
         if (!blockedSoundGroups.includes(soundGroupNumber)) {
             blockedSoundGroups.push(soundGroupNumber);
             if (realSkillData[skill].sound != -1) {
-                playSound(realSkillData[skill].sound);
+                playSound(realSkillData[skill].sound, 'hit');
             }
             scheduleToGameLoop(1, () => {
                 removeItemOnce(blockedSoundGroups, soundGroupNumber);
