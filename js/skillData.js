@@ -14,7 +14,7 @@ var attackSkillVars = {
     61111111: {attackCount: 'attackCount', damageMult: 'damage', bulletCount: 'bulletCount', time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay', maxTargets: 'maxTargets'},
     61111219: {attackCount: 'attackCount', damageMult: 'damage', mobCount: 'mobCount'}
 };
-//MAKE time: 'time', maxDistance: 'maxDistance', attackDelay: 'attackDelay'}, DO STUFF
+
 const attackSequences = {
     61001000: [[61001000], [61001004], [61001005]]
 };

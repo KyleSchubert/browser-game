@@ -1,4 +1,4 @@
-var numberOfMobs = 0;
+var numberOfMobs = 0; // amount of non-dead/dying mobs. this is useful for allowing mobs that are dying to stay in activeMobs while allowing another mob to spawn
 var targetableMobs = [];
 var activeMobs = {};
 
@@ -251,10 +251,6 @@ function mobDie(mobDivId=-1) {
     }
     gainExperience(experienceAmount);
     gainTextStreamAdd('You have gained experience (+' + experienceAmount.toString() + ')');
-
-    doubloonsAmount = randomIntFromInterval(28, 32) + mobLevelToExp[mobLevels[mobName]]; // TEMPORARY EXAMPLE
-    updateDoubloons(doubloonsAmount);
-    gainTextStreamAdd('You have gained doubloons (+' + doubloonsAmount.toString() + ')');
 }
 
 function gainTextStreamAdd(text) {

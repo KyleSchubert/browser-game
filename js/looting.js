@@ -1,6 +1,11 @@
 function obtainItem(itemID, amount=1) { // in goes the item on the page that has its item ID as its value
     itemID = parseInt(itemID); // just in case
-    amount = parseInt(amount); // just in case
+    amount = parseInt(amount); // no strings and no floats since those wouldn't make sense
+    if (between(itemID, 9000000, 9000004)) { // doubloons -> they don't get sent to the inventory
+        updateDoubloons(amount);
+        gainTextStreamAdd('You have gained doubloons (+' + amount + ') Total: ' + numberWithCommas(doubloons));
+        return true;
+    }
     targetTab = itemsAndTheirTypes[itemID][0];
     targetSlot = inventory[targetTab].indexOf(0);
     if (targetTab == 'Use' || targetTab == 'Etc') { // items stack in these
@@ -35,7 +40,14 @@ function lootItem(target) { // use   this.whatever   to get what you need   ex: 
     $(target).off('click');
     currentHoveredDropItem = '';
     target.classList.remove('clickable');
-    let success = obtainItem(target.value);
+    let itemId = target.value;
+    let success = false;
+    if (between(itemId, 9000000, 9000004)) { // doubloons
+        success = obtainItem(itemId, target.getAttribute('doubloons-amount'));
+    }
+    else {
+        success = obtainItem(itemId);
+    }
     if (!success) {
         gainTextStreamAdd('Could not pick up item. Inventory full.');
         target.classList.add('clickable');

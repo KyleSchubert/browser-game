@@ -23,11 +23,14 @@ function itemDropSetup(img, aligner) {
     return;
 }
 
-function itemImageSetup(itemID, callback, slot=999999) {
+function itemImageSetup(itemID, callback, slot=999999, additionalElementAttibutes={}) {
     itemID = parseInt(itemID);
     if (knownItemImages.includes(itemID)) {
         url = './item/'.concat(itemID).concat('/icon.png');
         img = setupImage(url, itemID);
+        Object.keys(additionalElementAttibutes).forEach((key) => {
+            img.setAttribute(key, additionalElementAttibutes[key]);
+        });
         if (slot != 999999) {
             callback(img, slot);
         }
@@ -43,6 +46,9 @@ function itemImageSetup(itemID, callback, slot=999999) {
                 img = getItemURL(itemID).concat('/icon');
                 knownItemImages.push(itemID);
                 img = setupImage(img, itemID);
+                Object.keys(additionalElementAttibutes).forEach((key) => {
+                    img.setAttribute(key, additionalElementAttibutes[key]);
+                });
                 if (slot != 999999) {
                     callback(img, slot);
                 }
@@ -54,6 +60,9 @@ function itemImageSetup(itemID, callback, slot=999999) {
                 img = './item/'.concat(itemID).concat('/icon.png');
                 knownItemImages.push(itemID);
                 img = setupImage(img, itemID);
+                Object.keys(additionalElementAttibutes).forEach((key) => {
+                    img.setAttribute(key, additionalElementAttibutes[key]);
+                });
                 if (slot != 999999) {
                     callback(img, slot);
                 }
@@ -65,19 +74,35 @@ function itemImageSetup(itemID, callback, slot=999999) {
     }
 }
 
+const doubloonDimensions = {
+    9000000: [35, 32], 9000001: [35, 32], 9000002: [37, 36], 9000003: [32, 33], 9000004: [46, 46]
+};
+
 function setupImage(url, itemID) {
-    const finishedImage = new Image();
-    finishedImage.src = url;
-    finishedImage.onerror=() => { // this seems to fix the problem of items RARELY not loading when they drop onto the ground
+    if (between(itemID, 9000000, 9000004)) { // doubloons -> they need to be animated
+        let finishedImage = document.createElement('div');
+        finishedImage.style.backgroundImage = 'url(' + url + ')';
+        finishedImage.style.width = doubloonDimensions[itemID][0] + 'px';
+        finishedImage.style.height = doubloonDimensions[itemID][1] + 'px';
+        scheduleToGameLoop(0, genericSpritesheetAnimation, [[finishedImage], 0, [200, 200, 200, 200], false, true]);
+        finishedImage.classList = ['item clickable'];
+        finishedImage.value = itemID;
+        return finishedImage;
+    }
+    else {
+        let finishedImage = new Image();
         finishedImage.src = url;
-    };
-    finishedImage.classList = ['item clickable'];
-    finishedImage.value = itemID;
-    finishedImage.setAttribute('draggable', false);
-    return finishedImage;
+        finishedImage.onerror=() => { // this seems to fix the problem of items RARELY not loading when they drop onto the ground
+            finishedImage.src = url;
+        };
+        finishedImage.setAttribute('draggable', false);
+        finishedImage.classList = ['item clickable'];
+        finishedImage.value = itemID;
+        return finishedImage;
+    }
 }
 
-function dropLoot(mob, left=540, top=400, dropCount=0, unknown=false, justGetThem=false) {
+function dropLoot(mobName, left=540, top=400, dropCount=0, doubloonCount=0.7, unknown=false, justGetThem=false) {
     const aligner = document.createElement('div');
     aligner.classList = ['dropAligner'];
     aligner.style.width = ''.concat(dropCount*32, 'px');
@@ -102,13 +127,27 @@ function dropLoot(mob, left=540, top=400, dropCount=0, unknown=false, justGetThe
                 }
             }
             else {
-                let pool = mobDropPools[mob][Math.floor(Math.random() * mobDropPools[mob].length)];
+                let pool = mobDropPools[mobName][Math.floor(Math.random() * mobDropPools[mobName].length)];
                 choices = dropPoolDefinitions[pool];
             }
             let id = choices[Math.floor((Math.random() * choices.length))];
             itemImageSetup(id, itemDropSetup, aligner);
             memorizeItemType(id);
         }
+    }
+    while (doubloonCount > 0) {
+        if (doubloonCount < 1) {
+            if (Math.random() > doubloonCount) {
+                return;
+            }
+        }
+        let doubloonsAmount = randomIntFromInterval(28, 32) + mobLevelToExp[mobLevels[mobName]]; // TEMPORARY EXAMPLE
+        if (doubloonsAmount < 1) { // should never happen normally
+            doubloonsAmount = 1;
+        }
+        let doubloonId = dropDoubloons(doubloonsAmount);
+        itemImageSetup(doubloonId, itemDropSetup, aligner, {'doubloons-amount': doubloonsAmount});
+        doubloonCount--;
     }
 }
 
@@ -194,4 +233,19 @@ function clearItems() {
 function getItemURL(id) {
     url = 'https://maplestory.io/api/GMS/217/item/'.concat(id);
     return url;
+}
+
+function dropDoubloons(amount) {
+    if (between(amount, 1, 49)) {
+        return 9000000;
+    }
+    else if (between(amount, 50, 99)) {
+        return 9000001;
+    }
+    else if (between(amount, 100, 999)) {
+        return 9000002;
+    }
+    else if (amount >= 1000) {
+        return 9000003;
+    }
 }
