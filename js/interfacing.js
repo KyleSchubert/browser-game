@@ -97,6 +97,7 @@ function makeDraggableItemsDraggable() {
                                             const oldEquippedItem = itemsInEquipmentSlots[equippedItemSlot-30];
                                             itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
                                             inventory.DetailedEquip[inventoryItemSlot] = oldEquippedItem;
+                                            inventory.Equip[inventoryItemSlot] = oldEquippedItem.id;
                                             equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30);
                                             inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot]);
                                         }
@@ -227,6 +228,79 @@ function activateFastSell() {
         } 
     });
     $('#slotsSpot .draggableItem:not(.fastSellReady)').addClass('fastSellReady');
+}
+
+var canDoubleClickAnItem = true;
+function enableDoubleClickToEquip() {
+    $('#slotsSpot .draggableItem:not(.doubleClickToEquip)').on('dblclick', function(e) {
+        if (canDoubleClickAnItem) {
+            canDoubleClickAnItem = false;
+            let inventoryItemSlot = parseInt(e.currentTarget.parentElement.getAttribute('data-slotID'));
+            let equippedItemSlot = 999;
+            activeSlots.forEach((slot) => {
+                if (equippedItemSlot != 999) {
+                    return;
+                }
+                if (canEquipToHere(30+slot, inventoryItemSlot)) {
+                    if (slot == 0) { // rings have multiple slots:   0, 5, 10, 15
+                        if (itemsInEquipmentSlots[slot]) {
+                            slot = 5;
+                        }
+                        if (itemsInEquipmentSlots[slot]) {
+                            slot = 10;
+                        }
+                        if (itemsInEquipmentSlots[slot]) {
+                            slot = 15;
+                        }
+                        if (itemsInEquipmentSlots[slot]) { // if every ring slot has a ring
+                            let lowestPowerSlot = 0;
+                            if (calculateEquipmentPower(itemsInEquipmentSlots[lowestPowerSlot].id) > calculateEquipmentPower(itemsInEquipmentSlots[5].id)) {
+                                lowestPowerSlot = 5;
+                            }
+                            if (calculateEquipmentPower(itemsInEquipmentSlots[lowestPowerSlot].id) > calculateEquipmentPower(itemsInEquipmentSlots[10].id)) {
+                                lowestPowerSlot = 10;
+                            }
+                            if (calculateEquipmentPower(itemsInEquipmentSlots[lowestPowerSlot].id) > calculateEquipmentPower(itemsInEquipmentSlots[15].id)) {
+                                lowestPowerSlot = 15;
+                            }
+                            slot = lowestPowerSlot;
+                        }
+                    } 
+                    equippedItemSlot = 30+slot;
+                }
+            });
+            if (equippedItemSlot == 999) {
+                return;
+            }
+            if (inventory.DetailedEquip[inventoryItemSlot]) {
+                removeAllChildNodes($('[data-slotid="' + inventoryItemSlot + '"]'));
+                playSound(sounds[7]); // DragEnd.mp3
+                if (itemsInEquipmentSlots[equippedItemSlot-30]) { // swapping an equipped item with an unequipped one
+                    $('[data-slotid="' + equippedItemSlot + '"] .itemHolder').remove();
+                    const oldEquippedItem = itemsInEquipmentSlots[equippedItemSlot-30];
+                    itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
+                    inventory.DetailedEquip[inventoryItemSlot] = oldEquippedItem;
+                    inventory.Equip[inventoryItemSlot] = oldEquippedItem.id;
+                    equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30);
+                    inventoryLoadOne('Equip', inventoryItemSlot, inventory.DetailedEquip[inventoryItemSlot].id, false, inventory.DetailedEquip[inventoryItemSlot]);
+                }
+                else { // equipping an item into an empty slot
+                    itemsInEquipmentSlots[equippedItemSlot-30] = inventory.DetailedEquip[inventoryItemSlot];
+                    inventory.DetailedEquip[inventoryItemSlot] = 0;
+                    inventory.Equip[inventoryItemSlot] = 0;
+                    equipmentLoadOne(itemsInEquipmentSlots[equippedItemSlot-30], equippedItemSlot-30);
+                }
+                if (equipmentThatShowsUp.includes(equippedItemSlot-30)) {
+                    equipmentLatestChange = equippedItemSlot-30;
+                    loadAvatar();
+                }
+            }
+            scheduleToGameLoop(250, () => {
+                canDoubleClickAnItem = true;
+            }, [], 'interfacing');
+        }
+    });
+    $('#slotsSpot .draggableItem:not(.doubleClickToEquip)').addClass('fastSellReady');
 }
 
 function addSelectionListener(node) { // BUYING AN ITEM BY CLICKING THE SELECTED THING AGAIN

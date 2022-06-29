@@ -133,6 +133,9 @@ function inventoryLoad() {
     }
     makeDraggableItemsDraggable();
     activateFastSell();
+    if (inventory.readyName() == 'Equip') {
+        enableDoubleClickToEquip();
+    }
     $('.slot').mousemove(function(event) {
         if (isSomethingBeingDragged) { // someone wants to swap items
             prepareToSwapItems(event, 1);
@@ -158,7 +161,9 @@ function inventoryLoadOne(tabName, slot, itemID, justTheNumber=false, equipItem=
         }
         makeDraggableItemsDraggable();
         activateFastSell();
-
+        if (tabName == 'Equip') {
+            enableDoubleClickToEquip();
+        }
         target = $('.slot').eq(slot);
         target.mousemove(function(event) {
             if (isSomethingBeingDragged) { // someone wants to swap items

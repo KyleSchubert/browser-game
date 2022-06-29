@@ -60,6 +60,7 @@ function getUsedStats(stats) {
 
 // makes the slots
 const disabledSlots = [1, 3, 6, 8, 20, 25, 26, 28, 29];
+const activeSlots = [0, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 27]; // useful for iterating sometimes
 const slotRestrictions = {
     'Ring': [0, 5, 10, 15],
     'Hat': [2],
@@ -102,8 +103,7 @@ const slotText = {
 };
 
 function canEquipToHere(desiredSlot, itemSlot) {
-    console.log(desiredSlot);
-    console.log(itemSlot);
+    //console.log(desiredSlot, itemSlot);
     let itemID = 0;
     if (itemSlot < 30) {
         itemID = inventory.DetailedEquip[itemSlot].id;
