@@ -130,7 +130,8 @@ function preloadImages(array) {
     });
 }
 
-$(preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png", "./files/levelup.png", './files/pointsEnabled.png', './files/pointsDisabled.png']));
+$(preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png", "./files/levelup.png", './files/pointsEnabled.png', './files/pointsDisabled.png',
+    './item/9000000/icon.png', './item/9000001/icon.png', './item/9000002/icon.png', './item/9000003/icon.png', './item/9000004/icon.png']));
 
 $(() => {
     let snackbarContainer = document.getElementById('snackbarHolderForSaving');
