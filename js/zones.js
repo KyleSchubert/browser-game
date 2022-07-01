@@ -126,7 +126,22 @@ function changeZones() {
     $('#superBlocker').css('background', 'rgba(0,0,0,1)');
     noKilling = true;
     currentZone = this.value;
-    gameLoop.mob = [];
+    gameLoop.mob = {};
+    preloadConnectedZones();
+}
+
+function preloadConnectedZones(zone=currentZone) {
+    let toLoad = [];
+    zoneConnections[zone].forEach((portal) => {
+        zoneMobs[portal.dest].forEach((mobName) => {
+            let mobId = mobIdsFromNames[mobName];
+            let animationNames = Object.keys(mobDelays[mobId]);
+            animationNames.forEach((animationName) => {
+                toLoad.push('./mob/' + mobId + '/' + animationName + '.png');
+            });
+        });
+    });
+    scheduleToGameLoop(0, preloadImages, [toLoad], 'preloading');
 }
 
 $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()

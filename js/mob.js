@@ -116,6 +116,9 @@ function mobDamageEvent(mobDivId, soundGroupNumber=-1, skill=0) {
             });
         }
     }
+    if (!(mobDivId in activeMobs)) {
+        return;
+    }
     let mobId = activeMobs[mobDivId].id;
     let currentAnimation = activeMobs[mobDivId].currentAnimation;
     let frame = activeMobs[mobDivId].frame;

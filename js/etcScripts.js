@@ -121,17 +121,30 @@ function randomIntFromInterval(min, max) { // min and max included
 }
 
 // me
+var preloadedThings = [];
 function preloadImages(array) {
     array.forEach((data) => {
-        let img = new Image();
-        img.src = data;
-        img.classList = ['preloading'];
-        $('body').append(img);
+        if (!preloadedThings.includes(data)) {
+            preloadedThings.push(data);
+            let img = new Image();
+            img.src = data;
+            img.classList = ['preloading'];
+            $('body').append(img);
+            // deletes the image from the page after 40 seconds
+            // not sure if the benefit of preloading comes from leaving the image on the page
+            // or if the benefit is only from having it stay in the cache
+            // but I think I remember chrome kicking it out of the cache unless I left it on the page
+            // not sure but this should be more fine since I'd rather avoid filling the page with 1000's of permanent invisible images
+            scheduleToGameLoop(40000, () => {
+                img.remove();
+            }, [], 'preloading');
+        }
     });
 }
 
 $(preloadImages(["./files/hit/0.png", "./files/hit/1.png", "./files/hit/2.png", "./files/hit/3.png", "./files/hit/4.png", "./files/hit/5.png", "./files/hit/6.png", "./files/hit/7.png", "./files/hit/8.png", "./files/hit/9.png", "./files/levelup.png", './files/pointsEnabled.png', './files/pointsDisabled.png',
     './item/9000000/icon.png', './item/9000001/icon.png', './item/9000002/icon.png', './item/9000003/icon.png', './item/9000004/icon.png']));
+$(preloadConnectedZones());
 
 $(() => {
     let snackbarContainer = document.getElementById('snackbarHolderForSaving');

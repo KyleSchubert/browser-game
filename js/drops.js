@@ -114,7 +114,7 @@ function dropLoot(mobName, left=540, top=400, dropCount=0, doubloonCount=0.7, un
         for (let i = 0; i < stuff.length; i++) {
             let id = (stuff[i]).toString();
             itemImageSetup(id, itemDropSetup, aligner);
-            memorizeItemType(id);
+            //memorizeItemType(id);
         }
     }
     else {
@@ -132,7 +132,7 @@ function dropLoot(mobName, left=540, top=400, dropCount=0, doubloonCount=0.7, un
             }
             let id = choices[Math.floor((Math.random() * choices.length))];
             itemImageSetup(id, itemDropSetup, aligner);
-            memorizeItemType(id);
+            //memorizeItemType(id);
         }
     }
     while (doubloonCount > 0) {
@@ -180,7 +180,7 @@ function memorizeItemType(itemID) {
                 memorizeEquipmentStats(itemID, data['metaInfo']);
             }
 
-            checkIfWeKnowTheItemName(itemID);
+            //checkIfWeKnowTheItemName(itemID);
         });
     }
 }
@@ -231,7 +231,8 @@ function clearItems() {
 }
 
 function getItemURL(id) {
-    url = 'https://maplestory.io/api/GMS/217/item/'.concat(id);
+    //url = 'https://maplestory.io/api/GMS/217/item/'.concat(id);
+    let url = './item/' + id + '/icon.png';
     return url;
 }
 

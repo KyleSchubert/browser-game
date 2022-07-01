@@ -10,7 +10,8 @@ var gameLoop = {
     movement: [],
     other: [],
     skillMovements: [],
-    buffs: []
+    buffs: [],
+    preloading: []
 };
 
 function scheduleToGameLoop(delay, callback, data=[], category='other') {

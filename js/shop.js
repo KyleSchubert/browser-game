@@ -33,18 +33,18 @@ $(() => {
 function shopButtonAppeared(shopNode) {
     $(shopNode).on('mouseenter', function(event) {
         id = event.currentTarget.getAttribute('value');
-        if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
-            shopInventories[id].forEach(checkIfWeKnowTheItemName);
-        }
+        //if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
+        //    shopInventories[id].forEach(checkIfWeKnowTheItemName);
+        //}
         $(event.currentTarget).off(event);
     });
 }
 
 function preloadTheShop() {
     id = this.getAttribute('value');
-    if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
-        shopInventories[id].forEach(checkIfWeKnowTheItemName);
-    }
+    //if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) {
+    //    shopInventories[id].forEach(checkIfWeKnowTheItemName);
+    //}
     $(this).off('mouseenter');
 }
 
@@ -67,7 +67,7 @@ function shopLoad(id, isStorage=false) {
     }
     $('#shopHolder .guiInnerContentArea .shopItemArea:not(.sellArea)').html('');
     if (!shopInventories[id].every(checkIfStoreItemsInKnownItems)) { // Essentially, this is a backup for if I forget to do   shopButtonAppeared(shopNode)
-        shopInventories[id].forEach(checkIfWeKnowTheItemName);
+        //shopInventories[id].forEach(checkIfWeKnowTheItemName);
         setTimeout(() => {
             shopInventories[id].forEach(function(i) {
                 createItemCard(i, false, shopStocks[id][i], id);
@@ -166,6 +166,7 @@ function neededToWaitBeforeContinuing(id) { // as in: needed to wait before cont
     });
 }
 
+// DISABLED THIS AS OF     JULY 1st 2022
 function checkIfWeKnowTheItemName(id) { // every item for the shop and drops goes through here just in case
     if (!knownItemNames.includes(id)) { // but here it only does stuff if the name isn't known
         neededToWaitBeforeContinuing(id).then(function(data) {
