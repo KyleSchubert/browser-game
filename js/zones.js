@@ -139,23 +139,30 @@ function preloadConnectedZones(zone=currentZone) {
             animationNames.forEach((animationName) => {
                 toLoad.push('./mob/' + mobId + '/' + animationName + '.png');
             });
+            // loading their drops too
+            // looks like doing this is fine
+            mobDropPools[mobName].forEach((poolName) => {
+                dropPoolDefinitions[poolName].forEach((itemId) => {
+                    toLoad.push('./item/' + itemId + '/icon.png');
+                });
+            });
         });
     });
     scheduleToGameLoop(0, preloadImages, [toLoad], 'preloading');
 }
 
 $('#superBlocker').on('animationend webkitAnimationEnd oAnimationEnd', function(event) { // part of changeZones()
-    $('.mob').remove();
-    activeMobs = {};
-    numberOfMobs = 0;
-    targetableMobs = [];
     if ($('#superBlocker').hasClass('fadeToBlack')) { 
         loadPortals();
-        noKilling = false;
+        $('.mob').remove();
+        activeMobs = {};
+        numberOfMobs = 0;
+        targetableMobs = [];
         $('#superBlocker').removeClass('fadeToBlack');
         $('#superBlocker').addClass('unfadeToBlack');
     }
     else if ($('#superBlocker').hasClass('unfadeToBlack')) {
+        noKilling = false;
         $('#superBlocker').css('visibility', 'hidden');
         $('#superBlocker').css('pointer-events', 'none');
         $('#superBlocker').css('background', '');

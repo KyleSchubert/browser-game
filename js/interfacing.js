@@ -580,7 +580,7 @@ function checkForToggleKeys() {
 }
 
 function checkForPressedKeys() {
-    if (!smallDialogBoxOpen) { // this prevents buying stuff and activating skills on your number keys
+    if (!(smallDialogBoxOpen || noKilling)) { // this prevents buying stuff and activating skills on your number keys
         let endEarly = false;
         pressedKeys.forEach((someKey) => {
             if (endEarly) {
