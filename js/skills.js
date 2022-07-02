@@ -284,58 +284,53 @@ function triggerSkillOverTimeFromElement(element, elementId, skillId, useTime, r
     let topBound = top + height + ltrb[1];
     let rightBound = left + width/2 + ltrb[2];
     let bottomBound = top + height + ltrb[3];
-    checkHit(skillId, false, elementId, leftBound, topBound, rightBound, bottomBound);
-    scheduleToGameLoop(useTime, triggerSkillOverTimeFromElement, [element, elementId, skillId, useTime, remainingTriggers-1]);
+    let hitMobs = checkHit(skillId, false, elementId, leftBound, topBound, rightBound, bottomBound);
+    if (hitMobs.length != 0) {
+        remainingTriggers--;
+    }
+    scheduleToGameLoop(useTime, triggerSkillOverTimeFromElement, [element, elementId, skillId, useTime, remainingTriggers]);
 }
 
 const marginToAccountFor = parseInt($('#lootBlocker').css('margin-top'));
-var isSettingObserverSkillId = false;
 var lastSkillPairKey = 99; // 100 - 999
 var latestSkillBounds = {}; // skillId: [all 4 of the skill bounds based on where the character was and the screen was AND the gameArea's offsetLeft at the time]
 function checkHit(skillId, refreshLocation=false, elementId=-1, leftBound=0, topBound=0, rightBound=0, bottomBound=0) {
-    if (!isSettingObserverSkillId) {
-        isSettingObserverSkillId = true;
-        if (refreshLocation) {
-            let LTRB = classSkills[skillId].LTRB;
-            let totalOffsetLeft = AVATAR.offsetLeft;
-            if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
-                rightBound = totalOffsetLeft - LTRB[0];
-                leftBound = totalOffsetLeft - LTRB[2];
-            }
-            else {
-                leftBound = totalOffsetLeft + LTRB[0];
-                rightBound = totalOffsetLeft + LTRB[2];
-            }
-            topBound = AVATAR.offsetTop + LTRB[1];
-            bottomBound = AVATAR.offsetTop + LTRB[3];
+    if (refreshLocation) {
+        let LTRB = classSkills[skillId].LTRB;
+        let totalOffsetLeft = AVATAR.offsetLeft;
+        if (AVATAR.style.transform == '' || AVATAR.style.transform == 'scaleX(-1)') {
+            rightBound = totalOffsetLeft - LTRB[0];
+            leftBound = totalOffsetLeft - LTRB[2];
         }
-        if (debugSkillBounds) {
-            let gameArea = document.getElementById('gameArea');
-            gameArea.appendChild(createLine(leftBound, topBound, rightBound, topBound));
-            gameArea.appendChild(createLine(leftBound, bottomBound, rightBound, bottomBound));
-            gameArea.appendChild(createLine(leftBound, topBound, leftBound, bottomBound));
-            gameArea.appendChild(createLine(rightBound, topBound, rightBound, bottomBound));
+        else {
+            leftBound = totalOffsetLeft + LTRB[0];
+            rightBound = totalOffsetLeft + LTRB[2];
         }
-        latestSkillBounds[skillId] = {
-            'left': leftBound, 
-            'right': rightBound, 
-            'bottom': bottomBound, 
-            'top': topBound
-        };
-        lastSkillPairKey++;
-        if (lastSkillPairKey > 999) {
-            lastSkillPairKey = 99;
-        }
-        triggerOnHitDetectionPairs[lastSkillPairKey] = false;
-        if (elementId in movingSkills) {
-            movingSkills[elementId]['skillPairKey'] = lastSkillPairKey;
-        }
-        startHitCheckObserver(skillId, lastSkillPairKey);
-        isSettingObserverSkillId = false;
+        topBound = AVATAR.offsetTop + LTRB[1];
+        bottomBound = AVATAR.offsetTop + LTRB[3];
     }
-    else {
-        scheduleToGameLoop(0, checkHit, [skillId, refreshLocation, leftBound, topBound, rightBound, bottomBound], 'skill');
+    if (debugSkillBounds) {
+        let gameArea = document.getElementById('gameArea');
+        gameArea.appendChild(createLine(leftBound, topBound, rightBound, topBound));
+        gameArea.appendChild(createLine(leftBound, bottomBound, rightBound, bottomBound));
+        gameArea.appendChild(createLine(leftBound, topBound, leftBound, bottomBound));
+        gameArea.appendChild(createLine(rightBound, topBound, rightBound, bottomBound));
     }
+    latestSkillBounds[skillId] = {
+        'left': leftBound, 
+        'right': rightBound, 
+        'bottom': bottomBound, 
+        'top': topBound
+    };
+    lastSkillPairKey++; // apparently javascript works in such an un-magical way that this will never cause problems (only one functions gets worked on at once)
+    if (lastSkillPairKey > 999) {
+        lastSkillPairKey = 99;
+    }
+    triggerOnHitDetectionPairs[lastSkillPairKey] = false; // skills that have additional time-based functions that normally wouldn't get access to checkHit need this
+    if (elementId in movingSkills) {
+        movingSkills[elementId]['skillPairKey'] = lastSkillPairKey;
+    }
+    return startHitCheckObserver(skillId, lastSkillPairKey);
 }
 
 function getBounds(mobDivId) { // might want different hitboxes for different mob animations but for now it'll work with the same offsets for the same mob every time
@@ -372,6 +367,7 @@ function startHitCheckObserver(skillId, pairKey) {
     let mobHits = 0;
     let groupNumber = randomIntFromInterval(0, 2000000000000);
     let gameArea = document.getElementById('gameArea');
+    let divIdsOfHitMobs = []; // this is returned for customizable iteration ing
     targetableMobs.forEach((mobDivId) => {
         if (mobHits == realSkillData[skillId]['targets']) {
             return;
@@ -384,15 +380,16 @@ function startHitCheckObserver(skillId, pairKey) {
         let bounds = getBounds(mobDivId);
         if (
             (between(bounds['left'], leftSkillBound, rightSkillBound)
-                    || between(bounds['right'], leftSkillBound, rightSkillBound)
-                    || between(leftSkillBound, bounds['left'], bounds['right'])
-                    || between(rightSkillBound, bounds['left'], bounds['right']))
-                && 
-                (between(bounds['top'], topSkillBound, bottomSkillBound)
-                    || between(bounds['bottom'], topSkillBound, bottomSkillBound)
-                    || between(topSkillBound, bounds['top'], bounds['bottom'])
-                    || between(bottomSkillBound, bounds['top'], bounds['bottom']))
+                || between(bounds['right'], leftSkillBound, rightSkillBound)
+                || between(leftSkillBound, bounds['left'], bounds['right'])
+                || between(rightSkillBound, bounds['left'], bounds['right']))
+            && 
+            (between(bounds['top'], topSkillBound, bottomSkillBound)
+                || between(bounds['bottom'], topSkillBound, bottomSkillBound)
+                || between(topSkillBound, bounds['top'], bounds['bottom'])
+                || between(bottomSkillBound, bounds['top'], bounds['bottom']))
         ) {
+            divIdsOfHitMobs.push(mobDivId);
             let delay = 0;
             let skillType = classSkills[skillId].TYPE;
             if (skillType == 'ballEmitterAimed') {
@@ -449,6 +446,7 @@ function startHitCheckObserver(skillId, pairKey) {
         gameArea.appendChild(hitGroup);
         genericSpritesheetAnimation(hitGroup.children, 0, classSkills[skillId].hit[1], deleteGroupWhenDone=true);
     }
+    return divIdsOfHitMobs;
 }
 
 function getBallEmitterHitDelay(speed, startX, startY, endX, endY) {

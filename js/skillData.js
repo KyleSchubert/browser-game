@@ -480,7 +480,7 @@ const classSkills = {
         hit: [[143, 161], [60, 60, 60, 60, 60, 60]],
         description: 'Creates a whirlwind that attacks enemies until certain targets are defeated. Dissipates after a short distance or time. Unaffected by attack reflection. Up to two can exist. #cCommand Skill: During Attack + Jump Key + Dragon Link#',
         hitDescriptions: ['MP Cost: {15+x}, Damage: {140+3*x}%, Number of Attacks: 40, Chance to Slow Attacked Monsters: {20+x}%', '#cDissipates when certain number of attacks are made, set distance is traveled, or duration expires#. '],
-        usedVariables: {'mpCon': '15+x', 'attackCount': '1', 'damage': '140+3*x', 'prop': '20+x', 'time': '15000', 'maxDistance': '1000', 'attackDelay': '330', 'bulletCount': '1', 'maxTargets': '40'},
+        usedVariables: {'mpCon': '15+x', 'attackCount': '1', 'damage': '140+3*x', 'prop': '20+x', 'time': '17000', 'maxDistance': '1200', 'attackDelay': '330', 'bulletCount': '1', 'maxTargets': '40'},
         computedVars: {}
     },
     61111101: {
